@@ -987,17 +987,39 @@ document.getElementById('dateline').textContent = d.toLocaleDateString('en-US', 
 });
 
 // Signup handlers
-function handleSignup(e) {
-  e.preventDefault();
-  const email = document.getElementById('hero-email').value;
-  if (!email) return;
-  document.querySelector('.signup-form').style.display = 'none';
-  document.getElementById('signup-success').style.display = 'block';
-  // TODO: wire to email list (Resend Audiences or Supabase)
+async function submitToWaitlist(email) {
+  const res = await fetch('/api/waitlist', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email })
+  });
+  return res.json();
 }
 
-function handleBottomSignup(e) {
+async function handleSignup(e) {
   e.preventDefault();
+  const email = document.getElementById('hero-email').value;
+  const btn = e.target.querySelector('button');
+  if (!email) return;
+  btn.textContent = 'Joining...';
+  btn.disabled = true;
+  try {
+    await submitToWaitlist(email);
+  } catch(_) {}
+  document.querySelector('.signup-form').style.display = 'none';
+  document.getElementById('signup-success').style.display = 'block';
+}
+
+async function handleBottomSignup(e) {
+  e.preventDefault();
+  const email = document.getElementById('bottom-email').value;
+  const btn = e.target.querySelector('button');
+  if (!email) return;
+  btn.textContent = 'Joining...';
+  btn.disabled = true;
+  try {
+    await submitToWaitlist(email);
+  } catch(_) {}
   document.querySelector('.bottom-form').style.display = 'none';
   document.getElementById('bottom-success').style.display = 'block';
 }
