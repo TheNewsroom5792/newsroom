@@ -282,16 +282,16 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--i
   <!-- Bottom nav -->
   <div class="bottom-nav">
     <button class="nav-item active" id="nav-feed" onclick="switchNav('feed')">
-      <span class="nav-icon">📰</span><span class="nav-label">Feed</span>
+      <span class="nav-icon" style="font-size:14px;font-family:'DM Mono',monospace;">FEED</span>
     </button>
     <button class="nav-item" id="nav-channels" onclick="switchNav('channels')">
-      <span class="nav-icon">📡</span><span class="nav-label">Channels</span>
+      <span class="nav-icon" style="font-size:14px;font-family:'DM Mono',monospace;">CH</span>
     </button>
     <button class="nav-item" id="nav-saved" onclick="switchNav('saved')">
-      <span class="nav-icon">★</span><span class="nav-label">Saved</span>
+      <span class="nav-icon" style="font-size:14px;font-family:'DM Mono',monospace;">SAV</span>
     </button>
     <button class="nav-item" id="nav-settings" onclick="switchNav('settings')">
-      <span class="nav-icon">⚙</span><span class="nav-label">Settings</span>
+      <span class="nav-icon" style="font-size:14px;font-family:'DM Mono',monospace;">SET</span>
     </button>
   </div>
 </div>
@@ -472,7 +472,7 @@ function renderBeatBar() {
     html += `<button class="beat-tab ${currentBeat===b?'active':''}" onclick="switchBeat('${b}',this)">${b} (${c})</button>`;
   });
   if (substackPosts.length) {
-    html += `<button class="beat-tab sub-tab ${currentBeat==='substacks'?'active':''}" onclick="switchBeat('substacks',this)">✍️ Substacks (${substackPosts.length})</button>`;
+    html += `<button class="beat-tab sub-tab ${currentBeat==='substacks'?'active':''}" onclick="switchBeat('substacks',this)">SUB Substacks (${substackPosts.length})</button>`;
   }
   bar.innerHTML = html;
 }
@@ -550,9 +550,76 @@ function renderFeed() {
   const gated = isFree ? filtered.slice(4) : [];
 
   const beatColors = {politics:'beat-pol',economy:'beat-eco',technology:'beat-tech',tech:'beat-tech',world:'beat-world',education:'beat-edu'};
-  const beatEmoji = {politics:'🏛',economy:'📈',technology:'💡',world:'🌍',education:'📚',default:'📰'};
   function bc(b){ return beatColors[b?.toLowerCase()] || 'beat-def'; }
-  function be(b){ return beatEmoji[b?.toLowerCase()] || beatEmoji.default; }
+
+  // Bias ratings based on AllSides + Ad Fontes Media
+  const BIAS = {
+    'AP News':           { label: 'Center',      color: '#4a7c4e' },
+    'Reuters':           { label: 'Center',      color: '#4a7c4e' },
+    'BBC News':          { label: 'Center',      color: '#4a7c4e' },
+    'BBC World':         { label: 'Center',      color: '#4a7c4e' },
+    'NPR':               { label: 'Lean Left',   color: '#2a5fa5' },
+    'New York Times':    { label: 'Lean Left',   color: '#2a5fa5' },
+    'Washington Post':   { label: 'Lean Left',   color: '#2a5fa5' },
+    'The Guardian':      { label: 'Left',        color: '#1a3d7a' },
+    'Politico':          { label: 'Center',      color: '#4a7c4e' },
+    'Al Jazeera':        { label: 'Center',      color: '#4a7c4e' },
+    'DW News':           { label: 'Center',      color: '#4a7c4e' },
+    'Foreign Policy':    { label: 'Center',      color: '#4a7c4e' },
+    'Sky News':          { label: 'Center',      color: '#4a7c4e' },
+    'The Intercept':     { label: 'Left',        color: '#1a3d7a' },
+    'ProPublica':        { label: 'Lean Left',   color: '#2a5fa5' },
+    'Mother Jones':      { label: 'Left',        color: '#1a3d7a' },
+    'The Markup':        { label: 'Lean Left',   color: '#2a5fa5' },
+    'Wall Street Journal':{ label: 'Lean Right', color: '#8a3a1a' },
+    'Financial Times':   { label: 'Center',      color: '#4a7c4e' },
+    'The Economist':     { label: 'Center',      color: '#4a7c4e' },
+    'Fortune':           { label: 'Center',      color: '#4a7c4e' },
+    'CNBC':              { label: 'Center',      color: '#4a7c4e' },
+    'Bloomberg':         { label: 'Center',      color: '#4a7c4e' },
+    'MIT Tech Review':   { label: 'Center',      color: '#4a7c4e' },
+    'Wired':             { label: 'Lean Left',   color: '#2a5fa5' },
+    'Ars Technica':      { label: 'Lean Left',   color: '#2a5fa5' },
+    'The Verge':         { label: 'Lean Left',   color: '#2a5fa5' },
+    'TechCrunch':        { label: 'Center',      color: '#4a7c4e' },
+    'The Hill':          { label: 'Center',      color: '#4a7c4e' },
+    'Axios':             { label: 'Center',      color: '#4a7c4e' },
+    'Roll Call':         { label: 'Center',      color: '#4a7c4e' },
+    'Fox News':          { label: 'Right',       color: '#7a1a1a' },
+    'Breitbart':         { label: 'Right',       color: '#7a1a1a' },
+    'The Underground':   { label: 'Independent', color: '#5a4a8a' },
+    'Platformer':        { label: 'Independent', color: '#5a4a8a' },
+    'Sherwood News':     { label: 'Center',      color: '#4a7c4e' },
+    'Defector':          { label: 'Left',        color: '#1a3d7a' },
+    'Scientific American':{ label: 'Center',     color: '#4a7c4e' },
+    'NPR Education':     { label: 'Lean Left',   color: '#2a5fa5' },
+    'NPR Health':        { label: 'Lean Left',   color: '#2a5fa5' },
+  };
+
+  function getInitials(source) {
+    if (!source) return 'NW';
+    const words = source.replace(/^The /, '').split(' ');
+    if (words.length === 1) return words[0].slice(0, 2).toUpperCase();
+    return (words[0][0] + words[1][0]).toUpperCase();
+  }
+
+  function getBias(source) { return BIAS[source] || null; }
+
+  function sourceThumb(source, isSub) {
+    if (isSub) {
+      const initials = getInitials(source);
+      return `<div class="article-thumb" style="background:#fff5ef;border-color:#ffd4b8;flex-direction:column;gap:2px;">
+        <div style="font-family:'DM Mono',monospace;font-size:11px;font-weight:500;color:#FF6719;">${initials}</div>
+        <div style="font-size:8px;color:#FF6719;letter-spacing:.5px;">SUB</div>
+      </div>`;
+    }
+    const initials = getInitials(source);
+    const colors = ['#2a4a7a','#4a2a7a','#2a6a4a','#7a4a2a','#4a6a2a','#6a2a4a'];
+    const color = colors[source?.charCodeAt(0) % colors.length] || '#2a4a7a';
+    return `<div class="article-thumb" style="background:${color}10;border-color:${color}30;flex-direction:column;gap:2px;">
+      <div style="font-family:'DM Mono',monospace;font-size:11px;font-weight:500;color:${color};">${initials}</div>
+    </div>`;
+  }
 
   let html = '<div class="feed-wrap">';
   html += `<div class="feed-header"><div class="feed-title">${currentBeat==='all'?'Top Stories':currentBeat==='substacks'?'Your Substacks':currentBeat+' News'}</div><button class="refresh-btn" onclick="fetchFeed()">↻ Refresh</button></div>`;
@@ -564,27 +631,29 @@ function renderFeed() {
   visible.forEach((a, i) => {
     const isSub = a.type === 'substack';
     const saved = savedIds.has(a.headline);
+    const bias = getBias(a.source);
     html += `<div class="article ${isSub?'substack':''}" onclick="openArticle('${encodeURIComponent(a.url||'')}')">
       <div class="article-main">
-        <div class="article-beat ${isSub?'beat-sub':bc(a.beat)}">${isSub?'✍️ '+a.pubName:(be(a.beat)+' '+(a.beat||'').toUpperCase())}</div>
+        <div class="article-beat ${isSub?'beat-sub':bc(a.beat)}">${isSub?'SUBSTACK, '+a.pubName:(a.beat||'').toUpperCase()}</div>
         <div class="article-hed ${isSub?'substack-hed':''}">${a.headline}</div>
         <div class="article-sum">${a.summary}</div>
         <div class="article-meta">
           <span class="article-source">${a.source}</span>
           ${a.time?`<span>·</span><span>${a.time}</span>`:''}
+          ${bias?`<span>·</span><span style="font-size:10px;padding:1px 5px;border-radius:2px;background:${bias.color}15;color:${bias.color};border:1px solid ${bias.color}30;font-family:'DM Mono',monospace;letter-spacing:.5px;">${bias.label}</span>`:''}
           <span>·</span>
           <button class="save-btn ${saved?'saved':''}" onclick="event.stopPropagation();toggleSave(${i},'${encodeURIComponent(a.headline)}',this)">
             ${saved?'★':'☆'}
           </button>
         </div>
       </div>
-      <div class="article-thumb ${isSub?'sub-thumb':''}">${isSub?'✍️':be(a.beat)}</div>
+      ${sourceThumb(a.source, isSub)}
     </div>`;
   });
 
   if (gated.length) {
     const teaser = gated.slice(0,2).map(a => `<div class="article"><div class="article-main"><div class="article-beat">${a.beat||''}</div><div class="article-hed">${a.headline}</div></div></div>`).join('');
-    html += `<div class="gate"><div class="gate-blur">${teaser}</div><div class="gate-overlay"><div class="gate-title">+${gated.length} more stories</div><div class="gate-sub">Upgrade to Pro for the full feed</div><button class="gate-btn" onclick="showModal()">Upgrade to Pro →</button></div></div>`;
+    html += `<div class="gate"><div class="gate-blur">${teaser}</div><div class="gate-overlay"><div class="gate-title">+${gated.length} more stories</div><div class="gate-sub">Upgrade to Pro for the full feed</div><button class="gate-btn" onclick="showModal()">Upgrade to Pro</button></div></div>`;
   }
 
   html += '</div>';
@@ -618,7 +687,7 @@ function renderSaved() {
           <div class="article-sum">${a.summary}</div>
           <div class="article-meta"><span class="article-source">${a.source}</span></div>
         </div>
-        <div class="article-thumb">${a.type==='substack'?'✍️':'📰'}</div>
+        <div class="article-thumb">${a.type==='substack'?'SUB':'NW'}</div>
       </div>`;
     });
   }
@@ -665,7 +734,7 @@ function renderSettings() {
   // Substacks
   html += `<div class="settings-section">
     <div class="settings-section-title">Substacks</div>
-    <div class="pill-list">${subs.map((s,i)=>`<div class="pill sub-pill">✍️ ${s.name||s.url} <span class="x" onclick="removeSub(${i})">×</span></div>`).join('')}</div>
+    <div class="pill-list">${subs.map((s,i)=>`<div class="pill sub-pill">SUB ${s.name||s.url} <span class="x" onclick="removeSub(${i})">×</span></div>`).join('')}</div>
     <div class="add-row">
       <input class="add-input" id="sub-add-input" placeholder="e.g. platformer.news" onkeydown="if(event.key==='Enter')addSub()"/>
       <button class="add-btn sub" onclick="addSub()">Add</button>
@@ -807,19 +876,19 @@ function assignBeat(headline, beats) {
 }
 const CHANNELS = [
   {
-    id: 'mainstream', name: 'Mainstream', icon: '📺',
+    id: 'mainstream', name: 'Mainstream', icon: 'MS',
     desc: 'The major outlets. AP, Reuters, NYT, WaPo, BBC. The standard morning diet.',
     beats: ['Politics', 'Economy', 'World', 'Technology'],
     substacks: []
   },
   {
-    id: 'international', name: 'International', icon: '🌍',
+    id: 'international', name: 'International', icon: 'IN',
     desc: 'Global perspective. Al Jazeera, Foreign Policy, The Economist, Reuters World.',
     beats: ['World', 'Politics', 'Economy', 'Diplomacy'],
     substacks: []
   },
   {
-    id: 'independent', name: 'Independent', icon: '🔦',
+    id: 'independent', name: 'Independent', icon: 'ID',
     desc: 'Outside the mainstream. The Underground, The Intercept, Defector, Platformer.',
     beats: ['Politics', 'Culture', 'Technology', 'Media'],
     substacks: [
@@ -828,31 +897,31 @@ const CHANNELS = [
     ]
   },
   {
-    id: 'business', name: 'Business', icon: '📈',
+    id: 'business', name: 'Business', icon: 'BZ',
     desc: 'Markets, money, and corporate power. Bloomberg, FT, WSJ, Sherwood News.',
     beats: ['Economy', 'Markets', 'Business', 'Finance'],
     substacks: []
   },
   {
-    id: 'tech', name: 'Tech and Science', icon: '💡',
+    id: 'tech', name: 'Tech and Science', icon: 'TC',
     desc: 'From the labs to the boardroom. MIT Tech Review, Wired, Ars Technica, The Verge.',
     beats: ['Technology', 'Science', 'AI', 'Climate'],
     substacks: []
   },
   {
-    id: 'politics', name: 'Politics and Policy', icon: '🏛',
+    id: 'politics', name: 'Politics and Policy', icon: 'PL',
     desc: 'Inside the machine. Politico, The Hill, Axios AM, Punchbowl News.',
     beats: ['Politics', 'Policy', 'Congress', 'Elections'],
     substacks: []
   },
   {
-    id: 'opinion', name: 'Opinion', icon: '✍️',
+    id: 'opinion', name: 'Opinion', icon: 'OP',
     desc: 'Voices worth reading. Columnists, editorial boards, and independent thinkers.',
     beats: ['Opinion', 'Politics', 'Culture', 'Ideas'],
     substacks: []
   },
   {
-    id: 'alerts', name: 'Breaking Alerts', icon: '🚨',
+    id: 'alerts', name: 'Breaking Alerts', icon: 'AL',
     desc: 'High priority only. Breaking news flagged across all major beats.',
     beats: ['Breaking', 'Politics', 'World', 'Economy'],
     substacks: []
@@ -869,7 +938,9 @@ function renderChannels() {
       ch.beats.every(b => profile?.beats?.includes(b));
     html += `<div class="settings-section" style="margin-bottom:10px;">
       <div style="padding:14px 16px;display:flex;align-items:flex-start;gap:12px;">
-        <div style="font-size:28px;flex-shrink:0;margin-top:2px;">${ch.icon}</div>
+        <div style="width:40px;height:40px;background:var(--ink);border-radius:2px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px;">
+          <span style="font-family:'DM Mono',monospace;font-size:10px;font-weight:500;color:var(--paper);letter-spacing:1px;">${ch.icon}</span>
+        </div>
         <div style="flex:1;min-width:0;">
           <div style="font-size:14px;font-weight:500;margin-bottom:3px;">${ch.name}</div>
           <div style="font-size:12px;color:var(--muted);line-height:1.5;margin-bottom:10px;">${ch.desc}</div>
