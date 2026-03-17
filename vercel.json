@@ -1,8 +1,9 @@
 {
   "version": 2,
+  "redirects": [
+    { "source": "/app", "destination": "/app.html", "permanent": false }
+  ],
   "routes": [
-    { "src": "/app", "dest": "/public/app.html" },
-    { "src": "/app.html", "dest": "/public/app.html" },
     { "src": "/api/(.*)", "dest": "/api/$1" },
     { "src": "/(.*)", "dest": "/public/$1" }
   ],
