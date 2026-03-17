@@ -759,12 +759,15 @@ footer {
 <header class="masthead">
   <div class="masthead-top">
     <span class="dateline" id="dateline"></span>
-    <nav><ul class="nav-links">
-      <li><a href="#features">Features</a></li>
-      <li><a href="#how">How it works</a></li>
-      <li><a href="#pricing">Pricing</a></li>
-      <li><a href="#signup">Get started</a></li>
-    </ul></nav>
+    <nav style="display:flex;align-items:center;gap:24px;">
+      <ul class="nav-links">
+        <li><a href="#features">Features</a></li>
+        <li><a href="#how">How it works</a></li>
+        <li><a href="#pricing">Pricing</a></li>
+        <li><a href="#signup">Get started</a></li>
+      </ul>
+      <a href="/app.html" style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;padding:6px 14px;border:1px solid var(--ink);color:var(--ink);text-decoration:none;border-radius:2px;transition:all .15s;white-space:nowrap;" onmouseover="this.style.background='var(--ink)';this.style.color='var(--paper)'" onmouseout="this.style.background='none';this.style.color='var(--ink)'">Sign in</a>
+    </nav>
   </div>
   <div class="masthead-main">
     <div class="masthead-rule">
@@ -789,7 +792,7 @@ footer {
         <button class="signup-btn" type="submit">Get early access</button>
       </form>
       <div class="signup-success" id="signup-success">✓ You're on the list. We'll be in touch.</div>
-      <p class="signup-note">Free to start · No credit card required</p>
+      <p class="signup-note">Free to start · No credit card required · <a href="/app.html" style="color:var(--muted);text-decoration:underline;">Already have an account? Sign in</a></p>
     </div>
   </div>
 
