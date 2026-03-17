@@ -1,118 +1,94 @@
 const CHANNEL_FEEDS = {
   mainstream: [
-    'https://feeds.apnews.com/rss/apf-topnews',
-    'https://feeds.reuters.com/reuters/topNews',
-    'https://feeds.bbci.co.uk/news/rss.xml',
-    'https://feeds.npr.org/1001/rss.xml',
-    'https://rss.nytimes.com/services/xml/rss/nyt/HomePage.xml',
-    'https://feeds.washingtonpost.com/rss/national',
-    'https://www.theguardian.com/world/rss',
-    'https://rss.politico.com/politics-news.xml',
+    { url: 'https://feeds.apnews.com/rss/apf-topnews', name: 'AP News' },
+    { url: 'https://feeds.bbci.co.uk/news/rss.xml', name: 'BBC News' },
+    { url: 'https://feeds.npr.org/1001/rss.xml', name: 'NPR' },
+    { url: 'https://www.theguardian.com/world/rss', name: 'The Guardian' },
+    { url: 'https://rss.politico.com/politics-news.xml', name: 'Politico' },
   ],
   international: [
-    'https://www.aljazeera.com/xml/rss/all.xml',
-    'https://feeds.bbci.co.uk/news/world/rss.xml',
-    'https://feeds.reuters.com/Reuters/worldNews',
-    'https://rss.dw.com/rdf/rss-en-all',
-    'https://foreignpolicy.com/feed/',
-    'https://www.theguardian.com/world/rss',
-    'https://feeds.skynews.com/feeds/rss/world.xml',
+    { url: 'https://www.aljazeera.com/xml/rss/all.xml', name: 'Al Jazeera' },
+    { url: 'https://feeds.bbci.co.uk/news/world/rss.xml', name: 'BBC World' },
+    { url: 'https://rss.dw.com/rdf/rss-en-all', name: 'DW News' },
+    { url: 'https://foreignpolicy.com/feed/', name: 'Foreign Policy' },
+    { url: 'https://www.theguardian.com/world/rss', name: 'The Guardian' },
   ],
   independent: [
-    'https://voxunderground.substack.com/feed',
-    'https://www.platformer.news/feed',
-    'https://sherwood.news/feed',
-    'https://theintercept.com/feed/?rss',
-    'https://defector.com/feed',
-    'https://www.propublica.org/feeds/propublica/main',
-    'https://themarkup.org/feeds/rss.xml',
-    'https://www.motherjones.com/feed/',
+    { url: 'https://voxunderground.substack.com/feed', name: 'The Underground' },
+    { url: 'https://www.platformer.news/feed', name: 'Platformer' },
+    { url: 'https://theintercept.com/feed/?rss', name: 'The Intercept' },
+    { url: 'https://www.propublica.org/feeds/propublica/main', name: 'ProPublica' },
+    { url: 'https://www.motherjones.com/feed/', name: 'Mother Jones' },
   ],
   business: [
-    'https://feeds.reuters.com/reuters/businessNews',
-    'https://feeds.bloomberg.com/markets/news.rss',
-    'https://www.ft.com/?format=rss',
-    'https://feeds.a.dj.com/rss/WSJcomUSBusiness.xml',
-    'https://sherwood.news/feed',
-    'https://feeds.cnbc.com/rss/site/102/3096.rss',
-    'https://fortune.com/feed/',
-    'https://www.economist.com/finance-and-economics/rss.xml',
+    { url: 'https://feeds.a.dj.com/rss/WSJcomUSBusiness.xml', name: 'Wall Street Journal' },
+    { url: 'https://www.ft.com/?format=rss', name: 'Financial Times' },
+    { url: 'https://fortune.com/feed/', name: 'Fortune' },
+    { url: 'https://www.economist.com/finance-and-economics/rss.xml', name: 'The Economist' },
+    { url: 'https://feeds.cnbc.com/rss/site/102/3096.rss', name: 'CNBC' },
   ],
   tech: [
-    'https://www.technologyreview.com/feed/',
-    'https://www.wired.com/feed/rss',
-    'https://feeds.arstechnica.com/arstechnica/index',
-    'https://www.theverge.com/rss/index.xml',
-    'https://techcrunch.com/feed/',
-    'https://www.engadget.com/rss.xml',
-    'https://feeds.feedburner.com/TheHackersNews',
-    'https://www.scientificamerican.com/platform/morgue/2020/01/01_rss_id/rss.xml',
+    { url: 'https://www.technologyreview.com/feed/', name: 'MIT Tech Review' },
+    { url: 'https://www.wired.com/feed/rss', name: 'Wired' },
+    { url: 'https://feeds.arstechnica.com/arstechnica/index', name: 'Ars Technica' },
+    { url: 'https://www.theverge.com/rss/index.xml', name: 'The Verge' },
+    { url: 'https://techcrunch.com/feed/', name: 'TechCrunch' },
   ],
   politics: [
-    'https://rss.politico.com/politics-news.xml',
-    'https://thehill.com/rss/syndicator/19109',
-    'https://feeds.axios.com/axios/us-news',
-    'https://rss.nytimes.com/services/xml/rss/nyt/Politics.xml',
-    'https://feeds.washingtonpost.com/rss/politics',
-    'https://www.theguardian.com/politics/rss',
-    'https://feeds.reuters.com/Reuters/PoliticsNews',
-    'https://www.rollcall.com/feed/',
+    { url: 'https://rss.politico.com/politics-news.xml', name: 'Politico' },
+    { url: 'https://thehill.com/rss/syndicator/19109', name: 'The Hill' },
+    { url: 'https://feeds.npr.org/1001/rss.xml', name: 'NPR' },
+    { url: 'https://www.theguardian.com/us-news/rss', name: 'The Guardian' },
+    { url: 'https://www.rollcall.com/feed/', name: 'Roll Call' },
   ],
   opinion: [
-    'https://rss.nytimes.com/services/xml/rss/nyt/Opinion.xml',
-    'https://feeds.washingtonpost.com/rss/opinions',
-    'https://www.theguardian.com/commentisfree/rss',
-    'https://feeds.reuters.com/reuters/opinion',
-    'https://www.economist.com/leaders/rss.xml',
-    'https://foreignpolicy.com/category/analysis/feed/',
-    'https://theintercept.com/feed/?rss',
+    { url: 'https://www.theguardian.com/commentisfree/rss', name: 'The Guardian' },
+    { url: 'https://www.economist.com/leaders/rss.xml', name: 'The Economist' },
+    { url: 'https://foreignpolicy.com/category/analysis/feed/', name: 'Foreign Policy' },
+    { url: 'https://theintercept.com/feed/?rss', name: 'The Intercept' },
   ],
   alerts: [
-    'https://feeds.apnews.com/rss/apf-topnews',
-    'https://feeds.reuters.com/reuters/topNews',
-    'https://feeds.bbci.co.uk/news/rss.xml',
-    'https://feeds.npr.org/1001/rss.xml',
-    'https://rss.nytimes.com/services/xml/rss/nyt/HomePage.xml',
+    { url: 'https://feeds.apnews.com/rss/apf-topnews', name: 'AP News' },
+    { url: 'https://feeds.bbci.co.uk/news/rss.xml', name: 'BBC News' },
+    { url: 'https://feeds.npr.org/1001/rss.xml', name: 'NPR' },
   ],
 };
 
-// Beat-based feed mapping for custom beats
 const BEAT_FEEDS = {
-  politics: 'https://rss.politico.com/politics-news.xml',
-  economy: 'https://feeds.reuters.com/reuters/businessNews',
-  technology: 'https://feeds.arstechnica.com/arstechnica/index',
-  world: 'https://feeds.bbci.co.uk/news/world/rss.xml',
-  education: 'https://feeds.npr.org/1013/rss.xml',
-  health: 'https://feeds.npr.org/1128/rss.xml',
-  science: 'https://feeds.reuters.com/reuters/scienceNews',
-  culture: 'https://www.theguardian.com/culture/rss',
-  sports: 'https://feeds.bbci.co.uk/sport/rss.xml',
-  climate: 'https://www.theguardian.com/environment/rss',
-  business: 'https://feeds.reuters.com/reuters/businessNews',
-  markets: 'https://feeds.bloomberg.com/markets/news.rss',
-  finance: 'https://feeds.a.dj.com/rss/WSJcomUSBusiness.xml',
-  congress: 'https://rss.politico.com/congress.xml',
-  elections: 'https://rss.politico.com/politics-news.xml',
-  policy: 'https://thehill.com/rss/syndicator/19109',
-  breaking: 'https://feeds.apnews.com/rss/apf-topnews',
-  diplomacy: 'https://foreignpolicy.com/feed/',
-  media: 'https://www.theverge.com/rss/index.xml',
-  ai: 'https://www.technologyreview.com/feed/',
-  opinion: 'https://rss.nytimes.com/services/xml/rss/nyt/Opinion.xml',
-  ideas: 'https://www.economist.com/leaders/rss.xml',
+  politics: { url: 'https://rss.politico.com/politics-news.xml', name: 'Politico' },
+  economy: { url: 'https://feeds.a.dj.com/rss/WSJcomUSBusiness.xml', name: 'Wall Street Journal' },
+  technology: { url: 'https://feeds.arstechnica.com/arstechnica/index', name: 'Ars Technica' },
+  world: { url: 'https://feeds.bbci.co.uk/news/world/rss.xml', name: 'BBC World' },
+  education: { url: 'https://feeds.npr.org/1013/rss.xml', name: 'NPR Education' },
+  health: { url: 'https://feeds.npr.org/1128/rss.xml', name: 'NPR Health' },
+  science: { url: 'https://www.theguardian.com/science/rss', name: 'The Guardian' },
+  culture: { url: 'https://www.theguardian.com/culture/rss', name: 'The Guardian' },
+  climate: { url: 'https://www.theguardian.com/environment/rss', name: 'The Guardian' },
+  business: { url: 'https://feeds.a.dj.com/rss/WSJcomUSBusiness.xml', name: 'Wall Street Journal' },
+  breaking: { url: 'https://feeds.apnews.com/rss/apf-topnews', name: 'AP News' },
+  diplomacy: { url: 'https://foreignpolicy.com/feed/', name: 'Foreign Policy' },
+  ai: { url: 'https://www.technologyreview.com/feed/', name: 'MIT Tech Review' },
+  opinion: { url: 'https://www.theguardian.com/commentisfree/rss', name: 'The Guardian' },
+  congress: { url: 'https://rss.politico.com/congress.xml', name: 'Politico' },
+  elections: { url: 'https://rss.politico.com/politics-news.xml', name: 'Politico' },
+  media: { url: 'https://www.theverge.com/rss/index.xml', name: 'The Verge' },
 };
 
-async function fetchRSS(url) {
+async function fetchRSS(feedUrl, sourceName) {
   try {
-    const proxy = `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`;
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 8000);
-    const res = await fetch(proxy, { signal: controller.signal });
-    clearTimeout(timeout);
-    const data = await res.json();
-    return data.contents || '';
+    const res = await fetch(feedUrl, {
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (compatible; HeadlinesReport/1.0; +https://headlinesreport.com)',
+        'Accept': 'application/rss+xml, application/xml, text/xml, */*',
+      },
+      redirect: 'follow',
+    });
+
+    if (!res.ok) return [];
+    const xml = await res.text();
+    return parseRSS(xml, sourceName);
   } catch(e) {
-    return '';
+    return [];
   }
 }
 
@@ -121,38 +97,32 @@ function parseRSS(xml, sourceName) {
     const items = [];
     const itemRegex = /<item[^>]*>([\s\S]*?)<\/item>/gi;
     let match;
-    while ((match = itemRegex.exec(xml)) !== null) {
+
+    while ((match = itemRegex.exec(xml)) !== null && items.length < 5) {
       const item = match[1];
-      const title = (item.match(/<title[^>]*>(?:<!\[CDATA\[)?([\s\S]*?)(?:\]\]>)?<\/title>/) || [])[1]?.trim();
-      const link = (item.match(/<link[^>]*>([^<]+)<\/link>/) || item.match(/<link[^>]*href="([^"]+)"/) || [])[1]?.trim();
-      const desc = (item.match(/<description[^>]*>(?:<!\[CDATA\[)?([\s\S]*?)(?:\]\]>)?<\/description>/) || [])[1]?.trim();
-      const pubDate = (item.match(/<pubDate[^>]*>([\s\S]*?)<\/pubDate>/) || [])[1]?.trim();
 
-      if (!title || title.length < 5) continue;
+      const title = extractTag(item, 'title');
+      const link = extractLink(item);
+      const desc = extractTag(item, 'description');
+      const pubDate = extractTag(item, 'pubDate');
 
-      // Clean HTML from description
-      const cleanDesc = desc ? desc.replace(/<[^>]+>/g, '').replace(/&[a-z]+;/gi, ' ').replace(/\s+/g, ' ').trim().slice(0, 200) : '';
+      if (!title || title.length < 10) continue;
 
-      // Format time ago
-      let timeAgo = '';
-      if (pubDate) {
-        const diff = Date.now() - new Date(pubDate).getTime();
-        const h = Math.floor(diff / 3600000);
-        const d = Math.floor(diff / 86400000);
-        timeAgo = d > 0 ? `${d}d ago` : h > 0 ? `${h}h ago` : 'Just now';
-      }
+      const cleanDesc = desc
+        ? desc.replace(/<[^>]+>/g, '').replace(/&[a-z#0-9]+;/gi, ' ').replace(/\s+/g, ' ').trim().slice(0, 220)
+        : '';
 
-      // Clean em dashes from content
-      const cleanTitle = title.replace(/—/g, ',').replace(/–/g, ',');
-      const cleanSummary = (cleanDesc || 'Read the full story.').replace(/—/g, ',').replace(/–/g, ',');
+      const timeAgo = formatTime(pubDate);
+      const cleanTitle = title.replace(/[—–]/g, ',').replace(/\s+/g, ' ').trim();
+      const cleanSummary = (cleanDesc || 'Read the full story.').replace(/[—–]/g, ',');
 
       items.push({
         headline: cleanTitle,
-        summary: cleanSummary + (cleanSummary.length >= 200 ? '...' : ''),
+        summary: cleanSummary + (cleanDesc.length >= 220 ? '...' : ''),
         source: sourceName,
         time: timeAgo,
         url: link || '',
-        type: 'news'
+        type: 'news',
       });
     }
     return items;
@@ -161,53 +131,28 @@ function parseRSS(xml, sourceName) {
   }
 }
 
-function getSourceName(url) {
-  const map = {
-    'apnews.com': 'AP News',
-    'reuters.com': 'Reuters',
-    'bbci.co.uk': 'BBC News',
-    'bbc.co.uk': 'BBC News',
-    'npr.org': 'NPR',
-    'nytimes.com': 'New York Times',
-    'washingtonpost.com': 'Washington Post',
-    'theguardian.com': 'The Guardian',
-    'politico.com': 'Politico',
-    'aljazeera.com': 'Al Jazeera',
-    'dw.com': 'DW News',
-    'foreignpolicy.com': 'Foreign Policy',
-    'skynews.com': 'Sky News',
-    'voxunderground.substack.com': 'The Underground',
-    'platformer.news': 'Platformer',
-    'sherwood.news': 'Sherwood News',
-    'theintercept.com': 'The Intercept',
-    'defector.com': 'Defector',
-    'propublica.org': 'ProPublica',
-    'themarkup.org': 'The Markup',
-    'motherjones.com': 'Mother Jones',
-    'bloomberg.com': 'Bloomberg',
-    'ft.com': 'Financial Times',
-    'wsj.com': 'Wall Street Journal',
-    'cnbc.com': 'CNBC',
-    'fortune.com': 'Fortune',
-    'economist.com': 'The Economist',
-    'technologyreview.com': 'MIT Tech Review',
-    'wired.com': 'Wired',
-    'arstechnica.com': 'Ars Technica',
-    'theverge.com': 'The Verge',
-    'techcrunch.com': 'TechCrunch',
-    'engadget.com': 'Engadget',
-    'thehill.com': 'The Hill',
-    'axios.com': 'Axios',
-    'rollcall.com': 'Roll Call',
-    'scientificamerican.com': 'Scientific American',
-  };
+function extractTag(xml, tag) {
+  const m = xml.match(new RegExp(`<${tag}[^>]*>(?:<!\\[CDATA\\[)?([\\s\\S]*?)(?:\\]\\]>)?<\\/${tag}>`, 'i'));
+  return m ? m[1].trim() : '';
+}
+
+function extractLink(item) {
+  const m = item.match(/<link[^>]*>([^<]+)<\/link>/) ||
+            item.match(/<link[^>]+href="([^"]+)"/) ||
+            item.match(/<guid[^>]*>([^<]+)<\/guid>/);
+  return m ? m[1].trim() : '';
+}
+
+function formatTime(pubDate) {
+  if (!pubDate) return '';
   try {
-    const host = new URL(url).hostname.replace('www.', '').replace('feeds.', '');
-    for (const [key, name] of Object.entries(map)) {
-      if (host.includes(key)) return name;
-    }
-    return host.split('.')[0].charAt(0).toUpperCase() + host.split('.')[0].slice(1);
-  } catch(e) { return 'News'; }
+    const diff = Date.now() - new Date(pubDate).getTime();
+    const h = Math.floor(diff / 3600000);
+    const d = Math.floor(diff / 86400000);
+    if (d > 0) return `${d}d ago`;
+    if (h > 0) return `${h}h ago`;
+    return 'Just now';
+  } catch(e) { return ''; }
 }
 
 export default async function handler(req, res) {
@@ -219,43 +164,41 @@ export default async function handler(req, res) {
   const { channel, beats } = req.query;
 
   try {
-    let feedUrls = [];
+    let feeds = [];
 
     if (channel && CHANNEL_FEEDS[channel]) {
-      feedUrls = CHANNEL_FEEDS[channel];
+      feeds = CHANNEL_FEEDS[channel].slice(0, 5);
     } else if (beats) {
       const beatList = beats.split(',').map(b => b.trim().toLowerCase());
       const seen = new Set();
-      beatList.forEach(b => {
-        const url = BEAT_FEEDS[b];
-        if (url && !seen.has(url)) { seen.add(url); feedUrls.push(url); }
-      });
       // Always include AP as baseline
-      if (!feedUrls.includes('https://feeds.apnews.com/rss/apf-topnews')) {
-        feedUrls.unshift('https://feeds.apnews.com/rss/apf-topnews');
-      }
+      feeds.push({ url: 'https://feeds.apnews.com/rss/apf-topnews', name: 'AP News' });
+      seen.add('feeds.apnews.com');
+      beatList.forEach(b => {
+        const f = BEAT_FEEDS[b];
+        if (f) {
+          const host = new URL(f.url).hostname;
+          if (!seen.has(host)) { seen.add(host); feeds.push(f); }
+        }
+      });
+      feeds = feeds.slice(0, 5);
     } else {
-      feedUrls = CHANNEL_FEEDS.mainstream;
+      feeds = CHANNEL_FEEDS.mainstream.slice(0, 5);
     }
 
-    // Fetch up to 6 feeds in parallel (balance speed vs coverage)
-    const selectedFeeds = feedUrls.slice(0, 6);
+    // Fetch all feeds in parallel with 8s timeout
     const results = await Promise.allSettled(
-      selectedFeeds.map(async url => {
-        const xml = await fetchRSS(url);
-        const name = getSourceName(url);
-        return parseRSS(xml, name);
-      })
+      feeds.map(f => fetchRSS(f.url, f.name))
     );
 
-    // Merge, deduplicate by headline similarity, sort by recency
+    // Merge and deduplicate
     const seen = new Set();
     let articles = [];
     results.forEach(r => {
       if (r.status === 'fulfilled') {
         r.value.forEach(a => {
-          const key = a.headline.slice(0, 40).toLowerCase();
-          if (!seen.has(key)) {
+          const key = a.headline.slice(0, 50).toLowerCase().replace(/[^a-z0-9]/g, '');
+          if (!seen.has(key) && a.headline.length > 10) {
             seen.add(key);
             articles.push(a);
           }
@@ -263,17 +206,14 @@ export default async function handler(req, res) {
       }
     });
 
-    // Sort: items with time first, then others
-    articles.sort((a, b) => {
-      if (a.time && !b.time) return -1;
-      if (!a.time && b.time) return 1;
-      return 0;
-    });
-
-    // Return 10-15 stories
     articles = articles.slice(0, 15);
 
-    return res.status(200).json({ success: true, articles, count: articles.length, sources: selectedFeeds.length });
+    return res.status(200).json({
+      success: true,
+      articles,
+      count: articles.length,
+      sources: feeds.map(f => f.name),
+    });
 
   } catch(err) {
     return res.status(500).json({ error: err.message });
