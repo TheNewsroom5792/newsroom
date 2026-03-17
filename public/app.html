@@ -312,8 +312,8 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--i
           <li><span class="fc">✓</span>3 news beats</li>
           <li><span class="fc">✓</span>2 Substacks</li>
           <li><span class="fc">✓</span>Daily digest</li>
-          <li><span class="fx">–</span>Email briefing</li>
-          <li><span class="fx">–</span>Unlimited beats</li>
+          <li><span class="fx">,</span>Email briefing</li>
+          <li><span class="fx">,</span>Unlimited beats</li>
         </ul>
         <button class="plan-btn" onclick="closeModal()">Current plan</button>
       </div>
@@ -493,20 +493,27 @@ async function fetchFeed(isInitialLoad = false) {
   renderLoading();
 
   const beats = profile?.beats || ['Politics','Economy','Technology'];
-  const prompt = `You are a news aggregator. The reader follows: ${beats.join(', ')}.
-Generate 8 realistic news stories. Respond ONLY with valid JSON:
-{"digest":"2-3 sentence summary","articles":[{"beat":"Politics","headline":"...","summary":"1-2 sentences","source":"...","time":"Xh ago","url":null}]}`;
 
   try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST', headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 1000, messages: [{ role: 'user', content: prompt }] })
-    });
-    const data = await res.json();
-    const raw = data.content.map(c => c.text||'').join('').replace(/```json|```/g,'').trim();
-    const parsed = JSON.parse(raw);
-    articles = (parsed.articles || []).map(a => ({...a, type:'news'}));
-    window._digest = parsed.digest;
+    // Step 1: Fetch real RSS articles
+    const feedRes = await fetch(`/api/feed?beats=${encodeURIComponent(beats.join(','))}`);
+    const feedData = await feedRes.json();
+    articles = (feedData.articles || []).map(a => ({...a, type:'news', beat: assignBeat(a.headline, beats)}));
+
+    // Step 2: Generate digest from real headlines using Claude
+    if (articles.length > 0) {
+      const headlines = articles.slice(0,8).map(a => `- ${a.headline} (${a.source})`).join('\n');
+      const digestRes = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST', headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({
+          model: 'claude-sonnet-4-20250514', max_tokens: 200,
+          messages: [{ role: 'user', content: `Write a 2-3 sentence morning news digest based on these real headlines. No em dashes. Be factual and direct:\n${headlines}\n\nRespond with only the digest text, no labels or formatting.` }]
+        })
+      });
+      const digestData = await digestRes.json();
+      window._digest = digestData.content?.map(c => c.text||'').join('').trim() || '';
+    }
+
     renderBeatBar();
     renderFeed();
   } catch(e) {
@@ -766,7 +773,26 @@ function toggleDigest() {
   showToast(profile.digest_enabled ? 'Digest enabled' : 'Digest disabled');
 }
 
-// ── CHANNELS DATA ─────────────────────────────────────────────────
+// ── BEAT ASSIGNMENT ───────────────────────────────────────────────
+function assignBeat(headline, beats) {
+  const h = headline.toLowerCase();
+  const beatKeywords = {
+    'politics': ['senate','congress','president','democrat','republican','election','vote','white house','biden','trump','political','legislation','bill','law'],
+    'economy': ['economy','inflation','fed','interest rate','gdp','recession','market','stock','trade','economic','finance','bank','dollar','budget'],
+    'technology': ['tech','ai','artificial intelligence','software','apple','google','microsoft','meta','amazon','startup','cyber','data','chip','robot'],
+    'world': ['ukraine','russia','china','middle east','israel','gaza','europe','nato','un','global','international','foreign','war','conflict'],
+    'health': ['health','covid','cancer','vaccine','drug','fda','hospital','medical','disease','mental health','pandemic'],
+    'climate': ['climate','carbon','emission','environment','energy','solar','wind','fossil','temperature','weather'],
+    'science': ['science','space','nasa','research','study','discovery','physics','biology'],
+    'education': ['school','university','college','student','education','teacher','campus'],
+  };
+
+  for (const beat of beats) {
+    const keywords = beatKeywords[beat.toLowerCase()];
+    if (keywords && keywords.some(k => h.includes(k))) return beat;
+  }
+  return beats[Math.floor(Math.random() * beats.length)] || 'News';
+}
 const CHANNELS = [
   {
     id: 'mainstream', name: 'Mainstream', icon: '📺',
@@ -850,28 +876,22 @@ function renderChannels() {
   document.getElementById('content-area').innerHTML = html;
 }
 
-function subscribeChannel(id) {
+async function subscribeChannel(id) {
   const ch = CHANNELS.find(c => c.id === id);
   if (!ch) return;
   if (!profile.beats) profile.beats = [];
 
-  // Add beats that aren't already there
   ch.beats.forEach(b => {
     if (!profile.beats.map(x=>x.toLowerCase()).includes(b.toLowerCase())) {
-      if (profile.tier === 'pro' || profile.beats.length < FREE.beats) {
-        profile.beats.push(b);
-      }
+      if (profile.tier === 'pro' || profile.beats.length < FREE.beats) profile.beats.push(b);
     }
   });
 
-  // Add substacks
-  if (ch.substacks.length) {
+  if (ch.substacks?.length) {
     if (!profile.substacks) profile.substacks = [];
     ch.substacks.forEach(s => {
       if (!profile.substacks.find(x => x.url === s.url)) {
-        if (profile.tier === 'pro' || profile.substacks.length < FREE.substacks) {
-          profile.substacks.push(s);
-        }
+        if (profile.tier === 'pro' || profile.substacks.length < FREE.substacks) profile.substacks.push(s);
       }
     });
   }
@@ -879,7 +899,19 @@ function subscribeChannel(id) {
   savePreferences();
   renderBeatBar();
   renderChannels();
-  showToast(`Subscribed to ${ch.name}`);
+  showToast(`Subscribed to ${ch.name}. Loading stories...`);
+
+  // Fetch real RSS for this channel
+  try {
+    const feedRes = await fetch(`/api/feed?channel=${id}`);
+    const feedData = await feedRes.json();
+    const newArticles = (feedData.articles || []).map(a => ({...a, type:'news', beat: assignBeat(a.headline, ch.beats)}));
+    articles = [...newArticles, ...articles.filter(a => !newArticles.find(n => n.headline === a.headline))].slice(0,20);
+    renderBeatBar();
+    showToast(`${ch.name} loaded. ${newArticles.length} stories added.`);
+  } catch(e) {
+    showToast(`Subscribed to ${ch.name}`);
+  }
 }
 
 // ── NAV ───────────────────────────────────────────────────────────
