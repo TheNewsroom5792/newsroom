@@ -17,24 +17,16 @@ export default async function handler(req, res) {
     if (action === 'checkout') {
       const { plan, email, userId } = req.body;
       const isAnnual = plan === 'annual';
+      const priceId = isAnnual
+        ? process.env.STRIPE_YEARLY_PRICE_ID
+        : process.env.STRIPE_MONTHLY_PRICE_ID;
 
       const session = await stripe.checkout.sessions.create({
         payment_method_types: ['card'],
         mode: 'subscription',
         customer_email: email,
         metadata: { userId, plan },
-        line_items: [{
-          price_data: {
-            currency: 'usd',
-            recurring: { interval: isAnnual ? 'year' : 'month' },
-            product_data: {
-              name: 'Headlines Report Pro',
-              description: 'Unlimited beats, Substacks, and your morning briefing'
-            },
-            unit_amount: isAnnual ? 6000 : 700
-          },
-          quantity: 1
-        }],
+        line_items: [{ price: priceId, quantity: 1 }],
         success_url: `https://headlinesreport.com/app?upgraded=true`,
         cancel_url: `https://headlinesreport.com/app`
       });
@@ -42,12 +34,14 @@ export default async function handler(req, res) {
       return res.status(200).json({ url: session.url });
     }
 
-    // ── STRIPE WEBHOOK (confirm payment) ─────────────────
+    // ── STRIPE WEBHOOK ────────────────────────────────────
     if (action === 'webhook') {
       const sig = req.headers['stripe-signature'];
       let event;
       try {
-        event = stripe.webhooks.constructEvent(req.body, sig, process.env.STRIPE_WEBHOOK_SECRET);
+        event = stripe.webhooks.constructEvent(
+          req.body, sig, process.env.STRIPE_WEBHOOK_SECRET
+        );
       } catch (err) {
         return res.status(400).json({ error: 'Webhook signature failed' });
       }
@@ -72,7 +66,9 @@ export default async function handler(req, res) {
           .select('id')
           .eq('stripe_subscription_id', sub.id);
         if (profiles?.length) {
-          await supabase.from('profiles').update({ tier: 'free' }).eq('id', profiles[0].id);
+          await supabase.from('profiles')
+            .update({ tier: 'free' })
+            .eq('id', profiles[0].id);
         }
       }
 
