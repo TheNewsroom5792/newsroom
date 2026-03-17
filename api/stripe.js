@@ -31,8 +31,17 @@ export default async function handler(req, res) {
         cancel_url: `https://headlinesreport.com/app`
       });
 
-      return res.status(200).json({ url: session.url });
-    }
+      if (product === 'fresh_start') {
+  const session = await stripe.checkout.sessions.create({
+    payment_method_types: ['card'],
+    mode: 'payment',
+    customer_email: email,
+    line_items: [{ price: process.env.STRIPE_FRESH_START_PRICE_ID, quantity: 1 }],
+    success_url: `https://headlinesreport.com/fresh-start.html?success=true`,
+    cancel_url: `https://headlinesreport.com/fresh-start.html`
+  });
+  return res.status(200).json({ url: session.url });
+}
 
     // ── STRIPE WEBHOOK ────────────────────────────────────
     if (action === 'webhook') {
