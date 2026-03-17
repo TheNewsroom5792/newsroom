@@ -495,29 +495,41 @@ async function fetchFeed(isInitialLoad = false) {
   const beats = profile?.beats || ['Politics','Economy','Technology'];
 
   try {
-    // Step 1: Fetch real RSS articles
+    // Fetch real RSS articles
     const feedRes = await fetch(`/api/feed?beats=${encodeURIComponent(beats.join(','))}`);
     const feedData = await feedRes.json();
-    articles = (feedData.articles || []).map(a => ({...a, type:'news', beat: assignBeat(a.headline, beats)}));
 
-    // Step 2: Generate digest from real headlines using Claude
+    if (!feedData.success || !feedData.articles?.length) {
+      throw new Error('No articles returned');
+    }
+
+    // Only count refresh on success
+    if (!isInitialLoad && profile?.tier !== 'pro') refreshesUsed++;
+
+    articles = feedData.articles.map(a => ({...a, type:'news', beat: assignBeat(a.headline, beats)}));
+
+    // Generate digest from real headlines
     if (articles.length > 0) {
       const headlines = articles.slice(0,8).map(a => `- ${a.headline} (${a.source})`).join('\n');
-      const digestRes = await fetch('https://api.anthropic.com/v1/messages', {
-        method: 'POST', headers: {'Content-Type':'application/json'},
-        body: JSON.stringify({
-          model: 'claude-sonnet-4-20250514', max_tokens: 200,
-          messages: [{ role: 'user', content: `Write a 2-3 sentence morning news digest based on these real headlines. No em dashes. Be factual and direct:\n${headlines}\n\nRespond with only the digest text, no labels or formatting.` }]
-        })
-      });
-      const digestData = await digestRes.json();
-      window._digest = digestData.content?.map(c => c.text||'').join('').trim() || '';
+      try {
+        const digestRes = await fetch('https://api.anthropic.com/v1/messages', {
+          method: 'POST', headers: {'Content-Type':'application/json'},
+          body: JSON.stringify({
+            model: 'claude-sonnet-4-20250514', max_tokens: 200,
+            messages: [{ role: 'user', content: `Write a 2-3 sentence morning news digest based on these real headlines. No em dashes. Be factual and direct:\n${headlines}\n\nRespond with only the digest text, no labels or formatting.` }]
+          })
+        });
+        const digestData = await digestRes.json();
+        window._digest = digestData.content?.map(c => c.text||'').join('').trim() || '';
+      } catch(e) {
+        window._digest = '';
+      }
     }
 
     renderBeatBar();
     renderFeed();
   } catch(e) {
-    document.getElementById('content-area').innerHTML = '<div class="loading">Could not load stories. Try refreshing.</div>';
+    document.getElementById('content-area').innerHTML = `<div class="loading">Could not load stories.<br><button class="refresh-btn" style="margin:10px auto;display:flex" onclick="fetchFeed(true)">Try again</button></div>`;
   }
   isLoading = false;
 }
