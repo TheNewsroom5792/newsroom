@@ -1,0 +1,1239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Fresh Start Financial Plan, Headlines Report</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --ink: #0f0e0c; --paper: #f7f4ee; --rule: #d4cfc4; --muted: #7a7567;
+  --accent: #c1440e; --bg: #f0ece3; --card: #ffffff;
+  --green: #c8f04e; --teal: #4ef0c8; --orange: #f0904e;
+  --dark: #0f0f11; --dark2: #17171a; --dark3: #1e1e23; --dborder: #2a2a32;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'DM Sans',sans-serif;background:var(--paper);color:var(--ink);}
+
+/* PRODUCT PAGE */
+.product-page{max-width:900px;margin:0 auto;padding:0 24px 80px;}
+.product-nav{display:flex;align-items:center;justify-content:space-between;padding:18px 0;border-bottom:0.5px solid var(--rule);margin-bottom:0;}
+.nav-logo{font-family:'DM Serif Display',serif;font-size:18px;font-style:italic;font-weight:700;text-decoration:none;color:var(--ink);}
+.nav-logo em{font-weight:400;color:var(--accent);}
+.nav-back{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);text-decoration:none;transition:color .15s;}
+.nav-back:hover{color:var(--ink);}
+
+.hero-section{padding:60px 0 48px;border-bottom:1px solid var(--rule);}
+.hero-kicker{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--accent);margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+.hero-kicker::before{content:'';width:20px;height:1px;background:var(--accent);}
+.hero-title{font-family:'DM Serif Display',serif;font-size:clamp(36px,5vw,56px);font-weight:700;line-height:1.1;letter-spacing:-1px;margin-bottom:16px;}
+.hero-title em{font-style:italic;font-weight:400;}
+.hero-sub{font-size:16px;line-height:1.7;color:#3d3b36;max-width:600px;margin-bottom:32px;}
+.price-row{display:flex;align-items:center;gap:20px;margin-bottom:28px;}
+.price{font-family:'DM Serif Display',serif;font-size:52px;font-weight:900;line-height:1;}
+.price-note{font-size:13px;color:var(--muted);}
+.buy-btn{display:inline-block;padding:14px 32px;background:var(--ink);color:var(--paper);font-family:'DM Mono',monospace;font-size:11px;letter-spacing:2px;text-transform:uppercase;border:none;cursor:pointer;border-radius:2px;transition:all .15s;text-decoration:none;}
+.buy-btn:hover{background:var(--accent);}
+.buy-note{font-size:11px;color:var(--muted);margin-top:10px;font-family:'DM Mono',monospace;letter-spacing:.5px;}
+
+.features-section{padding:48px 0;border-bottom:1px solid var(--rule);}
+.section-label{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:32px;display:flex;align-items:center;gap:10px;}
+.section-label::after{content:'';flex:1;height:0.5px;background:var(--rule);}
+.features-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;}
+.feature{padding:24px;border:0.5px solid var(--rule);border-radius:2px;background:var(--card);}
+.feature-num{font-family:'DM Serif Display',serif;font-size:40px;font-weight:900;color:var(--rule);line-height:1;margin-bottom:10px;}
+.feature-title{font-size:14px;font-weight:600;margin-bottom:6px;}
+.feature-desc{font-size:13px;line-height:1.6;color:var(--muted);}
+
+.includes-section{padding:48px 0;border-bottom:1px solid var(--rule);}
+.includes-list{display:flex;flex-direction:column;gap:0;}
+.include-item{display:flex;align-items:flex-start;gap:16px;padding:16px 0;border-bottom:0.5px solid var(--rule);}
+.include-item:last-child{border-bottom:none;}
+.include-check{font-family:'DM Mono',monospace;font-size:11px;color:var(--accent);padding-top:2px;flex-shrink:0;}
+.include-body h4{font-size:14px;font-weight:600;margin-bottom:3px;}
+.include-body p{font-size:13px;color:var(--muted);line-height:1.5;}
+
+.preview-section{padding:48px 0;border-bottom:1px solid var(--rule);}
+.app-preview{background:var(--dark);border-radius:8px;overflow:hidden;border:1px solid var(--dborder);}
+.preview-bar{background:var(--dark2);padding:12px 20px;display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--dborder);}
+.preview-dot{width:10px;height:10px;border-radius:50%;}
+.preview-content{padding:24px;}
+.preview-tabs{display:flex;gap:6px;margin-bottom:20px;flex-wrap:wrap;}
+.preview-tab{padding:5px 12px;border-radius:5px;font-size:11px;font-weight:500;border:1px solid var(--dborder);color:#7a7a8a;background:var(--dark3);}
+.preview-tab.active{background:var(--green);color:var(--dark);border-color:var(--green);}
+.preview-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:16px;}
+.preview-stat{background:var(--dark2);border:1px solid var(--dborder);border-radius:8px;padding:12px;}
+.psl{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#7a7a8a;margin-bottom:4px;}
+.psv{font-family:'DM Serif Display',serif;font-size:22px;color:var(--green);}
+.preview-bar2{background:var(--dark2);border:1px solid var(--dborder);border-radius:8px;padding:14px;}
+.pb-label{font-size:12px;color:#f0ede8;margin-bottom:8px;font-weight:500;}
+.pb-track{height:8px;background:var(--dborder);border-radius:99px;overflow:hidden;margin-bottom:4px;}
+.pb-fill{height:100%;border-radius:99px;}
+
+.faq-section{padding:48px 0;}
+.faq-item{padding:20px 0;border-bottom:0.5px solid var(--rule);}
+.faq-item:last-child{border-bottom:none;}
+.faq-q{font-size:15px;font-weight:600;margin-bottom:8px;}
+.faq-a{font-size:13px;line-height:1.7;color:var(--muted);}
+
+.bottom-cta{background:var(--ink);padding:60px 24px;text-align:center;margin:0 -24px;}
+.bottom-cta h2{font-family:'DM Serif Display',serif;font-size:36px;font-weight:700;color:var(--paper);margin-bottom:8px;}
+.bottom-cta p{font-size:14px;color:rgba(247,244,238,.5);margin-bottom:28px;font-style:italic;}
+
+/* BUILDER PAGE */
+#builder-page{display:none;background:var(--dark);min-height:100vh;color:#f0ede8;}
+.builder-nav{display:flex;align-items:center;justify-content:space-between;padding:0 24px;height:52px;border-bottom:1px solid var(--dborder);background:var(--dark2);position:sticky;top:0;z-index:50;}
+.builder-logo{font-family:'DM Serif Display',serif;font-size:16px;font-style:italic;color:#f0ede8;}
+.builder-logo em{color:var(--green);font-style:normal;}
+.back-btn{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:#7a7a8a;background:none;border:none;cursor:pointer;transition:color .15s;}
+.back-btn:hover{color:#f0ede8;}
+.builder-steps{display:flex;gap:2px;padding:0 24px;background:var(--dark2);border-bottom:1px solid var(--dborder);overflow-x:auto;}
+.bstep{padding:10px 14px;font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:#7a7a8a;border:none;background:none;cursor:pointer;border-bottom:2px solid transparent;transition:all .15s;white-space:nowrap;}
+.bstep.active{color:var(--green);border-bottom-color:var(--green);}
+.bstep.done{color:#4a8a6a;}
+.builder-content{max-width:800px;margin:0 auto;padding:32px 24px 100px;}
+.step-panel{display:none;}
+.step-panel.active{display:block;}
+.step-title{font-family:'DM Serif Display',serif;font-size:28px;margin-bottom:6px;}
+.step-sub{font-size:13px;color:#7a7a8a;margin-bottom:28px;}
+.field-group{margin-bottom:20px;}
+.field-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#7a7a8a;display:block;margin-bottom:6px;}
+.field-input{width:100%;background:var(--dark3);border:1px solid var(--dborder);color:#f0ede8;border-radius:6px;padding:9px 12px;font-size:14px;font-family:'DM Sans',sans-serif;transition:border-color .15s;}
+.field-input:focus{outline:none;border-color:var(--green);}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.field-row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;}
+.dollar-wrap{position:relative;}
+.dollar-wrap::before{content:'$';position:absolute;left:11px;top:50%;transform:translateY(-50%);color:#7a7a8a;font-size:14px;}
+.dollar-wrap .field-input{padding-left:22px;}
+
+.builder-footer{position:fixed;bottom:0;left:0;right:0;background:var(--dark2);border-top:1px solid var(--dborder);padding:14px 24px;display:flex;justify-content:space-between;align-items:center;}
+.step-indicator{font-family:'DM Mono',monospace;font-size:10px;color:#7a7a8a;letter-spacing:1px;}
+.btn-row{display:flex;gap:10px;}
+.prev-btn{padding:9px 20px;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;background:none;border:1px solid var(--dborder);color:#7a7a8a;cursor:pointer;border-radius:2px;transition:all .15s;}
+.prev-btn:hover{border-color:#f0ede8;color:#f0ede8;}
+.next-btn{padding:9px 20px;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;background:var(--green);color:var(--dark);border:none;cursor:pointer;border-radius:2px;transition:all .15s;}
+.next-btn:hover{background:#d4ff60;}
+
+.goal-card{background:var(--dark3);border:1px solid var(--dborder);border-radius:8px;padding:14px;margin-bottom:10px;}
+.goal-card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+.goal-name{font-size:14px;font-weight:500;}
+.goal-remove{background:none;border:none;color:#7a7a8a;cursor:pointer;font-size:16px;transition:color .15s;}
+.goal-remove:hover{color:#f04e4e;}
+.add-goal-btn{padding:8px 16px;background:none;border:1px solid var(--dborder);color:#7a7a8a;border-radius:5px;cursor:pointer;font-size:12px;font-family:'DM Sans',sans-serif;transition:all .15s;margin-top:8px;}
+.add-goal-btn:hover{border-color:var(--green);color:var(--green);}
+
+.preview-live{background:var(--dark2);border:1px solid var(--dborder);border-radius:8px;padding:16px;margin-top:16px;}
+.preview-live-label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:#7a7a8a;margin-bottom:12px;}
+.stat-row-live{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px;}
+.stat-live{background:var(--dark3);border:1px solid var(--dborder);border-radius:6px;padding:10px;}
+.stat-live-label{font-size:9px;text-transform:uppercase;letter-spacing:1px;color:#7a7a8a;margin-bottom:3px;}
+.stat-live-val{font-family:'DM Serif Display',serif;font-size:20px;}
+
+/* Download page */
+#download-page{display:none;min-height:100vh;background:var(--dark);display:flex;align-items:center;justify-content:center;padding:24px;}
+.download-card{background:var(--dark2);border:1px solid var(--dborder);border-radius:12px;padding:40px;max-width:500px;width:100%;text-align:center;}
+.download-icon{width:64px;height:64px;background:rgba(200,240,78,.1);border:1px solid rgba(200,240,78,.3);border-radius:12px;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-family:'DM Mono',monospace;font-size:20px;color:var(--green);}
+.download-title{font-family:'DM Serif Display',serif;font-size:26px;color:#f0ede8;margin-bottom:8px;}
+.download-sub{font-size:13px;color:#7a7a8a;margin-bottom:28px;line-height:1.6;}
+.download-btn{width:100%;padding:14px;background:var(--green);color:var(--dark);font-family:'DM Mono',monospace;font-size:11px;letter-spacing:2px;text-transform:uppercase;border:none;cursor:pointer;border-radius:6px;transition:all .15s;margin-bottom:10px;}
+.download-btn:hover{background:#d4ff60;}
+.download-note{font-size:11px;color:#7a7a8a;font-family:'DM Mono',monospace;letter-spacing:.5px;}
+
+@media(max-width:640px){
+  .features-grid{grid-template-columns:1fr;}
+  .preview-stats{grid-template-columns:1fr 1fr;}
+  .field-row,.field-row3{grid-template-columns:1fr;}
+  .stat-row-live{grid-template-columns:1fr 1fr;}
+}
+</style>
+</head>
+<body>
+
+<!-- PRODUCT PAGE -->
+<div id="product-page">
+<div class="product-page">
+
+  <nav class="product-nav">
+    <a href="/index.html" class="nav-logo">Headlines<em>Report</em></a>
+    <a href="/index.html" class="nav-back">Back to home</a>
+  </nav>
+
+  <div class="hero-section">
+    <div class="hero-kicker">Digital product</div>
+    <h1 class="hero-title">Fresh Start<br/><em>Financial Plan</em></h1>
+    <p class="hero-sub">A complete personal financial recovery toolkit. Fill in your numbers, download your personalized plan as a private local file, and track your progress every payday. No subscriptions, no cloud, no data sharing.</p>
+    <div class="price-row">
+      <div class="price">$5</div>
+      <div class="price-note">One-time payment<br/>Instant download</div>
+    </div>
+    <button class="buy-btn" onclick="startBuilder()">Build my plan</button>
+    <div class="buy-note">Secure checkout via Stripe · Instant access · No account required</div>
+  </div>
+
+  <div class="features-section">
+    <div class="section-label">What you get</div>
+    <div class="features-grid">
+      <div class="feature">
+        <div class="feature-num">01</div>
+        <div class="feature-title">Interactive budget tracker</div>
+        <div class="feature-desc">Log income, fixed expenses, and variable spending. See exactly where every dollar goes every payday.</div>
+      </div>
+      <div class="feature">
+        <div class="feature-num">02</div>
+        <div class="feature-title">Savings goal dashboard</div>
+        <div class="feature-desc">Set targets for emergency fund, home down payment, retirement, and more. Visual progress bars update in real time.</div>
+      </div>
+      <div class="feature">
+        <div class="feature-num">03</div>
+        <div class="feature-title">Credit score roadmap</div>
+        <div class="feature-desc">Track your score monthly against clear milestones. Exact steps from where you are to where you need to be.</div>
+      </div>
+      <div class="feature">
+        <div class="feature-num">04</div>
+        <div class="feature-title">5-year recovery timeline</div>
+        <div class="feature-desc">A month-by-month roadmap built around your specific goals, income, and starting point.</div>
+      </div>
+      <div class="feature">
+        <div class="feature-num">05</div>
+        <div class="feature-title">Side income tracker</div>
+        <div class="feature-desc">Log freelance, gig, or business revenue. See how extra income changes your entire timeline.</div>
+      </div>
+      <div class="feature">
+        <div class="feature-num">06</div>
+        <div class="feature-title">Completely private</div>
+        <div class="feature-desc">Your plan lives on your device as a local HTML file. No cloud sync, no login, no one can see your data.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="preview-section">
+    <div class="section-label">Preview</div>
+    <div class="app-preview">
+      <div class="preview-bar">
+        <div class="preview-dot" style="background:#f04e4e;"></div>
+        <div class="preview-dot" style="background:#f0904e;"></div>
+        <div class="preview-dot" style="background:#c8f04e;"></div>
+        <span style="font-family:'DM Mono',monospace;font-size:10px;color:#7a7a8a;margin-left:8px;">Fresh Start Financial Plan</span>
+      </div>
+      <div class="preview-content">
+        <div class="preview-tabs">
+          <div class="preview-tab active">Dashboard</div>
+          <div class="preview-tab">Budget</div>
+          <div class="preview-tab">Monthly Log</div>
+          <div class="preview-tab">Credit</div>
+          <div class="preview-tab">Side Income</div>
+          <div class="preview-tab">5-Year Plan</div>
+          <div class="preview-tab">Check-In</div>
+        </div>
+        <div class="preview-stats">
+          <div class="preview-stat"><div class="psl">Total Saved</div><div class="psv" style="color:var(--green);">$8,400</div></div>
+          <div class="preview-stat"><div class="psl">Goal Progress</div><div class="psv" style="color:var(--teal);">84%</div></div>
+          <div class="preview-stat"><div class="psl">Side Income</div><div class="psv" style="color:var(--orange);">$1,240</div></div>
+          <div class="preview-stat"><div class="psl">Credit Score</div><div class="psv" style="color:#a78bfa;">672</div></div>
+        </div>
+        <div class="preview-bar2">
+          <div class="pb-label">$10,000 Savings Goal</div>
+          <div class="pb-track"><div class="pb-fill" style="width:84%;background:linear-gradient(90deg,var(--green),var(--teal));"></div></div>
+          <div style="display:flex;justify-content:space-between;font-size:11px;color:#7a7a8a;margin-top:4px;"><span>$8,400 saved</span><span>$1,600 to go</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="includes-section">
+    <div class="section-label">Everything included</div>
+    <div class="includes-list">
+      <div class="include-item">
+        <div class="include-check">✓</div>
+        <div class="include-body"><h4>Personalized HTML file</h4><p>Built from your inputs. Opens in any browser. Works offline. Saves to your device.</p></div>
+      </div>
+      <div class="include-item">
+        <div class="include-check">✓</div>
+        <div class="include-body"><h4>Getting Started guide (PDF)</h4><p>Step-by-step instructions for using every tab, setting up your budget, and getting the most out of the tool.</p></div>
+      </div>
+      <div class="include-item">
+        <div class="include-check">✓</div>
+        <div class="include-body"><h4>Credit rebuilding playbook</h4><p>The exact sequence of steps, card recommendations, and timeline to rebuild your credit score from any starting point.</p></div>
+      </div>
+      <div class="include-item">
+        <div class="include-check">✓</div>
+        <div class="include-body"><h4>Lifetime access</h4><p>One payment. Keep the file forever. Update your numbers any time. No expiration.</p></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="faq-section">
+    <div class="section-label">Questions</div>
+    <div class="faq-item">
+      <div class="faq-q">How does the download work?</div>
+      <div class="faq-a">After payment, you fill in your details in a simple form. We generate a personalized HTML file and you download it directly to your device. Open it in any browser, anytime, with no internet required.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">Is my financial information private?</div>
+      <div class="faq-a">Completely. Your numbers never leave your device. The file is generated locally in your browser. Nothing is stored on our servers. No one can access your data.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">Who is this for?</div>
+      <div class="faq-a">Anyone rebuilding after bankruptcy, debt, or a financial setback. Also works well for anyone starting fresh, managing a tight budget, or building toward a major goal like a home or emergency fund.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">What if I need to update my numbers?</div>
+      <div class="faq-a">You can update everything directly in the downloaded file. All inputs are editable and calculations update automatically. Think of it as a living document that evolves with your situation.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">Do I need to create an account?</div>
+      <div class="faq-a">No account needed. Pay, fill in your details, download your file. That's it.</div>
+    </div>
+  </div>
+
+  <div class="bottom-cta">
+    <h2>Your fresh start<br/>starts today.</h2>
+    <p>One payment. Your plan, on your device, forever.</p>
+    <button class="buy-btn" onclick="startBuilder()" style="background:var(--green);color:var(--dark);border:none;">Build my plan for $5</button>
+  </div>
+
+</div>
+</div>
+
+<!-- BUILDER PAGE -->
+<div id="builder-page">
+  <div class="builder-nav">
+    <div class="builder-logo">Fresh <em>Start</em></div>
+    <button class="back-btn" onclick="showProduct()">Back to product page</button>
+  </div>
+  <div class="builder-steps" id="builder-steps">
+    <button class="bstep active" data-step="0">Basics</button>
+    <button class="bstep" data-step="1">Income</button>
+    <button class="bstep" data-step="2">Expenses</button>
+    <button class="bstep" data-step="3">Goals</button>
+    <button class="bstep" data-step="4">Credit</button>
+    <button class="bstep" data-step="5">Preview</button>
+  </div>
+
+  <div class="builder-content">
+
+    <!-- Step 0: Basics -->
+    <div class="step-panel active" id="step-0">
+      <div class="step-title">Tell us about yourself</div>
+      <div class="step-sub">This personalizes your plan. Nothing is sent anywhere.</div>
+      <div class="field-group">
+        <label class="field-label">Your first name</label>
+        <input class="field-input" type="text" id="b-name" placeholder="e.g. Marcus"/>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Your situation (choose the closest)</label>
+        <select class="field-input" id="b-situation">
+          <option value="bankruptcy">Rebuilding after bankruptcy</option>
+          <option value="debt">Paying off significant debt</option>
+          <option value="fresh">Starting fresh with limited savings</option>
+          <option value="setback">Recovering from a financial setback</option>
+          <option value="building">Building toward financial independence</option>
+        </select>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Plan start date</label>
+        <input class="field-input" type="text" id="b-date" placeholder="e.g. March 2026"/>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Your main financial goal in one sentence</label>
+        <input class="field-input" type="text" id="b-goal-one" placeholder="e.g. Buy a home by 2029 and rebuild my credit to 700+"/>
+      </div>
+    </div>
+
+    <!-- Step 1: Income -->
+    <div class="step-panel" id="step-1">
+      <div class="step-title">Your income</div>
+      <div class="step-sub">Enter monthly amounts. If you're paid biweekly, multiply one paycheck by 2.17.</div>
+      <div class="field-row">
+        <div class="field-group">
+          <label class="field-label">Primary job (monthly take-home)</label>
+          <div class="dollar-wrap"><input class="field-input" type="number" id="b-income1" placeholder="3500"/></div>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Second job / part-time (if any)</label>
+          <div class="dollar-wrap"><input class="field-input" type="number" id="b-income2" placeholder="0"/></div>
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field-group">
+          <label class="field-label">Side income / freelance (avg monthly)</label>
+          <div class="dollar-wrap"><input class="field-input" type="number" id="b-side" placeholder="0"/></div>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Other income (benefits, support, etc.)</label>
+          <div class="dollar-wrap"><input class="field-input" type="number" id="b-other" placeholder="0"/></div>
+        </div>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Pay frequency</label>
+        <select class="field-input" id="b-payfreq">
+          <option>Biweekly (every 2 weeks)</option>
+          <option>Semimonthly (twice a month)</option>
+          <option>Monthly</option>
+          <option>Weekly</option>
+        </select>
+      </div>
+      <div class="preview-live" id="income-preview">
+        <div class="preview-live-label">Income summary</div>
+        <div class="stat-row-live">
+          <div class="stat-live"><div class="stat-live-label">Monthly income</div><div class="stat-live-val" id="prev-income" style="color:var(--green);">$0</div></div>
+          <div class="stat-live"><div class="stat-live-label">Annual income</div><div class="stat-live-val" id="prev-annual" style="color:var(--teal);">$0</div></div>
+          <div class="stat-live"><div class="stat-live-label">Per paycheck</div><div class="stat-live-val" id="prev-paycheck" style="color:var(--orange);">$0</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 2: Expenses -->
+    <div class="step-panel" id="step-2">
+      <div class="step-title">Monthly expenses</div>
+      <div class="step-sub">Estimate if you're not sure. You can update these in your downloaded file.</div>
+      <div class="field-row">
+        <div class="field-group">
+          <label class="field-label">Rent / mortgage</label>
+          <div class="dollar-wrap"><input class="field-input" type="number" id="b-rent" placeholder="1200"/></div>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Car payment</label>
+          <div class="dollar-wrap"><input class="field-input" type="number" id="b-car" placeholder="0"/></div>
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field-group">
+          <label class="field-label">Utilities (electric, gas, water)</label>
+          <div class="dollar-wrap"><input class="field-input" type="number" id="b-util" placeholder="200"/></div>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Phone</label>
+          <div class="dollar-wrap"><input class="field-input" type="number" id="b-phone" placeholder="80"/></div>
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field-group">
+          <label class="field-label">Groceries</label>
+          <div class="dollar-wrap"><input class="field-input" type="number" id="b-food" placeholder="400"/></div>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Transportation / gas</label>
+          <div class="dollar-wrap"><input class="field-input" type="number" id="b-gas" placeholder="150"/></div>
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field-group">
+          <label class="field-label">Insurance (health, auto, etc.)</label>
+          <div class="dollar-wrap"><input class="field-input" type="number" id="b-ins" placeholder="200"/></div>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Subscriptions and entertainment</label>
+          <div class="dollar-wrap"><input class="field-input" type="number" id="b-subs" placeholder="100"/></div>
+        </div>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Debt payments (credit cards, loans, IRS, etc.)</label>
+        <div class="dollar-wrap"><input class="field-input" type="number" id="b-debt" placeholder="0"/></div>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Other monthly expenses</label>
+        <div class="dollar-wrap"><input class="field-input" type="number" id="b-misc" placeholder="0"/></div>
+      </div>
+      <div class="preview-live">
+        <div class="preview-live-label">Budget snapshot</div>
+        <div class="stat-row-live">
+          <div class="stat-live"><div class="stat-live-label">Total expenses</div><div class="stat-live-val" id="prev-exp" style="color:var(--orange);">$0</div></div>
+          <div class="stat-live"><div class="stat-live-label">Monthly left over</div><div class="stat-live-val" id="prev-left">$0</div></div>
+          <div class="stat-live"><div class="stat-live-label">Savings rate</div><div class="stat-live-val" id="prev-rate" style="color:var(--green);">0%</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 3: Goals -->
+    <div class="step-panel" id="step-3">
+      <div class="step-title">Your savings goals</div>
+      <div class="step-sub">Set targets for each bucket. Add as many as you need.</div>
+      <div id="goals-list"></div>
+      <button class="add-goal-btn" onclick="addGoal()">+ Add another goal</button>
+    </div>
+
+    <!-- Step 4: Credit -->
+    <div class="step-panel" id="step-4">
+      <div class="step-title">Credit and debt</div>
+      <div class="step-sub">This powers your credit roadmap and payoff timeline.</div>
+      <div class="field-row">
+        <div class="field-group">
+          <label class="field-label">Current credit score (if known)</label>
+          <input class="field-input" type="number" id="b-score" placeholder="e.g. 540"/>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Target credit score</label>
+          <input class="field-input" type="number" id="b-score-target" placeholder="e.g. 700"/>
+        </div>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Total debt owed (all sources)</label>
+        <div class="dollar-wrap"><input class="field-input" type="number" id="b-total-debt" placeholder="0"/></div>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Biggest debt or financial challenge</label>
+        <input class="field-input" type="text" id="b-big-debt" placeholder="e.g. IRS balance of $5,500"/>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Do you have any open credit accounts?</label>
+        <select class="field-input" id="b-credit-status">
+          <option value="none">No credit accounts (starting from zero)</option>
+          <option value="secured">One secured card</option>
+          <option value="some">Some open accounts</option>
+          <option value="good">Good standing accounts</option>
+        </select>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Target date to reach your credit goal</label>
+        <input class="field-input" type="text" id="b-credit-date" placeholder="e.g. January 2028"/>
+      </div>
+    </div>
+
+    <!-- Step 5: Preview and Download -->
+    <div class="step-panel" id="step-5">
+      <div class="step-title">Your plan is ready</div>
+      <div class="step-sub">Review your summary below. Click "Get my plan" to pay $5 and download your personalized file.</div>
+      <div class="preview-live" id="final-preview" style="margin-bottom:20px;">
+        <div class="preview-live-label">Plan summary</div>
+        <div id="summary-content" style="font-size:13px;line-height:1.8;color:#f0ede8;"></div>
+      </div>
+      <div style="background:rgba(200,240,78,.05);border:1px solid rgba(200,240,78,.2);border-radius:8px;padding:16px;margin-bottom:20px;">
+        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--green);margin-bottom:8px;">What you get for $5</div>
+        <div style="font-size:12px;color:#7a7a8a;line-height:1.8;">
+          Your personalized Fresh Start Financial Plan (HTML file, works offline)<br/>
+          Getting Started guide with instructions for every section<br/>
+          Credit rebuilding playbook with exact steps and card recommendations<br/>
+          Lifetime access, no subscriptions
+        </div>
+      </div>
+      <button class="next-btn" style="width:100%;padding:14px;font-size:11px;" onclick="doCheckout()">Get my plan for $5</button>
+      <div style="text-align:center;margin-top:10px;font-family:'DM Mono',monospace;font-size:9px;color:#7a7a8a;letter-spacing:.5px;">Secure checkout via Stripe · Instant download after payment</div>
+    </div>
+
+  </div>
+
+  <div class="builder-footer">
+    <div class="step-indicator" id="step-indicator">Step 1 of 6</div>
+    <div class="btn-row">
+      <button class="prev-btn" id="prev-btn" onclick="prevStep()" style="display:none;">Back</button>
+      <button class="next-btn" id="next-btn" onclick="nextStep()">Continue</button>
+    </div>
+  </div>
+</div>
+
+<script>
+let currentStep = 0;
+const TOTAL_STEPS = 6;
+
+const DEFAULT_GOALS = [
+  { name: 'Emergency Fund', target: 6000, saved: 0, color: '#4ef0c8' },
+  { name: 'Home Down Payment', target: 20000, saved: 0, color: '#c8f04e' },
+  { name: 'Retirement', target: 500000, saved: 0, color: '#a78bfa' },
+];
+let goals = DEFAULT_GOALS.map(g => ({...g}));
+
+function fmt(n) { return '$' + Math.round(n).toLocaleString(); }
+function n(id) { return parseFloat(document.getElementById(id)?.value) || 0; }
+function v(id) { return document.getElementById(id)?.value || ''; }
+
+function showProduct() {
+  document.getElementById('product-page').style.display = '';
+  document.getElementById('builder-page').style.display = 'none';
+}
+
+function startBuilder() {
+  document.getElementById('product-page').style.display = 'none';
+  document.getElementById('builder-page').style.display = 'block';
+  renderGoals();
+  updatePreviews();
+  document.getElementById('b-date').value = new Date().toLocaleDateString('en-US', {month:'long', year:'numeric'});
+}
+
+function goToStep(step) {
+  document.querySelectorAll('.step-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById(`step-${step}`).classList.add('active');
+  document.querySelectorAll('.bstep').forEach((b,i) => {
+    b.classList.toggle('active', i === step);
+    b.classList.toggle('done', i < step);
+  });
+  document.getElementById('step-indicator').textContent = `Step ${step+1} of ${TOTAL_STEPS}`;
+  document.getElementById('prev-btn').style.display = step === 0 ? 'none' : '';
+  const nextBtn = document.getElementById('next-btn');
+  nextBtn.textContent = step === TOTAL_STEPS - 1 ? 'Get my plan' : 'Continue';
+  if (step === TOTAL_STEPS - 1) {
+    nextBtn.onclick = doCheckout;
+    renderSummary();
+  } else {
+    nextBtn.onclick = nextStep;
+  }
+  currentStep = step;
+  updatePreviews();
+}
+
+function nextStep() { if (currentStep < TOTAL_STEPS - 1) goToStep(currentStep + 1); }
+function prevStep() { if (currentStep > 0) goToStep(currentStep - 1); }
+
+document.querySelectorAll('.bstep').forEach(b => {
+  b.addEventListener('click', () => goToStep(parseInt(b.dataset.step)));
+});
+
+function updatePreviews() {
+  const inc = n('b-income1') + n('b-income2') + n('b-side') + n('b-other');
+  const freq = v('b-payfreq');
+  const perCheck = freq.includes('Bi') ? inc/2.17 : freq.includes('Semi') ? inc/2 : freq.includes('Week') ? inc/4.33 : inc;
+  document.getElementById('prev-income').textContent = fmt(inc);
+  document.getElementById('prev-annual').textContent = fmt(inc * 12);
+  document.getElementById('prev-paycheck').textContent = fmt(perCheck);
+
+  const exp = n('b-rent')+n('b-car')+n('b-util')+n('b-phone')+n('b-food')+n('b-gas')+n('b-ins')+n('b-subs')+n('b-debt')+n('b-misc');
+  const left = inc - exp;
+  const rate = inc > 0 ? Math.round((left/inc)*100) : 0;
+  document.getElementById('prev-exp').textContent = fmt(exp);
+  const leftEl = document.getElementById('prev-left');
+  leftEl.textContent = fmt(left);
+  leftEl.style.color = left >= 0 ? 'var(--green)' : '#f04e4e';
+  document.getElementById('prev-rate').textContent = rate + '%';
+}
+
+['b-income1','b-income2','b-side','b-other','b-rent','b-car','b-util','b-phone','b-food','b-gas','b-ins','b-subs','b-debt','b-misc'].forEach(id => {
+  document.getElementById(id)?.addEventListener('input', updatePreviews);
+});
+
+function renderGoals() {
+  const list = document.getElementById('goals-list');
+  list.innerHTML = goals.map((g,i) => `
+    <div class="goal-card">
+      <div class="goal-card-header">
+        <div class="goal-name">${g.name}</div>
+        <button class="goal-remove" onclick="removeGoal(${i})">x</button>
+      </div>
+      <div class="field-row">
+        <div class="field-group" style="margin-bottom:0;">
+          <label class="field-label">Goal name</label>
+          <input class="field-input" type="text" value="${g.name}" onchange="goals[${i}].name=this.value;renderGoals()"/>
+        </div>
+        <div class="field-group" style="margin-bottom:0;">
+          <label class="field-label">Target amount</label>
+          <div class="dollar-wrap"><input class="field-input" type="number" value="${g.target}" onchange="goals[${i}].target=parseFloat(this.value)||0"/></div>
+        </div>
+      </div>
+      <div class="field-row" style="margin-top:10px;">
+        <div class="field-group" style="margin-bottom:0;">
+          <label class="field-label">Already saved</label>
+          <div class="dollar-wrap"><input class="field-input" type="number" value="${g.saved}" onchange="goals[${i}].saved=parseFloat(this.value)||0"/></div>
+        </div>
+        <div class="field-group" style="margin-bottom:0;">
+          <label class="field-label">Target date</label>
+          <input class="field-input" type="text" placeholder="e.g. Dec 2027" value="${g.date||''}" onchange="goals[${i}].date=this.value"/>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+function addGoal() {
+  goals.push({ name: 'New Goal', target: 1000, saved: 0, color: '#f0904e' });
+  renderGoals();
+}
+
+function removeGoal(i) {
+  goals.splice(i,1);
+  renderGoals();
+}
+
+function renderSummary() {
+  const name = v('b-name') || 'Your';
+  const inc = n('b-income1')+n('b-income2')+n('b-side')+n('b-other');
+  const exp = n('b-rent')+n('b-car')+n('b-util')+n('b-phone')+n('b-food')+n('b-gas')+n('b-ins')+n('b-subs')+n('b-debt')+n('b-misc');
+  const left = inc - exp;
+  const score = v('b-score') || 'not entered';
+  const scoreTarget = v('b-score-target') || '700';
+  const situation = document.getElementById('b-situation')?.selectedOptions[0]?.text || '';
+
+  document.getElementById('summary-content').innerHTML = `
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;">
+      <div style="background:var(--dark3);border-radius:6px;padding:10px;"><div style="font-size:9px;text-transform:uppercase;letter-spacing:1px;color:#7a7a8a;">Name</div><div style="font-size:15px;font-weight:500;">${name}</div></div>
+      <div style="background:var(--dark3);border-radius:6px;padding:10px;"><div style="font-size:9px;text-transform:uppercase;letter-spacing:1px;color:#7a7a8a;">Situation</div><div style="font-size:13px;">${situation}</div></div>
+      <div style="background:var(--dark3);border-radius:6px;padding:10px;"><div style="font-size:9px;text-transform:uppercase;letter-spacing:1px;color:#7a7a8a;">Monthly income</div><div style="font-size:15px;color:var(--green);">${fmt(inc)}</div></div>
+      <div style="background:var(--dark3);border-radius:6px;padding:10px;"><div style="font-size:9px;text-transform:uppercase;letter-spacing:1px;color:#7a7a8a;">Monthly surplus</div><div style="font-size:15px;color:${left>=0?'var(--green)':'#f04e4e'};">${fmt(left)}</div></div>
+      <div style="background:var(--dark3);border-radius:6px;padding:10px;"><div style="font-size:9px;text-transform:uppercase;letter-spacing:1px;color:#7a7a8a;">Credit score</div><div style="font-size:15px;color:var(--orange);">${score}</div></div>
+      <div style="background:var(--dark3);border-radius:6px;padding:10px;"><div style="font-size:9px;text-transform:uppercase;letter-spacing:1px;color:#7a7a8a;">Goals set</div><div style="font-size:15px;color:var(--teal);">${goals.length}</div></div>
+    </div>
+    <div style="font-size:12px;color:#7a7a8a;">Goal: ${v('b-goal-one')||'Not entered'}</div>`;
+}
+
+async function doCheckout() {
+  try {
+    const res = await fetch('/api/stripe?action=checkout', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        plan: 'fresh_start',
+        email: '',
+        userId: 'fresh-start-' + Date.now(),
+        product: 'fresh_start'
+      })
+    });
+    const data = await res.json();
+    if (data.url) {
+      sessionStorage.setItem('fresh_start_data', JSON.stringify(collectData()));
+      try { openLink(data.url); } catch(e) { window.location.href = data.url; }
+    }
+  } catch(e) {
+    // For demo, generate download directly
+    generateAndDownload();
+  }
+}
+
+function collectData() {
+  return {
+    name: v('b-name'),
+    situation: document.getElementById('b-situation')?.selectedOptions[0]?.text,
+    date: v('b-date'),
+    goalOne: v('b-goal-one'),
+    income: { primary: n('b-income1'), secondary: n('b-income2'), side: n('b-side'), other: n('b-other'), freq: v('b-payfreq') },
+    expenses: { rent: n('b-rent'), car: n('b-car'), util: n('b-util'), phone: n('b-phone'), food: n('b-food'), gas: n('b-gas'), ins: n('b-ins'), subs: n('b-subs'), debt: n('b-debt'), misc: n('b-misc') },
+    goals,
+    credit: { score: v('b-score'), target: v('b-score-target'), totalDebt: n('b-total-debt'), bigDebt: v('b-big-debt'), status: v('b-credit-status'), creditDate: v('b-credit-date') }
+  };
+}
+
+function generateAndDownload() {
+  const d = collectData();
+  const inc = d.income.primary + d.income.secondary + d.income.side + d.income.other;
+  const exp = Object.values(d.expenses).reduce((a,b)=>a+b,0);
+  const left = inc - exp;
+  const rate = inc > 0 ? Math.round((left/inc)*100) : 0;
+
+  const goalsHTML = d.goals.map(g => {
+    const pct = g.target > 0 ? Math.min(Math.round((g.saved/g.target)*100),100) : 0;
+    return `<div class="pr"><div class="ph"><span>${g.name}</span><span class="mu">${fmt(g.saved)} / ${fmt(g.target)}${g.date?' · '+g.date:''}</span></div><div class="pt2"><div class="pf" style="width:${pct}%;background:${g.color||'var(--accent)'};"></div></div></div>`;
+  }).join('');
+
+  const nextMovesHTML = generateNextMoves(d);
+  const creditHTML = generateCreditSection(d);
+
+  const html = `<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Fresh Start Financial Plan, ${d.name}</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+:root{--bg:#0f0f11;--surface:#17171a;--surface2:#1e1e23;--border:#2a2a32;--accent:#c8f04e;--accent2:#4ef0c8;--accent3:#f0904e;--text:#f0ede8;--muted:#7a7a8a;--danger:#f04e4e;--purple:#a78bfa;--pink:#f472b6;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;line-height:1.6;min-height:100vh;}
+nav{display:flex;align-items:center;justify-content:space-between;padding:0 24px;height:52px;border-bottom:1px solid var(--border);position:sticky;top:0;background:rgba(15,15,17,.97);z-index:100;}
+.logo{font-family:'DM Serif Display',serif;font-size:16px;}
+.logo em{color:var(--accent);font-style:normal;}
+.nav-tabs{display:flex;gap:3px;overflow-x:auto;}
+.nav-tab{padding:5px 11px;border-radius:6px;cursor:pointer;color:var(--muted);font-size:12px;font-weight:500;border:none;background:transparent;transition:all .18s;white-space:nowrap;font-family:'DM Sans',sans-serif;}
+.nav-tab:hover{color:var(--text);background:var(--surface2);}
+.nav-tab.active{color:#0f0f11;background:var(--accent);}
+.page{display:none;padding:24px;max-width:1000px;margin:0 auto;}
+.page.active{display:block;}
+.pt{font-family:'DM Serif Display',serif;font-size:24px;letter-spacing:-.5px;margin-bottom:4px;}
+.ps{color:var(--muted);font-size:13px;margin-bottom:22px;}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px 18px;}
+.cl{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1.2px;color:var(--muted);margin-bottom:4px;}
+.cv{font-family:'DM Serif Display',serif;font-size:26px;letter-spacing:-1px;}
+.cs{font-size:12px;color:var(--muted);margin-top:2px;}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px;}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:14px;}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;}
+.pr{margin-bottom:11px;}
+.ph{display:flex;justify-content:space-between;margin-bottom:4px;font-size:13px;}
+.pt2{height:6px;background:var(--surface2);border-radius:99px;overflow:hidden;}
+.pf{height:100%;border-radius:99px;transition:width .7s;}
+.fl{display:block;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:5px;margin-top:10px;}
+.fl:first-child{margin-top:0;}
+input[type=number],input[type=text],select,textarea{width:100%;background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:6px;padding:7px 10px;font-size:13px;font-family:'DM Sans',sans-serif;transition:border-color .15s;}
+input:focus,select:focus{outline:none;border-color:var(--accent);}
+.ii{width:70px;background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:5px;padding:3px 6px;font-size:13px;text-align:right;font-family:'DM Sans',sans-serif;}
+.btn{background:var(--accent);color:#0f0f11;border:none;border-radius:6px;padding:7px 16px;font-size:13px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .14s;}
+.btn:hover{background:#d4ff60;}
+.brow{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid rgba(42,42,50,.5);}
+.brow:last-child{border:none;}
+.brow.tot{font-weight:600;font-size:14px;border-top:2px solid var(--border);border-bottom:none;padding-top:9px;margin-top:4px;}
+.alert{border-radius:8px;padding:10px 12px;font-size:13px;margin-bottom:11px;line-height:1.6;}
+.ag{background:rgba(200,240,78,.07);border:1px solid rgba(200,240,78,.22);color:var(--accent);}
+.ao{background:rgba(240,144,78,.07);border:1px solid rgba(240,144,78,.22);color:var(--accent3);}
+.at{background:rgba(78,240,200,.07);border:1px solid rgba(78,240,200,.22);color:var(--accent2);}
+.ci{display:flex;align-items:flex-start;gap:11px;padding:11px 0;border-bottom:1px solid var(--border);}
+.ci:last-child{border:none;}
+.cin{font-family:'DM Serif Display',serif;font-size:18px;color:var(--accent);width:24px;flex-shrink:0;}
+.cit{font-weight:600;font-size:13px;margin-bottom:2px;}
+.cib{font-size:13px;color:var(--muted);line-height:1.6;}
+.sr{display:flex;align-items:center;gap:9px;padding:8px 0;border-bottom:1px solid var(--border);}
+.sr:last-child{border:none;}
+.sdot{width:6px;height:6px;border-radius:50%;background:var(--accent);flex-shrink:0;}
+.sdate{font-size:11px;color:var(--muted);width:68px;flex-shrink:0;}
+.sdesc{flex:1;font-size:13px;}
+.samt{font-weight:600;color:var(--accent);flex-shrink:0;}
+.sdel{background:none;border:none;color:var(--muted);cursor:pointer;font-size:14px;padding:2px 4px;}
+.sdel:hover{color:var(--danger);}
+.fb{display:flex;justify-content:space-between;align-items:center;}
+.pos{color:var(--accent);}
+.neg{color:var(--danger);}
+.mu{color:var(--muted);}
+.qcard{background:linear-gradient(135deg,rgba(200,240,78,.05),rgba(78,240,200,.03));border:1px solid rgba(200,240,78,.16);border-radius:12px;padding:22px;position:relative;overflow:hidden;}
+.qcard::before{content:'"';position:absolute;top:-14px;left:14px;font-family:'DM Serif Display',serif;font-size:100px;color:rgba(200,240,78,.05);line-height:1;}
+.qt{font-family:'DM Serif Display',serif;font-size:17px;line-height:1.55;margin-bottom:8px;position:relative;}
+.qa{font-size:12px;color:var(--muted);}
+.mc{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:10px 7px;cursor:pointer;transition:all .18s;text-align:center;}
+.mc:hover{border-color:var(--accent);}
+.mc.logged{border-color:rgba(200,240,78,.32);background:rgba(200,240,78,.03);}
+.mgrid{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;}
+.mood-btn{padding:6px 14px;border-radius:7px;border:1px solid var(--border);background:var(--surface2);color:var(--muted);cursor:pointer;font-size:14px;transition:all .14s;font-family:'DM Sans',sans-serif;}
+.mood-btn:hover,.mood-btn.sel{border-color:var(--accent);background:rgba(200,240,78,.09);color:var(--text);}
+.check-item{display:flex;align-items:center;gap:11px;padding:10px 0;border-bottom:1px solid var(--border);cursor:pointer;}
+.check-item:last-child{border:none;}
+.chk{width:18px;height:18px;border-radius:4px;border:1.5px solid var(--border);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#0f0f11;transition:all .15s;}
+@media(max-width:700px){.g4{grid-template-columns:1fr 1fr;}.g3,.g2{grid-template-columns:1fr;}.mgrid{grid-template-columns:repeat(3,1fr);}nav{padding:0 12px;}.page{padding:14px 10px;}.nav-tab{padding:4px 8px;font-size:11px;}}
+</style></head><body>
+<nav>
+  <div class="logo">Fresh <em>Start</em> <span style="font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;">${d.name}'s Plan</span></div>
+  <div class="nav-tabs" id="nav-tabs">
+    <button class="nav-tab active" data-page="dashboard">Dashboard</button>
+    <button class="nav-tab" data-page="budget">Budget</button>
+    <button class="nav-tab" data-page="monthly">Monthly Log</button>
+    <button class="nav-tab" data-page="credit">Credit</button>
+    <button class="nav-tab" data-page="income">Side Income</button>
+    <button class="nav-tab" data-page="roadmap">5-Year Plan</button>
+    <button class="nav-tab" data-page="checkin">Check-In</button>
+  </div>
+</nav>
+
+<!-- DASHBOARD -->
+<div id="page-dashboard" class="page active">
+  <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.2px;color:var(--accent);margin-bottom:3px;">${d.situation.toUpperCase()} RECOVERY PLAN</div>
+  <h1 class="pt">${d.name}'s Fresh Start</h1>
+  <p class="ps">${d.goalOne || 'Your plan starts here. Check in every payday.'}</p>
+  <div class="g4" style="margin-bottom:14px;">
+    <div class="card"><div class="cl">Monthly Income</div><div class="cv pos">${fmt(inc)}</div><div class="cs">${d.income.freq}</div></div>
+    <div class="card"><div class="cl">Monthly Expenses</div><div class="cv" style="color:var(--accent3);">${fmt(exp)}</div><div class="cs">all categories</div></div>
+    <div class="card"><div class="cl">Monthly Surplus</div><div class="cv ${left>=0?'pos':'neg'}">${fmt(left)}</div><div class="cs">${rate}% savings rate</div></div>
+    <div class="card"><div class="cl">Credit Score</div><div class="cv" style="color:var(--purple);" id="d-cr">${d.credit.score||'Not set'}</div><div class="cs" id="d-crs">update in Credit tab</div></div>
+  </div>
+  <div class="card" style="margin-bottom:14px;">
+    <div style="font-weight:600;margin-bottom:12px;">Savings Goals</div>
+    ${goalsHTML}
+  </div>
+  <div class="card">
+    <div style="font-weight:600;margin-bottom:12px;">Your Next Moves</div>
+    ${nextMovesHTML}
+  </div>
+</div>
+
+<!-- BUDGET -->
+<div id="page-budget" class="page">
+  <h1 class="pt">Monthly Budget</h1>
+  <p class="ps">Started ${d.date}. Update your numbers every payday.</p>
+  <div class="g2">
+    <div class="card">
+      <div style="font-weight:600;margin-bottom:12px;">Income</div>
+      ${d.income.primary>0?`<div class="brow"><span>Primary job</span><span class="pos" id="inc1">${fmt(d.income.primary)}</span></div>`:''}
+      ${d.income.secondary>0?`<div class="brow"><span>Second job</span><span class="pos">${fmt(d.income.secondary)}</span></div>`:''}
+      ${d.income.side>0?`<div class="brow"><span>Side income</span><span class="pos">${fmt(d.income.side)}</span></div>`:''}
+      ${d.income.other>0?`<div class="brow"><span>Other</span><span class="pos">${fmt(d.income.other)}</span></div>`:''}
+      <div class="brow tot"><span>Total Monthly</span><span class="pos">${fmt(inc)}</span></div>
+    </div>
+    <div class="card">
+      <div style="font-weight:600;margin-bottom:12px;">Expenses</div>
+      ${d.expenses.rent>0?`<div class="brow"><span>Rent / Mortgage</span><span>${fmt(d.expenses.rent)}</span></div>`:''}
+      ${d.expenses.car>0?`<div class="brow"><span>Car payment</span><span>${fmt(d.expenses.car)}</span></div>`:''}
+      ${d.expenses.util>0?`<div class="brow"><span>Utilities</span><span>${fmt(d.expenses.util)}</span></div>`:''}
+      ${d.expenses.phone>0?`<div class="brow"><span>Phone</span><span>${fmt(d.expenses.phone)}</span></div>`:''}
+      ${d.expenses.food>0?`<div class="brow"><span>Groceries</span><span>${fmt(d.expenses.food)}</span></div>`:''}
+      ${d.expenses.gas>0?`<div class="brow"><span>Transportation</span><span>${fmt(d.expenses.gas)}</span></div>`:''}
+      ${d.expenses.ins>0?`<div class="brow"><span>Insurance</span><span>${fmt(d.expenses.ins)}</span></div>`:''}
+      ${d.expenses.subs>0?`<div class="brow"><span>Subscriptions</span><span>${fmt(d.expenses.subs)}</span></div>`:''}
+      ${d.expenses.debt>0?`<div class="brow"><span>Debt payments</span><span>${fmt(d.expenses.debt)}</span></div>`:''}
+      ${d.expenses.misc>0?`<div class="brow"><span>Other</span><span>${fmt(d.expenses.misc)}</span></div>`:''}
+      <div class="brow tot"><span>Total Monthly</span><span>${fmt(exp)}</span></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="fb" style="margin-bottom:8px;"><span style="font-weight:600;">Net monthly</span><span class="${left>=0?'pos':'neg'}" style="font-family:'DM Serif Display',serif;font-size:22px;">${fmt(left)}</span></div>
+    <div class="pt2" style="height:10px;"><div class="pf" style="width:${Math.min(rate,100)}%;background:${left>=0?'var(--accent)':'var(--danger)'};"></div></div>
+    <div style="font-size:12px;color:var(--muted);margin-top:5px;">${rate}% of income available for savings and goals</div>
+  </div>
+</div>
+
+<!-- MONTHLY LOG -->
+<div id="page-monthly" class="page">
+  <h1 class="pt">Monthly Log</h1>
+  <p class="ps">Track your savings and extra payments each month.</p>
+  <div class="g2">
+    <div class="card">
+      <div style="font-weight:600;margin-bottom:12px;">Log this month</div>
+      <label class="fl" style="margin-top:0;">Month</label>
+      <select id="log-month"><option>January</option><option>February</option><option>March</option><option>April</option><option>May</option><option>June</option><option>July</option><option>August</option><option>September</option><option>October</option><option>November</option><option>December</option></select>
+      <label class="fl">Amount saved ($)</label>
+      <input type="number" id="log-amt" placeholder="0">
+      <label class="fl">Notes (optional)</label>
+      <input type="text" id="log-note" placeholder="e.g. Skipped eating out, saved extra">
+      <div style="display:flex;gap:8px;margin-top:12px;">
+        <button class="btn" id="log-btn">Log it</button>
+      </div>
+    </div>
+    <div class="card">
+      <div style="font-weight:600;margin-bottom:12px;">Year-to-date</div>
+      <div class="brow"><span>Total saved this year</span><span class="pos" id="ytd-total">$0</span></div>
+      <div class="brow"><span>Months logged</span><span id="ytd-months">0</span></div>
+      <div class="brow"><span>Monthly average</span><span id="ytd-avg">$0</span></div>
+    </div>
+  </div>
+  <div class="card" style="margin-top:12px;">
+    <div class="fb" style="margin-bottom:12px;"><div style="font-weight:600;">Log history</div><span class="mu" style="font-size:12px;" id="log-count">0 entries</span></div>
+    <div id="log-list"><div style="color:var(--muted);font-size:13px;">No entries yet. Log your first month above.</div></div>
+  </div>
+</div>
+
+<!-- CREDIT -->
+<div id="page-credit" class="page">
+  <h1 class="pt">Credit Roadmap</h1>
+  <p class="ps">Track your score and follow the exact playbook to hit your target.</p>
+  <div class="g2" style="margin-bottom:14px;">
+    <div class="card">
+      <div style="font-weight:600;margin-bottom:12px;">Your score</div>
+      <div style="font-family:'DM Serif Display',serif;font-size:48px;color:var(--accent3);" id="cr-big">${d.credit.score||'Not set'}</div>
+      <div style="font-size:12px;color:var(--muted);margin-top:4px;" id="cr-rating">Target: ${d.credit.target||'700'}</div>
+      <div style="display:flex;gap:8px;align-items:center;margin-top:12px;">
+        <input type="number" id="cr-in" placeholder="Update score" style="width:120px;">
+        <button class="btn" style="padding:6px 12px;font-size:12px;" id="cr-save">Save</button>
+      </div>
+    </div>
+    <div class="card">
+      <div style="font-weight:600;margin-bottom:12px;">Score milestones</div>
+      <div class="pr"><div class="ph"><span>580 - Secured card / FHA eligible</span><span id="t580" class="mu" style="font-size:11px;">-</span></div><div class="pt2"><div class="pf" id="t580b" style="width:0%;background:var(--accent3);"></div></div></div>
+      <div class="pr"><div class="ph"><span>640 - Better rates and rentals</span><span id="t640" class="mu" style="font-size:11px;">-</span></div><div class="pt2"><div class="pf" id="t640b" style="width:0%;background:#facc15;"></div></div></div>
+      <div class="pr"><div class="ph"><span>700 - Mortgage ready</span><span id="t700" class="mu" style="font-size:11px;">-</span></div><div class="pt2"><div class="pf" id="t700b" style="width:0%;background:var(--accent2);"></div></div></div>
+      <div class="pr" style="margin-bottom:0;"><div class="ph"><span>740 - Excellent rates</span><span id="t740" class="mu" style="font-size:11px;">-</span></div><div class="pt2"><div class="pf" id="t740b" style="width:0%;background:var(--accent);"></div></div></div>
+    </div>
+  </div>
+  ${creditHTML}
+</div>
+
+<!-- SIDE INCOME -->
+<div id="page-income" class="page">
+  <h1 class="pt">Side Income Tracker</h1>
+  <p class="ps">Log every dollar. Watch extra income accelerate your entire plan.</p>
+  <div class="g3" style="margin-bottom:14px;">
+    <div class="card"><div class="cl">Total Revenue</div><div class="cv pos" id="biz-rev">$0</div><div class="cs" id="biz-revs">0 entries</div></div>
+    <div class="card"><div class="cl">This Month</div><div class="cv" id="biz-mo">$0</div><div class="cs" id="biz-mos">0 this month</div></div>
+    <div class="card"><div class="cl">Monthly Average</div><div class="cv" id="biz-avg">$0</div><div class="cs">across active months</div></div>
+  </div>
+  <div class="g2">
+    <div class="card">
+      <div style="font-weight:600;margin-bottom:12px;">Log income</div>
+      <label class="fl" style="margin-top:0;">Date</label><input type="text" id="biz-date" placeholder="e.g. March 15">
+      <label class="fl">Description</label><input type="text" id="biz-desc" placeholder="e.g. Freelance project, weekend gig">
+      <label class="fl">Amount ($)</label><input type="number" id="biz-amt" placeholder="0.00" min="0">
+      <label class="fl">Source</label>
+      <select id="biz-chan"><option>Freelance / Contract</option><option>Gig work</option><option>Sales / Products</option><option>Services</option><option>Online / Digital</option><option>Other</option></select>
+      <div style="display:flex;gap:8px;margin-top:12px;">
+        <button class="btn" id="biz-log-btn">Log it</button>
+        <button class="btn" style="background:transparent;color:var(--text);border:1px solid var(--border);" id="biz-clr-btn">Clear</button>
+      </div>
+    </div>
+    <div class="card">
+      <div style="font-weight:600;margin-bottom:12px;">Revenue allocation</div>
+      <div class="brow"><span>Emergency Fund</span><span style="display:flex;align-items:center;gap:5px;"><input class="ii" type="number" id="ba-ef" value="20"> %</span></div>
+      <div class="brow"><span>Savings Goal</span><span style="display:flex;align-items:center;gap:5px;"><input class="ii" type="number" id="ba-hm" value="30"> %</span></div>
+      <div class="brow"><span>Debt Payoff</span><span style="display:flex;align-items:center;gap:5px;"><input class="ii" type="number" id="ba-irs" value="30"> %</span></div>
+      <div class="brow"><span>Liquid Savings</span><span style="display:flex;align-items:center;gap:5px;"><input class="ii" type="number" id="ba-lq" value="10"> %</span></div>
+      <div class="brow"><span>Reinvest</span><span style="display:flex;align-items:center;gap:5px;"><input class="ii" type="number" id="ba-biz" value="10"> %</span></div>
+      <div class="brow tot"><span>Total</span><span id="ba-tot" class="pos">100%</span></div>
+      <div class="alert ag" id="ba-alert">Allocations add up to 100%. Perfect.</div>
+    </div>
+  </div>
+  <div class="card" style="margin-top:12px;">
+    <div class="fb" style="margin-bottom:12px;"><div style="font-weight:600;">Income history</div><span class="mu" style="font-size:12px;" id="biz-cnt">0 entries</span></div>
+    <div id="sale-list"><div style="color:var(--muted);font-size:13px;padding:6px 0;">No income logged yet.</div></div>
+  </div>
+</div>
+
+<!-- 5-YEAR ROADMAP -->
+<div id="page-roadmap" class="page">
+  <h1 class="pt">5-Year Roadmap</h1>
+  <p class="ps">Your month-by-month path from here to financial stability.</p>
+  <div class="card">
+    <div style="position:relative;padding-left:24px;">
+      <div style="position:absolute;left:9px;top:8px;bottom:8px;width:2px;background:var(--border);"></div>
+      ${generateRoadmap(d, inc, left)}
+    </div>
+  </div>
+</div>
+
+<!-- CHECK-IN -->
+<div id="page-checkin" class="page">
+  <h1 class="pt">Check-In</h1>
+  <p class="ps">Every payday. Five minutes. How are you feeling today?</p>
+  <div class="qcard" style="margin-bottom:14px;">
+    <div class="qt" id="qt-text"></div>
+    <div class="qa" id="qt-auth"></div>
+    <button class="btn" style="margin-top:12px;font-size:12px;padding:5px 12px;" id="qt-next">Next quote</button>
+  </div>
+  <div class="card" style="margin-bottom:14px;">
+    <div style="font-weight:600;margin-bottom:12px;">How do you feel today?</div>
+    <div id="mood-row" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;">
+      <button class="mood-btn" data-mood="stressed">Stressed</button>
+      <button class="mood-btn" data-mood="neutral">Neutral</button>
+      <button class="mood-btn" data-mood="okay">Okay</button>
+      <button class="mood-btn" data-mood="motivated">Motivated</button>
+      <button class="mood-btn" data-mood="fire">On fire</button>
+    </div>
+    <div id="mood-note" style="font-size:13px;color:var(--muted);display:none;padding:10px;background:var(--surface2);border-radius:6px;"></div>
+  </div>
+  <div class="card" style="margin-bottom:14px;">
+    <div style="font-weight:600;margin-bottom:12px;">Payday checklist</div>
+    <div id="checklist">
+      <div class="check-item"><div class="chk"></div><div>Log all income received since last payday</div></div>
+      <div class="check-item"><div class="chk"></div><div>Transfer savings to your savings account</div></div>
+      <div class="check-item"><div class="chk"></div><div>Pay all minimum payments on time</div></div>
+      <div class="check-item"><div class="chk"></div><div>Check credit card balance (keep under 10%)</div></div>
+      <div class="check-item"><div class="chk"></div><div>Log any side income earned</div></div>
+      <div class="check-item"><div class="chk"></div><div>Review budget vs actual spending</div></div>
+      <div class="check-item"><div class="chk"></div><div>Check progress on your main goal</div></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="fb" style="margin-bottom:12px;"><div style="font-weight:600;">Journal</div><button class="btn" style="font-size:11px;padding:4px 10px;" id="j-save-btn">Save entry</button></div>
+    <input type="text" id="j-date" placeholder="Date (optional)" style="margin-bottom:8px;">
+    <textarea id="j-note" placeholder="How is the plan going? What worked? What needs to change?"></textarea>
+    <div id="jlist" style="margin-top:12px;"></div>
+  </div>
+</div>
+
+<script>
+var S={sales:[],log:[],journal:[],qi:0,score:${d.credit.score||0}};
+try{var ls=localStorage.getItem('fresh_start_${d.name.replace(/\s+/g,'_')}');if(ls)S=JSON.parse(ls);}catch(e){}
+function save(){try{localStorage.setItem('fresh_start_${d.name.replace(/\s+/g,'_')}',JSON.stringify(S));}catch(e){}}
+function el(id){return document.getElementById(id);}
+function n(id){return parseFloat(el(id)?.value)||0;}
+function fmt(x){return '$'+Math.round(x).toLocaleString();}
+var MOS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+// NAV
+el('nav-tabs').addEventListener('click',function(e){
+  var tab=e.target.closest('.nav-tab');if(!tab)return;
+  document.querySelectorAll('.nav-tab').forEach(function(t){t.classList.remove('active');});
+  tab.classList.add('active');
+  document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active');});
+  el('page-'+tab.dataset.page).classList.add('active');
+});
+
+// CREDIT SCORE
+function updateCredit(score){
+  if(!score)return;
+  el('cr-big').textContent=score;
+  var milestones=[580,640,700,740];
+  milestones.forEach(function(m){
+    var pct=Math.min(Math.round((score/m)*100),100);
+    var bar=el('t'+m+'b'),lbl=el('t'+m);
+    if(bar)bar.style.width=pct+'%';
+    if(lbl)lbl.textContent=score>=m?'Reached':''+Math.round(((m-score)/m)*100*10)/10+'% away';
+  });
+}
+el('cr-save')&&el('cr-save').addEventListener('click',function(){
+  var s=parseInt(el('cr-in').value);if(!s)return;
+  S.score=s;save();updateCredit(s);el('cr-in').value='';
+});
+if(S.score)updateCredit(S.score);
+
+// MONTHLY LOG
+var logData=S.log||[];
+function renderLog(){
+  var total=0,cnt=0;
+  logData.forEach(function(l){total+=l.amt;cnt++;});
+  var avg=cnt>0?total/cnt:0;
+  el('ytd-total').textContent=fmt(total);
+  el('ytd-months').textContent=cnt;
+  el('ytd-avg').textContent=fmt(avg);
+  el('log-count').textContent=cnt+' entries';
+  if(!logData.length){el('log-list').innerHTML='<div style="color:var(--muted);font-size:13px;">No entries yet.</div>';return;}
+  el('log-list').innerHTML=logData.slice(0,24).map(function(l){
+    return '<div class="sr"><div class="sdot"></div><div class="sdate">'+l.month+'</div><div class="sdesc">'+l.note+'</div><div class="samt">'+fmt(l.amt)+'</div></div>';
+  }).join('');
+}
+el('log-btn')&&el('log-btn').addEventListener('click',function(){
+  var amt=parseFloat(el('log-amt').value);if(!amt)return;
+  logData.unshift({month:el('log-month').value,amt:amt,note:el('log-note').value||'Savings logged',id:Date.now()});
+  S.log=logData;save();renderLog();el('log-amt').value='';el('log-note').value='';
+});
+renderLog();
+
+// SIDE INCOME
+var sales=S.sales||[];
+function renderSales(){
+  var total=0,moTotal=0,moCnt=0,cur=new Date().getMonth();
+  var activeMos={};
+  sales.forEach(function(s){
+    total+=s.amt;
+    var mo=MOS.findIndex(function(m){return s.date&&s.date.indexOf(m)>=0;});
+    if(mo>=0)activeMos[mo]=true;
+    if(mo===cur){moTotal+=s.amt;moCnt++;}
+  });
+  el('biz-rev').textContent=fmt(total);
+  el('biz-revs').textContent=sales.length+' entr'+(sales.length===1?'y':'ies');
+  el('biz-mo').textContent=fmt(moTotal);
+  el('biz-mos').textContent=moCnt+' this month';
+  var mos=Object.keys(activeMos).length||1;
+  el('biz-avg').textContent=fmt(total/mos);
+  el('biz-cnt').textContent=sales.length+' entries';
+  if(!sales.length){el('sale-list').innerHTML='<div style="color:var(--muted);font-size:13px;padding:6px 0;">No income logged yet.</div>';return;}
+  el('sale-list').innerHTML=sales.slice(0,30).map(function(s){
+    return '<div class="sr"><div class="sdot"></div><div class="sdate">'+s.date+'</div><div class="sdesc">'+s.desc+' <span style="font-size:11px;color:var(--muted);">['+s.chan+']</span></div><div class="samt">'+fmt(s.amt)+'</div><button class="sdel" data-id="'+s.id+'">x</button></div>';
+  }).join('');
+  el('sale-list').querySelectorAll('.sdel').forEach(function(btn){
+    btn.addEventListener('click',function(){sales=sales.filter(function(x){return x.id!=btn.dataset.id;});S.sales=sales;save();renderSales();});
+  });
+}
+el('biz-log-btn')&&el('biz-log-btn').addEventListener('click',function(){
+  var amt=parseFloat(el('biz-amt').value);if(!amt)return;
+  sales.unshift({date:el('biz-date').value||new Date().toLocaleDateString(),desc:el('biz-desc').value||'Income',chan:el('biz-chan').value,amt:amt,id:Date.now()});
+  S.sales=sales;save();renderSales();['biz-date','biz-desc','biz-amt'].forEach(function(id){el(id).value='';});
+});
+el('biz-clr-btn')&&el('biz-clr-btn').addEventListener('click',function(){['biz-date','biz-desc','biz-amt'].forEach(function(id){el(id).value='';});});
+['ba-ef','ba-hm','ba-irs','ba-lq','ba-biz'].forEach(function(id){el(id)&&el(id).addEventListener('input',calcAlloc);});
+function calcAlloc(){
+  var tot=n('ba-ef')+n('ba-hm')+n('ba-irs')+n('ba-lq')+n('ba-biz');
+  el('ba-tot').textContent=tot+'%';
+  if(tot===100){el('ba-tot').className='pos';el('ba-alert').className='alert ag';el('ba-alert').textContent='Allocations add up to 100%. Perfect.';}
+  else if(tot>100){el('ba-tot').className='neg';el('ba-alert').className='alert ao';el('ba-alert').textContent='Over by '+(tot-100)+'%. Reduce a category.';}
+  else{el('ba-tot').className='';el('ba-alert').className='alert ao';el('ba-alert').textContent=(100-tot)+'% unallocated.';}
+}
+renderSales();
+
+// QUOTES
+var QS=[
+  {t:"The secret of getting ahead is getting started.",a:"Mark Twain"},
+  {t:"Do not save what is left after spending, but spend what is left after saving.",a:"Warren Buffett"},
+  {t:"A year from now you may wish you had started today.",a:"Karen Lamb"},
+  {t:"Every payday is a vote for the future you want.",a:"Fresh Start"},
+  {t:"Your financial life will look nothing like today in five years, if you show up every two weeks.",a:"Fresh Start"},
+  {t:"Bankruptcy was not an ending. It was a very necessary reset.",a:"Fresh Start"},
+  {t:"You do not have to be great to start, but you have to start to be great.",a:"Zig Ziglar"},
+  {t:"Wealth is not about having a lot of money. It is about having a lot of options.",a:"Chris Rock"},
+  {t:"Financial peace is not the acquisition of stuff. It is learning to live on less than you make.",a:"Dave Ramsey"},
+  {t:"It is not your salary that makes you rich. It is your spending habits.",a:"Charles A. Jaffe"}
+];
+function renderQuote(){var q=QS[S.qi%QS.length];el('qt-text').textContent='"'+q.t+'"';el('qt-auth').textContent=q.a;}
+el('qt-next')&&el('qt-next').addEventListener('click',function(){S.qi=(S.qi+1)%QS.length;save();renderQuote();});
+renderQuote();
+
+// MOOD
+var MOODS={stressed:"That is valid. Take a breath. Look at how far you have already come, then just do the next small thing.",neutral:"Neutral is underrated. Consistent, neutral execution builds empires. Keep going.",okay:"Okay is good. Okay while executing beats excited and standing still every single time.",motivated:"Use it. On motivated days, do one thing bigger than normal. Future you will thank you.",fire:"This is the energy. Lock in a goal right now while you feel this. Write it in the journal."};
+el('mood-row')&&el('mood-row').addEventListener('click',function(e){
+  var btn=e.target.closest('.mood-btn');if(!btn)return;
+  document.querySelectorAll('.mood-btn').forEach(function(b){b.classList.remove('sel');});
+  btn.classList.add('sel');
+  var note=el('mood-note');note.textContent=MOODS[btn.dataset.mood]||'';note.style.display='block';
+});
+
+// CHECKLIST
+el('checklist')&&el('checklist').addEventListener('click',function(e){
+  var item=e.target.closest('.check-item');if(!item)return;
+  var box=item.querySelector('.chk');
+  var on=box.style.background.indexOf('200, 240, 78')>=0||box.style.background==='var(--accent)';
+  box.style.background=on?'':'var(--accent)';
+  box.style.borderColor=on?'var(--border)':'var(--accent)';
+  box.textContent=on?'':'✓';
+});
+
+// JOURNAL
+var journal=S.journal||[];
+function renderJournal(){
+  if(!journal.length){el('jlist').innerHTML='<div style="color:var(--muted);font-size:13px;">No entries yet.</div>';return;}
+  el('jlist').innerHTML=journal.map(function(j){return '<div style="padding:8px 0;border-bottom:1px solid var(--border);"><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:2px;">'+j.date+'</div><div style="font-size:13px;line-height:1.6;">'+j.note.replace(/</g,'&lt;')+'</div></div>';}).join('');
+}
+el('j-save-btn')&&el('j-save-btn').addEventListener('click',function(){
+  var note=el('j-note').value.trim();if(!note)return;
+  journal.unshift({date:el('j-date').value.trim()||new Date().toLocaleDateString(),note:note,id:Date.now()});
+  if(journal.length>30)journal=journal.slice(0,30);
+  S.journal=journal;save();renderJournal();el('j-note').value='';el('j-date').value='';
+});
+renderJournal();
+<\/script></body></html>`;
+
+  const blob = new Blob([html], { type: 'text/html' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `fresh-start-plan-${d.name.toLowerCase().replace(/\s+/g,'-')}.html`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function generateNextMoves(d) {
+  const moves = [];
+  const score = parseInt(d.credit.score) || 0;
+  const left = (d.income.primary+d.income.secondary+d.income.side+d.income.other) -
+               Object.values(d.expenses).reduce((a,b)=>a+b,0);
+
+  if (d.credit.status === 'none' || d.credit.status === 'bankruptcy') {
+    moves.push({n:'1',color:'var(--accent3)',title:'Open a secured credit card',body:'Apply for Discover it Secured or Capital One Platinum Secured. Deposit $200-500. Charge one recurring bill and set autopay for the full balance every month.'});
+  }
+  if (left > 0) {
+    moves.push({n:'2',color:'var(--accent2)',title:`Build your first $${Math.min(left*3,2000).toLocaleString()} buffer`,body:`With ${fmt(left)} left over each month, focus on building a starter emergency fund before tackling other goals.`});
+  }
+  if (d.income.side === 0) {
+    moves.push({n:'3',color:'var(--accent)',title:'Start a side income stream',body:'Even $200-300 extra per month changes your entire timeline. Freelance, gig work, selling products or services, whatever fits your skills.'});
+  }
+  if (d.credit.totalDebt > 0) {
+    moves.push({n:'4',color:'var(--purple)',title:`Pay down ${d.credit.bigDebt||'your biggest debt'}`,body:'Focus extra payments on the highest-interest debt first. Every extra dollar you put toward debt is guaranteed return.'});
+  }
+  moves.push({n:moves.length+1+'',color:'var(--teal)',title:'Check in every payday',body:'Five minutes every payday. Log income, review spending, transfer savings. Consistency beats intensity every time.'});
+
+  return moves.map(m => `<div class="ci"><div class="cin" style="color:${m.color}">${m.n}</div><div><div class="cit">${m.title}</div><div class="cib">${m.body}</div></div></div>`).join('');
+}
+
+function generateCreditSection(d) {
+  const steps = [
+    {icon:'1',color:'var(--accent3)',title:'Secured credit card (Day 1 after any discharge or now)',body:'Apply for <strong style="color:var(--text)">Discover it Secured</strong> or <strong style="color:var(--text)">Capital One Platinum Secured</strong>. Deposit $200-500. Charge ONE recurring bill. Set autopay for the FULL balance every month. Never carry a balance.'},
+    {icon:'2',color:'var(--accent2)',title:'Credit-builder loan (Month 3-6)',body:'Open one at a local credit union or through <strong style="color:var(--text)">Self Financial</strong> (~$25-50/mo). Builds savings AND credit simultaneously. Adds an installment account alongside your revolving credit card.'},
+    {icon:'3',color:'var(--accent)',title:'Monitor monthly (ongoing)',body:'Use <strong style="color:var(--text)">Credit Karma</strong> (free). Check all 3 bureaus. Dispute any errors. One wrong entry can hold your score back for years.'},
+    {icon:'4',color:'var(--purple)',title:'Authorized user (Month 6+)',body:'Ask someone with good credit to add you as an authorized user on their oldest card. You do not need to use it. Their history adds to yours.'},
+  ];
+
+  const targetScore = parseInt(d.credit.target) || 700;
+  if (targetScore >= 700) {
+    steps.push({icon:'5',color:'var(--teal)',title:`Hit ${targetScore}+ by ${d.credit.creditDate||'your target date'}`,body:`With consistent on-time payments and low utilization, most people reach ${targetScore} within 18-24 months of starting a credit-building strategy.`});
+  }
+
+  return `<div class="card"><div style="font-weight:600;font-size:15px;margin-bottom:13px;">The Exact Playbook</div>${steps.map(s=>`<div class="ci"><div style="width:30px;height:30px;border-radius:6px;background:rgba(200,240,78,.08);color:${s.color};display:flex;align-items:center;justify-content:center;font-weight:700;flex-shrink:0;">${s.icon}</div><div><div class="cit">${s.title}</div><div class="cib">${s.body}</div></div></div>`).join('')}</div>`;
+}
+
+function generateRoadmap(d, inc, left) {
+  const now = new Date();
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const milestones = [];
+  let savings = 0;
+  const monthlySave = Math.max(left * 0.5, 0);
+
+  for (let i = 0; i <= 60; i += 6) {
+    savings += monthlySave * 6;
+    const date = new Date(now.getFullYear(), now.getMonth() + i);
+    const label = months[date.getMonth()] + ' ' + date.getFullYear();
+    const isNow = i === 0;
+
+    let title, desc;
+    if (i === 0) { title = 'Starting point'; desc = `Income: ${fmt(inc)}/mo. Surplus: ${fmt(left)}/mo. Begin tracking and building habits.`; }
+    else if (savings < 2000) { title = 'First $2,000 buffer'; desc = `Projected savings: ${fmt(savings)}. Focus on emergency fund and on-time payments.`; }
+    else if (savings < 10000) { title = `$${Math.round(savings/1000)}K saved`; desc = `Credit score should be climbing. Keep utilization below 10% on any open cards.`; }
+    else if (savings < 25000) { title = 'Building serious momentum'; desc = `${fmt(savings)} projected. Start researching home loan options and talking to a HUD counselor if homeownership is a goal.`; }
+    else { title = 'Financial stability reached'; desc = `${fmt(savings)} projected. Strong credit, solid emergency fund, working toward your biggest goals.`; }
+
+    milestones.push(`<div style="display:flex;gap:14px;padding-bottom:20px;position:relative;">
+      <div style="width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0;position:relative;z-index:1;border:2px solid ${isNow?'var(--accent3)':'var(--border)'};background:${isNow?'var(--accent3)':'var(--bg)'};color:${isNow?'#0f0f11':'var(--muted)'};">${isNow?'Now':i/12+'y'}</div>
+      <div style="flex:1;padding-top:6px;">
+        <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:2px;">${label}</div>
+        <div style="font-family:'DM Serif Display',serif;font-size:16px;margin-bottom:4px;">${title}</div>
+        <div style="font-size:13px;color:var(--muted);line-height:1.6;">${desc}</div>
+      </div>
+    </div>`);
+  }
+  return milestones.join('');
+}
+</script>
+</body>
+</html>
