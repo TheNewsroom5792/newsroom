@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="theme-color" content="#0f0e0c"/>
+<title>Headlines Report</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,400&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --ink: #0f0e0c;
+  --paper: #f7f4ee;
+  --rule: #d4cfc4;
+  --muted: #7a7567;
+  --accent: #c1440e;
+  --bg: #f0ece3;
+  --card: #ffffff;
+  --substack: #FF6719;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+html, body { height: 100%; overflow: hidden; }
+body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--ink); font-size: 14px; }
+
+/* ── AUTH SCREEN ── */
+#auth-screen {
+  display: flex; align-items: center; justify-content: center;
+  min-height: 100vh; background: var(--ink); padding: 24px;
+}
+.auth-box {
+  background: var(--paper); width: 100%; max-width: 400px;
+  border-radius: 4px; overflow: hidden;
+}
+.auth-header {
+  background: var(--ink); padding: 32px; text-align: center;
+  border-bottom: 3px double var(--accent);
+}
+.auth-logo {
+  font-family: 'Playfair Display', serif; font-size: 28px;
+  font-style: italic; font-weight: 900; color: white;
+}
+.auth-logo em { font-weight: 400; color: var(--accent); }
+.auth-tagline { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: rgba(255,255,255,0.4); margin-top: 6px; }
+.auth-body { padding: 28px; }
+.auth-tabs { display: flex; border-bottom: 1px solid var(--rule); margin-bottom: 24px; }
+.auth-tab { flex: 1; padding: 8px; text-align: center; font-size: 12px; font-weight: 500; cursor: pointer; color: var(--muted); border-bottom: 2px solid transparent; margin-bottom: -1px; transition: all .15s; }
+.auth-tab.active { color: var(--ink); border-bottom-color: var(--ink); }
+.auth-field { margin-bottom: 14px; }
+.auth-label { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); display: block; margin-bottom: 5px; }
+.auth-input { width: 100%; padding: 10px 12px; border: 1px solid var(--rule); background: white; font-size: 14px; font-family: 'DM Sans', sans-serif; color: var(--ink); outline: none; transition: border-color .15s; border-radius: 2px; }
+.auth-input:focus { border-color: var(--ink); }
+.auth-btn { width: 100%; padding: 12px; background: var(--ink); color: var(--paper); font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; border: none; cursor: pointer; transition: opacity .15s; margin-top: 4px; border-radius: 2px; }
+.auth-btn:hover { opacity: .85; }
+.auth-btn:disabled { opacity: .5; cursor: not-allowed; }
+.auth-error { font-size: 12px; color: var(--accent); margin-top: 10px; text-align: center; min-height: 16px; }
+
+/* ── APP SHELL ── */
+#app-screen { display: none; height: 100vh; flex-direction: column; }
+
+/* Top bar */
+.topbar {
+  background: var(--ink); color: white; padding: 0 16px;
+  display: flex; align-items: center; justify-content: space-between;
+  height: 52px; flex-shrink: 0; border-bottom: 2px solid var(--accent);
+}
+.topbar-logo { font-family: 'Playfair Display', serif; font-size: 20px; font-style: italic; font-weight: 900; }
+.topbar-logo em { font-weight: 400; color: var(--accent); }
+.topbar-right { display: flex; align-items: center; gap: 12px; }
+.tier-badge { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 1.5px; text-transform: uppercase; padding: 3px 8px; border-radius: 2px; }
+.tier-badge.free { background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.5); }
+.tier-badge.pro { background: var(--accent); color: white; }
+.icon-btn { background: none; border: none; cursor: pointer; color: rgba(255,255,255,0.6); font-size: 16px; padding: 4px; transition: color .15s; }
+.icon-btn:hover { color: white; }
+
+/* Beat tabs */
+.beat-bar {
+  background: var(--card); border-bottom: 1px solid var(--rule);
+  display: flex; overflow-x: auto; scrollbar-width: none; flex-shrink: 0;
+}
+.beat-bar::-webkit-scrollbar { display: none; }
+.beat-tab { padding: 10px 14px; font-size: 12px; color: var(--muted); border: none; background: none; cursor: pointer; border-bottom: 2px solid transparent; white-space: nowrap; transition: all .15s; font-family: 'DM Sans', sans-serif; flex-shrink: 0; }
+.beat-tab:hover { color: var(--ink); }
+.beat-tab.active { color: var(--ink); font-weight: 500; border-bottom-color: var(--ink); }
+.beat-tab.sub-tab.active { color: var(--substack); border-bottom-color: var(--substack); }
+
+/* Main content area */
+.content-area { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+
+/* Feed */
+.feed-wrap { max-width: 680px; margin: 0 auto; padding: 0 16px 80px; }
+.feed-header { display: flex; align-items: center; justify-content: space-between; padding: 14px 0 10px; }
+.feed-title { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); }
+.refresh-btn { font-size: 11px; padding: 4px 10px; border: 1px solid var(--rule); background: none; border-radius: 2px; cursor: pointer; color: var(--muted); font-family: 'DM Sans', sans-serif; transition: all .15s; }
+.refresh-btn:hover { background: var(--rule); }
+
+/* Digest card */
+.digest-card { background: var(--card); border: 1px solid var(--rule); border-left: 3px solid var(--ink); padding: 14px 16px; margin-bottom: 12px; border-radius: 2px; }
+.digest-label { font-family: 'DM Mono', monospace; font-size: 8px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+.digest-text { font-size: 13px; line-height: 1.65; color: #3d3b36; }
+
+/* Article cards */
+.article { background: var(--card); border: 1px solid var(--rule); padding: 14px; margin-bottom: 8px; cursor: pointer; transition: border-color .15s; border-radius: 2px; display: flex; gap: 12px; align-items: flex-start; }
+.article:hover { border-color: var(--ink); }
+.article.substack { border-left: 3px solid var(--substack); }
+.article-main { flex: 1; min-width: 0; }
+.article-beat { font-family: 'DM Mono', monospace; font-size: 8px; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 4px; }
+.beat-pol { color: #c1440e; } .beat-eco { color: #8B6914; } .beat-tech { color: #1a5a8a; }
+.beat-world { color: #0a5c42; } .beat-edu { color: #4a2e9e; } .beat-sub { color: var(--substack); }
+.beat-def { color: var(--muted); }
+.article-hed { font-family: 'Playfair Display', serif; font-size: 15px; line-height: 1.3; margin-bottom: 5px; color: var(--ink); }
+.article-sub.substack-hed { font-style: italic; }
+.article-sum { font-size: 12px; line-height: 1.55; color: var(--muted); margin-bottom: 6px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.article-meta { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--muted); }
+.article-source { font-weight: 500; color: #555; }
+.article-thumb { width: 64px; height: 52px; background: var(--bg); border: 1px solid var(--rule); border-radius: 2px; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+.article-thumb.sub-thumb { background: #fff5ef; border-color: #ffd4b8; }
+.save-btn { background: none; border: none; cursor: pointer; color: var(--rule); font-size: 13px; padding: 2px; transition: color .15s; }
+.save-btn.saved, .save-btn:hover { color: var(--ink); }
+
+/* Gate */
+.gate { position: relative; border-radius: 2px; overflow: hidden; margin-top: 4px; }
+.gate-blur { filter: blur(4px); opacity: .35; pointer-events: none; user-select: none; }
+.gate-overlay { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; background: linear-gradient(to bottom, transparent, var(--bg) 50%); }
+.gate-title { font-size: 13px; font-weight: 500; }
+.gate-sub { font-size: 11px; color: var(--muted); }
+.gate-btn { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 1.5px; text-transform: uppercase; padding: 8px 18px; background: var(--ink); color: var(--paper); border: none; cursor: pointer; border-radius: 2px; transition: opacity .15s; }
+.gate-btn:hover { opacity: .8; }
+
+/* Bottom nav */
+.bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: var(--card); border-top: 1px solid var(--rule); display: flex; height: 56px; z-index: 100; }
+.nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; cursor: pointer; color: var(--muted); transition: color .15s; border: none; background: none; font-family: 'DM Sans', sans-serif; }
+.nav-item.active { color: var(--ink); }
+.nav-icon { font-size: 18px; line-height: 1; }
+.nav-label { font-family: 'DM Mono', monospace; font-size: 8px; letter-spacing: 1px; text-transform: uppercase; }
+
+/* Loading */
+.loading { padding: 48px 0; text-align: center; color: var(--muted); font-size: 13px; }
+.spinner { width: 18px; height: 18px; border: 1.5px solid var(--rule); border-top-color: var(--muted); border-radius: 50%; animation: spin .7s linear infinite; margin: 0 auto 10px; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Settings panel */
+.settings-wrap { max-width: 600px; margin: 0 auto; padding: 16px 16px 80px; }
+.settings-section { background: var(--card); border: 1px solid var(--rule); border-radius: 2px; margin-bottom: 12px; overflow: hidden; }
+.settings-section-title { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); padding: 12px 16px; border-bottom: 1px solid var(--rule); background: var(--bg); }
+.settings-row { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; border-bottom: 1px solid var(--rule); gap: 12px; }
+.settings-row:last-child { border-bottom: none; }
+.settings-row-info p { font-size: 13px; font-weight: 500; margin-bottom: 1px; }
+.settings-row-info span { font-size: 11px; color: var(--muted); }
+.tog { width: 36px; height: 20px; background: var(--rule); border-radius: 10px; cursor: pointer; position: relative; transition: background .2s; flex-shrink: 0; border: none; }
+.tog.on { background: var(--ink); }
+.tog-k { width: 14px; height: 14px; background: white; border-radius: 50%; position: absolute; top: 3px; left: 3px; transition: transform .2s; }
+.tog.on .tog-k { transform: translateX(16px); }
+
+.pill-list { display: flex; flex-wrap: wrap; gap: 6px; padding: 12px 16px; }
+.pill { font-size: 11px; padding: 4px 10px; border-radius: 20px; border: 1px solid var(--rule); color: var(--muted); background: var(--bg); display: flex; align-items: center; gap: 4px; }
+.pill .x { cursor: pointer; opacity: .5; font-size: 10px; transition: opacity .15s; }
+.pill .x:hover { opacity: 1; }
+.sub-pill { border-color: #ffd4b8; color: var(--substack); background: #fff5ef; }
+.add-row { display: flex; gap: 8px; padding: 0 16px 12px; }
+.add-input { flex: 1; padding: 7px 10px; font-size: 12px; border: 1px solid var(--rule); background: white; color: var(--ink); font-family: 'DM Sans', sans-serif; outline: none; transition: border-color .15s; border-radius: 2px; }
+.add-input:focus { border-color: var(--ink); }
+.add-btn { padding: 7px 12px; font-size: 10px; font-family: 'DM Mono', monospace; letter-spacing: 1px; text-transform: uppercase; background: var(--ink); color: var(--paper); border: none; cursor: pointer; border-radius: 2px; transition: opacity .15s; white-space: nowrap; }
+.add-btn:hover { opacity: .8; }
+.add-btn.sub { background: var(--substack); }
+
+/* Usage meters */
+.usage-row { padding: 8px 16px; }
+.usage-top { display: flex; justify-content: space-between; font-size: 11px; color: var(--muted); margin-bottom: 4px; }
+.usage-track { height: 3px; background: var(--bg); border-radius: 2px; overflow: hidden; }
+.usage-fill { height: 100%; border-radius: 2px; transition: width .3s; }
+.fill-ok { background: #3B6D11; } .fill-warn { background: #8B6914; } .fill-full { background: var(--accent); }
+
+/* Pro upgrade card */
+.upgrade-card { background: var(--ink); color: var(--paper); padding: 20px; margin: 12px 16px; border-radius: 2px; }
+.upgrade-card h3 { font-family: 'Playfair Display', serif; font-size: 18px; margin-bottom: 6px; }
+.upgrade-card p { font-size: 12px; color: rgba(247,244,238,0.6); margin-bottom: 14px; line-height: 1.5; }
+.upgrade-card-btn { width: 100%; padding: 10px; font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; background: var(--accent); color: white; border: none; cursor: pointer; border-radius: 2px; transition: opacity .15s; }
+.upgrade-card-btn:hover { opacity: .85; }
+
+/* Saved */
+.saved-wrap { max-width: 680px; margin: 0 auto; padding: 0 16px 80px; }
+.empty-state { padding: 60px 0; text-align: center; color: var(--muted); font-size: 13px; line-height: 1.7; }
+
+/* Toast */
+.toast { position: fixed; bottom: 70px; left: 50%; transform: translateX(-50%); background: var(--ink); color: white; padding: 8px 16px; border-radius: 2px; font-size: 12px; font-family: 'DM Mono', monospace; letter-spacing: .5px; z-index: 999; opacity: 0; transition: opacity .2s; pointer-events: none; white-space: nowrap; }
+.toast.show { opacity: 1; }
+
+/* Modal */
+.modal-backdrop { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.6); z-index: 200; align-items: flex-end; justify-content: center; }
+.modal-backdrop.open { display: flex; }
+.modal { background: var(--paper); width: 100%; max-width: 480px; border-radius: 4px 4px 0 0; overflow: hidden; max-height: 90vh; overflow-y: auto; }
+.modal-header { background: var(--ink); padding: 20px 20px 16px; text-align: center; }
+.modal-logo { font-family: 'Playfair Display', serif; font-size: 20px; font-style: italic; font-weight: 900; color: white; }
+.modal-logo em { font-weight: 400; color: var(--accent); }
+.modal-title { font-size: 14px; color: rgba(255,255,255,.7); margin-top: 4px; }
+.modal-plans { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 16px; }
+.modal-plan { border: 1px solid var(--rule); padding: 16px; border-radius: 2px; }
+.modal-plan.featured { border-color: var(--ink); border-width: 2px; }
+.plan-n { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+.plan-p { font-family: 'Playfair Display', serif; font-size: 32px; font-weight: 900; line-height: 1; margin-bottom: 2px; }
+.plan-p span { font-size: 12px; font-weight: 300; font-family: 'DM Sans', sans-serif; color: var(--muted); }
+.plan-t { font-size: 11px; color: var(--muted); margin-bottom: 12px; font-style: italic; }
+.plan-feats { list-style: none; display: flex; flex-direction: column; gap: 5px; margin-bottom: 14px; }
+.plan-feats li { font-size: 11px; color: #3d3b36; display: flex; gap: 5px; align-items: flex-start; }
+.fc { color: var(--accent); font-size: 10px; margin-top: 1px; flex-shrink: 0; }
+.fx { color: var(--rule); font-size: 10px; margin-top: 1px; flex-shrink: 0; }
+.plan-btn { width: 100%; padding: 9px; font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 1.5px; text-transform: uppercase; border: 1px solid var(--ink); background: none; cursor: pointer; transition: all .15s; border-radius: 2px; }
+.modal-plan.featured .plan-btn, .plan-btn:hover { background: var(--ink); color: var(--paper); }
+.modal-footer-note { text-align: center; font-size: 10px; color: var(--muted); padding: 0 16px 16px; }
+.modal-close { width: calc(100% - 32px); margin: 0 16px 16px; padding: 10px; font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 1px; text-transform: uppercase; background: none; border: 1px solid var(--rule); cursor: pointer; color: var(--muted); border-radius: 2px; }
+
+@media (min-width: 640px) {
+  .modal-backdrop { align-items: center; }
+  .modal { border-radius: 4px; }
+  .bottom-nav { max-width: 680px; left: 50%; transform: translateX(-50%); border-left: 1px solid var(--rule); border-right: 1px solid var(--rule); }
+}
+</style>
+</head>
+<body>
+
+<!-- AUTH SCREEN -->
+<div id="auth-screen">
+  <div class="auth-box">
+    <div class="auth-header">
+      <div class="auth-logo">Headlines<em>Report</em></div>
+      <div class="auth-tagline">Your morning briefing</div>
+    </div>
+    <div class="auth-body">
+      <div class="auth-tabs">
+        <div class="auth-tab active" onclick="switchAuthTab('signin')">Sign in</div>
+        <div class="auth-tab" onclick="switchAuthTab('signup')">Create account</div>
+      </div>
+      <div id="signin-form">
+        <div class="auth-field">
+          <label class="auth-label">Email</label>
+          <input class="auth-input" type="email" id="si-email" placeholder="you@example.com"/>
+        </div>
+        <div class="auth-field">
+          <label class="auth-label">Password</label>
+          <input class="auth-input" type="password" id="si-pass" placeholder="••••••••" onkeydown="if(event.key==='Enter')doSignin()"/>
+        </div>
+        <button class="auth-btn" onclick="doSignin()" id="si-btn">Sign in</button>
+      </div>
+      <div id="signup-form" style="display:none">
+        <div class="auth-field">
+          <label class="auth-label">Email</label>
+          <input class="auth-input" type="email" id="su-email" placeholder="you@example.com"/>
+        </div>
+        <div class="auth-field">
+          <label class="auth-label">Password</label>
+          <input class="auth-input" type="password" id="su-pass" placeholder="Min 8 characters" onkeydown="if(event.key==='Enter')doSignup()"/>
+        </div>
+        <button class="auth-btn" onclick="doSignup()" id="su-btn">Create account</button>
+      </div>
+      <div class="auth-error" id="auth-error"></div>
+    </div>
+  </div>
+</div>
+
+<!-- APP SCREEN -->
+<div id="app-screen">
+  <!-- Top bar -->
+  <div class="topbar">
+    <div class="topbar-logo">Headlines<em>Report</em></div>
+    <div class="topbar-right">
+      <div class="tier-badge free" id="tier-badge">Free</div>
+      <button class="icon-btn" onclick="showModal()" title="Upgrade">⚡</button>
+      <button class="icon-btn" onclick="doSignout()" title="Sign out">↩</button>
+    </div>
+  </div>
+
+  <!-- Beat tabs -->
+  <div class="beat-bar" id="beat-bar"></div>
+
+  <!-- Content -->
+  <div class="content-area" id="content-area">
+    <div class="loading"><div class="spinner"></div>Loading your feed…</div>
+  </div>
+
+  <!-- Bottom nav -->
+  <div class="bottom-nav">
+    <button class="nav-item active" id="nav-feed" onclick="switchNav('feed')">
+      <span class="nav-icon">📰</span><span class="nav-label">Feed</span>
+    </button>
+    <button class="nav-item" id="nav-saved" onclick="switchNav('saved')">
+      <span class="nav-icon">★</span><span class="nav-label">Saved</span>
+    </button>
+    <button class="nav-item" id="nav-settings" onclick="switchNav('settings')">
+      <span class="nav-icon">⚙</span><span class="nav-label">Settings</span>
+    </button>
+  </div>
+</div>
+
+<!-- UPGRADE MODAL -->
+<div class="modal-backdrop" id="modal-backdrop" onclick="handleModalClick(event)">
+  <div class="modal" id="modal">
+    <div class="modal-header">
+      <div class="modal-logo">Headlines<em>Report</em></div>
+      <div class="modal-title" id="modal-title">Upgrade to Pro</div>
+    </div>
+    <div class="modal-plans">
+      <div class="modal-plan">
+        <div class="plan-n">Free</div>
+        <div class="plan-p">$0<span>/mo</span></div>
+        <div class="plan-t">No card needed</div>
+        <ul class="plan-feats">
+          <li><span class="fc">✓</span>3 news beats</li>
+          <li><span class="fc">✓</span>2 Substacks</li>
+          <li><span class="fc">✓</span>Daily digest</li>
+          <li><span class="fx">–</span>Email briefing</li>
+          <li><span class="fx">–</span>Unlimited beats</li>
+        </ul>
+        <button class="plan-btn" onclick="closeModal()">Current plan</button>
+      </div>
+      <div class="modal-plan featured">
+        <div class="plan-n">Pro</div>
+        <div class="plan-p">$7<span>/mo</span></div>
+        <div class="plan-t">Or $60/year</div>
+        <ul class="plan-feats">
+          <li><span class="fc">✓</span>Unlimited beats</li>
+          <li><span class="fc">✓</span>Unlimited Substacks</li>
+          <li><span class="fc">✓</span>Curated digest</li>
+          <li><span class="fc">✓</span>Morning email</li>
+          <li><span class="fc">✓</span>Saved library</li>
+        </ul>
+        <button class="plan-btn" onclick="doCheckout('monthly')">Get Pro →</button>
+      </div>
+    </div>
+    <div class="modal-footer-note">Secure checkout via Stripe · Cancel anytime</div>
+    <button class="modal-close" onclick="closeModal()">Maybe later</button>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+const API = '';  // same-origin
+const FREE = { beats: 3, substacks: 2, refreshes: 1 };
+
+let session = null;
+let profile = null;
+let articles = [];
+let substackPosts = [];
+let savedIds = new Set();
+let currentBeat = 'all';
+let currentNav = 'feed';
+let refreshesUsed = 0;
+let isLoading = false;
+
+// ── AUTH ──────────────────────────────────────────────────────────
+function switchAuthTab(tab) {
+  document.querySelectorAll('.auth-tab').forEach((t,i) => t.classList.toggle('active', (tab==='signin'&&i===0)||(tab==='signup'&&i===1)));
+  document.getElementById('signin-form').style.display = tab==='signin'?'':'none';
+  document.getElementById('signup-form').style.display = tab==='signup'?'':'none';
+  document.getElementById('auth-error').textContent = '';
+}
+
+async function doSignin() {
+  const email = document.getElementById('si-email').value.trim();
+  const password = document.getElementById('si-pass').value;
+  const btn = document.getElementById('si-btn');
+  if (!email || !password) return;
+  btn.disabled = true; btn.textContent = 'Signing in…';
+  try {
+    const res = await fetch(`${API}/api/auth?action=signin`, {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({email, password})
+    });
+    const data = await res.json();
+    if (!data.success) throw new Error(data.error || 'Sign in failed');
+    session = data.session;
+    await loadProfile();
+    showApp();
+  } catch(e) {
+    document.getElementById('auth-error').textContent = e.message;
+  }
+  btn.disabled = false; btn.textContent = 'Sign in';
+}
+
+async function doSignup() {
+  const email = document.getElementById('su-email').value.trim();
+  const password = document.getElementById('su-pass').value;
+  const btn = document.getElementById('su-btn');
+  if (!email || !password) return;
+  if (password.length < 8) { document.getElementById('auth-error').textContent = 'Password must be at least 8 characters'; return; }
+  btn.disabled = true; btn.textContent = 'Creating account…';
+  try {
+    const res = await fetch(`${API}/api/auth?action=signup`, {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({email, password})
+    });
+    const data = await res.json();
+    if (!data.success) throw new Error(data.error || 'Signup failed');
+    // Auto sign in
+    document.getElementById('si-email').value = email;
+    document.getElementById('si-pass').value = password;
+    switchAuthTab('signin');
+    await doSignin();
+  } catch(e) {
+    document.getElementById('auth-error').textContent = e.message;
+  }
+  btn.disabled = false; btn.textContent = 'Create account';
+}
+
+function doSignout() {
+  session = null; profile = null; articles = []; substackPosts = [];
+  document.getElementById('auth-screen').style.display = 'flex';
+  document.getElementById('app-screen').style.display = 'none';
+  localStorage.removeItem('hr_session');
+}
+
+// ── PROFILE ───────────────────────────────────────────────────────
+async function loadProfile() {
+  const res = await fetch(`${API}/api/auth?action=profile`, {
+    headers: { 'Authorization': `Bearer ${session.access_token}` }
+  });
+  const data = await res.json();
+  if (data.success) profile = data.profile;
+}
+
+async function savePreferences() {
+  await fetch(`${API}/api/auth?action=save`, {
+    method: 'POST', headers: {'Content-Type':'application/json','Authorization':`Bearer ${session.access_token}`},
+    body: JSON.stringify({ beats: profile.beats, substacks: profile.substacks, digest_time: profile.digest_time, digest_enabled: profile.digest_enabled })
+  });
+}
+
+// ── APP SHELL ─────────────────────────────────────────────────────
+function showApp() {
+  document.getElementById('auth-screen').style.display = 'none';
+  const app = document.getElementById('app-screen');
+  app.style.display = 'flex';
+  localStorage.setItem('hr_session', JSON.stringify(session));
+
+  // Check upgrade redirect
+  if (location.search.includes('upgraded=true')) {
+    profile.tier = 'pro';
+    showToast('✦ Welcome to Pro!');
+    history.replaceState({}, '', '/app');
+  }
+
+  updateTierUI();
+  renderBeatBar();
+  fetchFeed();
+}
+
+function updateTierUI() {
+  const badge = document.getElementById('tier-badge');
+  if (profile?.tier === 'pro') {
+    badge.textContent = '✦ Pro';
+    badge.className = 'tier-badge pro';
+  } else {
+    badge.textContent = 'Free';
+    badge.className = 'tier-badge free';
+  }
+}
+
+// ── BEAT BAR ──────────────────────────────────────────────────────
+function renderBeatBar() {
+  const bar = document.getElementById('beat-bar');
+  const beats = profile?.beats || [];
+  const allCount = articles.length + substackPosts.length;
+  let html = `<button class="beat-tab ${currentBeat==='all'?'active':''}" onclick="switchBeat('all',this)">All (${allCount})</button>`;
+  beats.forEach(b => {
+    const c = articles.filter(a => a.beat?.toLowerCase() === b.toLowerCase()).length;
+    html += `<button class="beat-tab ${currentBeat===b?'active':''}" onclick="switchBeat('${b}',this)">${b} (${c})</button>`;
+  });
+  if (substackPosts.length) {
+    html += `<button class="beat-tab sub-tab ${currentBeat==='substacks'?'active':''}" onclick="switchBeat('substacks',this)">✍️ Substacks (${substackPosts.length})</button>`;
+  }
+  bar.innerHTML = html;
+}
+
+function switchBeat(beat, el) {
+  currentBeat = beat;
+  document.querySelectorAll('.beat-tab').forEach(t => t.classList.remove('active'));
+  if (el) el.classList.add('active');
+  renderFeed();
+}
+
+// ── FEED ──────────────────────────────────────────────────────────
+async function fetchFeed() {
+  if (isLoading) return;
+  if (profile?.tier !== 'pro' && refreshesUsed >= FREE.refreshes) { showModal('refresh'); return; }
+  isLoading = true;
+  if (profile?.tier === 'free') refreshesUsed++;
+  renderLoading();
+
+  const beats = profile?.beats || ['Politics','Economy','Technology'];
+  const prompt = `You are a news aggregator. The reader follows: ${beats.join(', ')}.
+Generate 8 realistic news stories. Respond ONLY with valid JSON:
+{"digest":"2-3 sentence summary","articles":[{"beat":"Politics","headline":"...","summary":"1-2 sentences","source":"...","time":"Xh ago","url":null}]}`;
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 1000, messages: [{ role: 'user', content: prompt }] })
+    });
+    const data = await res.json();
+    const raw = data.content.map(c => c.text||'').join('').replace(/```json|```/g,'').trim();
+    const parsed = JSON.parse(raw);
+    articles = (parsed.articles || []).map(a => ({...a, type:'news'}));
+    window._digest = parsed.digest;
+    renderBeatBar();
+    renderFeed();
+  } catch(e) {
+    document.getElementById('content-area').innerHTML = '<div class="loading">Could not load stories. Try refreshing.</div>';
+  }
+  isLoading = false;
+}
+
+function renderLoading() {
+  document.getElementById('content-area').innerHTML = '<div class="loading"><div class="spinner"></div>Pulling stories…</div>';
+}
+
+function renderFeed() {
+  if (currentNav !== 'feed') return;
+  const all = [...articles, ...substackPosts];
+  const filtered = currentBeat === 'all' ? all
+    : currentBeat === 'substacks' ? substackPosts
+    : articles.filter(a => a.beat?.toLowerCase() === currentBeat.toLowerCase());
+
+  const isFree = profile?.tier !== 'pro';
+  const visible = filtered.slice(0, isFree ? 4 : filtered.length);
+  const gated = isFree ? filtered.slice(4) : [];
+
+  const beatColors = {politics:'beat-pol',economy:'beat-eco',technology:'beat-tech',tech:'beat-tech',world:'beat-world',education:'beat-edu'};
+  const beatEmoji = {politics:'🏛',economy:'📈',technology:'💡',world:'🌍',education:'📚',default:'📰'};
+  function bc(b){ return beatColors[b?.toLowerCase()] || 'beat-def'; }
+  function be(b){ return beatEmoji[b?.toLowerCase()] || beatEmoji.default; }
+
+  let html = '<div class="feed-wrap">';
+  html += `<div class="feed-header"><div class="feed-title">${currentBeat==='all'?'Top Stories':currentBeat==='substacks'?'Your Substacks':currentBeat+' News'}</div><button class="refresh-btn" onclick="fetchFeed()">↻ Refresh</button></div>`;
+
+  if (window._digest && currentBeat === 'all') {
+    html += `<div class="digest-card"><div class="digest-label">Curated Digest</div><div class="digest-text">${window._digest}</div></div>`;
+  }
+
+  visible.forEach((a, i) => {
+    const isSub = a.type === 'substack';
+    const saved = savedIds.has(a.headline);
+    html += `<div class="article ${isSub?'substack':''}" onclick="openArticle('${encodeURIComponent(a.url||'')}')">
+      <div class="article-main">
+        <div class="article-beat ${isSub?'beat-sub':bc(a.beat)}">${isSub?'✍️ '+a.pubName:(be(a.beat)+' '+(a.beat||'').toUpperCase())}</div>
+        <div class="article-hed ${isSub?'substack-hed':''}">${a.headline}</div>
+        <div class="article-sum">${a.summary}</div>
+        <div class="article-meta">
+          <span class="article-source">${a.source}</span>
+          ${a.time?`<span>·</span><span>${a.time}</span>`:''}
+          <span>·</span>
+          <button class="save-btn ${saved?'saved':''}" onclick="event.stopPropagation();toggleSave(${i},'${encodeURIComponent(a.headline)}',this)">
+            ${saved?'★':'☆'}
+          </button>
+        </div>
+      </div>
+      <div class="article-thumb ${isSub?'sub-thumb':''}">${isSub?'✍️':be(a.beat)}</div>
+    </div>`;
+  });
+
+  if (gated.length) {
+    const teaser = gated.slice(0,2).map(a => `<div class="article"><div class="article-main"><div class="article-beat">${a.beat||''}</div><div class="article-hed">${a.headline}</div></div></div>`).join('');
+    html += `<div class="gate"><div class="gate-blur">${teaser}</div><div class="gate-overlay"><div class="gate-title">+${gated.length} more stories</div><div class="gate-sub">Upgrade to Pro for the full feed</div><button class="gate-btn" onclick="showModal()">Upgrade to Pro →</button></div></div>`;
+  }
+
+  html += '</div>';
+  document.getElementById('content-area').innerHTML = html;
+}
+
+function openArticle(encodedUrl) {
+  const url = decodeURIComponent(encodedUrl);
+  if (url && url.startsWith('http')) { try { openLink(url); } catch(e) { window.open(url,'_blank'); } }
+}
+
+function toggleSave(i, encodedHeadline, btn) {
+  const headline = decodeURIComponent(encodedHeadline);
+  if (savedIds.has(headline)) { savedIds.delete(headline); btn.textContent='☆'; btn.classList.remove('saved'); showToast('Removed from saved'); }
+  else { savedIds.add(headline); btn.textContent='★'; btn.classList.add('saved'); showToast('★ Saved'); }
+}
+
+// ── SAVED ─────────────────────────────────────────────────────────
+function renderSaved() {
+  const all = [...articles, ...substackPosts].filter(a => savedIds.has(a.headline));
+  let html = '<div class="saved-wrap">';
+  if (!all.length) {
+    html += '<div class="empty-state">No saved articles yet.<br>Tap ☆ on any story to save it.</div>';
+  } else {
+    html += `<div class="feed-header"><div class="feed-title">Saved (${all.length})</div></div>`;
+    all.forEach((a,i) => {
+      html += `<div class="article" onclick="openArticle('${encodeURIComponent(a.url||'')}')">
+        <div class="article-main">
+          <div class="article-beat">${a.beat||a.pubName||''}</div>
+          <div class="article-hed">${a.headline}</div>
+          <div class="article-sum">${a.summary}</div>
+          <div class="article-meta"><span class="article-source">${a.source}</span></div>
+        </div>
+        <div class="article-thumb">${a.type==='substack'?'✍️':'📰'}</div>
+      </div>`;
+    });
+  }
+  html += '</div>';
+  document.getElementById('content-area').innerHTML = html;
+}
+
+// ── SETTINGS ──────────────────────────────────────────────────────
+function renderSettings() {
+  const beats = profile?.beats || [];
+  const subs = profile?.substacks || [];
+  const isFree = profile?.tier !== 'pro';
+  const bPct = Math.min((beats.length/FREE.beats)*100,100);
+  const sPct = Math.min((subs.length/FREE.substacks)*100,100);
+  const rPct = Math.min((refreshesUsed/FREE.refreshes)*100,100);
+
+  let html = '<div class="settings-wrap">';
+
+  // Plan status
+  html += `<div class="settings-section">
+    <div class="settings-section-title">Your plan</div>
+    <div class="settings-row">
+      <div class="settings-row-info"><p>${isFree?'Free':'Pro'}</p><span>${isFree?'Limited features':'All features unlocked'}</span></div>
+      ${isFree?`<button class="add-btn" onclick="showModal()">Upgrade →</button>`:'<span style="color:var(--accent);font-size:12px;">✦ Active</span>'}
+    </div>`;
+
+  if (isFree) {
+    html += `<div class="usage-row"><div class="usage-top"><span>Beats</span><span>${beats.length}/${FREE.beats}</span></div><div class="usage-track"><div class="usage-fill ${bPct>=100?'fill-full':bPct>=67?'fill-warn':'fill-ok'}" style="width:${bPct}%"></div></div></div>`;
+    html += `<div class="usage-row"><div class="usage-top"><span>Substacks</span><span>${subs.length}/${FREE.substacks}</span></div><div class="usage-track"><div class="usage-fill ${sPct>=100?'fill-full':sPct>=67?'fill-warn':'fill-ok'}" style="width:${sPct}%"></div></div></div>`;
+    html += `<div class="usage-row" style="padding-bottom:12px;"><div class="usage-top"><span>Daily refreshes</span><span>${refreshesUsed}/${FREE.refreshes}</span></div><div class="usage-track"><div class="usage-fill ${rPct>=100?'fill-full':'fill-ok'}" style="width:${rPct}%"></div></div></div>`;
+  }
+  html += '</div>';
+
+  // Beats
+  html += `<div class="settings-section">
+    <div class="settings-section-title">News beats</div>
+    <div class="pill-list">${beats.map(b=>`<div class="pill">${b} <span class="x" onclick="removeBeat('${b}')">×</span></div>`).join('')}</div>
+    <div class="add-row">
+      <input class="add-input" id="beat-add-input" placeholder="e.g. Climate, NBA, EdTech" onkeydown="if(event.key==='Enter')addBeat()"/>
+      <button class="add-btn" onclick="addBeat()">Add</button>
+    </div>
+  </div>`;
+
+  // Substacks
+  html += `<div class="settings-section">
+    <div class="settings-section-title">Substacks</div>
+    <div class="pill-list">${subs.map((s,i)=>`<div class="pill sub-pill">✍️ ${s.name||s.url} <span class="x" onclick="removeSub(${i})">×</span></div>`).join('')}</div>
+    <div class="add-row">
+      <input class="add-input" id="sub-add-input" placeholder="e.g. platformer.news" onkeydown="if(event.key==='Enter')addSub()"/>
+      <button class="add-btn sub" onclick="addSub()">Add</button>
+    </div>
+    <div id="sub-status" style="padding:0 16px 10px;font-size:11px;min-height:16px;color:var(--muted);"></div>
+  </div>`;
+
+  // Digest settings (Pro only)
+  if (!isFree) {
+    html += `<div class="settings-section">
+      <div class="settings-section-title">Morning digest</div>
+      <div class="settings-row">
+        <div class="settings-row-info"><p>Email digest</p><span>Daily briefing to your inbox</span></div>
+        <button class="tog ${profile.digest_enabled?'on':''}" id="digest-tog" onclick="toggleDigest()"><div class="tog-k"></div></button>
+      </div>
+      <div class="settings-row">
+        <div class="settings-row-info"><p>Send time</p><span>Your local morning</span></div>
+        <select style="font-size:12px;padding:5px 8px;border:1px solid var(--rule);background:white;border-radius:2px;font-family:'DM Sans',sans-serif;" onchange="profile.digest_time=this.value;savePreferences()">
+          <option ${profile.digest_time==='06:00'?'selected':''}>06:00 AM</option>
+          <option ${profile.digest_time==='07:00'?'selected':''}>07:00 AM</option>
+          <option ${profile.digest_time==='08:00'?'selected':''}>08:00 AM</option>
+        </select>
+      </div>
+    </div>`;
+  } else {
+    html += `<div class="upgrade-card"><h3>Morning email briefing</h3><p>Get your curated digest delivered to your inbox every morning — Pro feature.</p><button class="upgrade-card-btn" onclick="showModal()">Upgrade to Pro →</button></div>`;
+  }
+
+  html += `<div style="padding:8px 16px 4px;"><button onclick="doSignout()" style="width:100%;padding:10px;font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;background:none;border:1px solid var(--rule);cursor:pointer;color:var(--muted);border-radius:2px;">Sign out</button></div>`;
+  html += '</div>';
+
+  document.getElementById('content-area').innerHTML = html;
+}
+
+// ── BEATS & SUBSTACKS ─────────────────────────────────────────────
+function addBeat() {
+  const input = document.getElementById('beat-add-input');
+  const val = input?.value.trim();
+  if (!val) return;
+  if (!profile.beats) profile.beats = [];
+  if (profile.beats.map(b=>b.toLowerCase()).includes(val.toLowerCase())) { input.value=''; return; }
+  if (profile.tier !== 'pro' && profile.beats.length >= FREE.beats) { showModal('beat'); return; }
+  profile.beats.push(val.charAt(0).toUpperCase()+val.slice(1));
+  input.value = '';
+  savePreferences();
+  renderSettings();
+  fetchFeed();
+}
+
+function removeBeat(b) {
+  profile.beats = profile.beats.filter(x => x !== b);
+  savePreferences();
+  renderSettings();
+  fetchFeed();
+}
+
+async function addSub() {
+  const input = document.getElementById('sub-add-input');
+  const status = document.getElementById('sub-status');
+  let raw = input?.value.trim().toLowerCase().replace(/^https?:\/\//,'').replace(/\/$/,'');
+  if (!raw) return;
+  if (!profile.substacks) profile.substacks = [];
+  if (profile.tier !== 'pro' && profile.substacks.length >= FREE.substacks) { showModal('substack'); return; }
+
+  const feedUrl = raw.includes('.') ? `https://${raw}/feed` : `https://${raw}.substack.com/feed`;
+  const pubName = raw.split('.')[0];
+  if (profile.substacks.find(s=>s.url===feedUrl)) { input.value=''; return; }
+
+  if (status) { status.style.color='var(--muted)'; status.textContent='Fetching feed…'; }
+
+  try {
+    const proxy = `https://api.allorigins.win/get?url=${encodeURIComponent(feedUrl)}`;
+    const res = await fetch(proxy);
+    const data = await res.json();
+    const xml = data.contents;
+    if (!xml || xml.length < 100) throw new Error('Empty');
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(xml, 'application/xml');
+    const channelTitle = doc.querySelector('channel > title')?.textContent || pubName;
+    const items = [...doc.querySelectorAll('item')].slice(0,4).map(item => {
+      const title = item.querySelector('title')?.textContent?.trim()||'';
+      const link = item.querySelector('link')?.textContent?.trim()||'';
+      const desc = item.querySelector('description')?.textContent||'';
+      const pubDate = item.querySelector('pubDate')?.textContent||'';
+      const div = document.createElement('div'); div.innerHTML = desc;
+      const plain = (div.textContent||'').replace(/\s+/g,' ').trim().slice(0,160);
+      const summary = plain ? plain+(plain.length>=160?'…':'') : 'Read on Substack';
+      let timeAgo = '';
+      if (pubDate) { const diff=Date.now()-new Date(pubDate).getTime(); const h=Math.floor(diff/3600000); const d=Math.floor(diff/86400000); timeAgo=d>0?`${d}d ago`:h>0?`${h}h ago`:'Just now'; }
+      return { headline:title, summary, source:channelTitle, time:timeAgo, url:link, type:'substack', beat:'substack', pubName:channelTitle };
+    });
+    substackPosts = [...substackPosts, ...items];
+    profile.substacks.push({ url: feedUrl, name: channelTitle });
+    input.value = '';
+    if (status) { status.style.color='green'; status.textContent=`✓ Added ${channelTitle}`; setTimeout(()=>{ status.textContent=''; },3000); }
+    savePreferences();
+    renderBeatBar();
+    renderSettings();
+  } catch(e) {
+    if (status) { status.style.color='var(--accent)'; status.textContent='Could not load. Try the full URL.'; setTimeout(()=>{ status.textContent=''; },4000); }
+  }
+}
+
+function removeSub(i) {
+  const sub = profile.substacks[i];
+  substackPosts = substackPosts.filter(p => p.pubName !== sub.name);
+  profile.substacks.splice(i,1);
+  savePreferences();
+  renderBeatBar();
+  renderSettings();
+}
+
+function toggleDigest() {
+  profile.digest_enabled = !profile.digest_enabled;
+  document.getElementById('digest-tog')?.classList.toggle('on', profile.digest_enabled);
+  savePreferences();
+  showToast(profile.digest_enabled ? 'Digest enabled' : 'Digest disabled');
+}
+
+// ── NAV ───────────────────────────────────────────────────────────
+function switchNav(nav) {
+  currentNav = nav;
+  ['feed','saved','settings'].forEach(n => {
+    document.getElementById(`nav-${n}`)?.classList.toggle('active', n===nav);
+  });
+  if (nav==='feed') renderFeed();
+  else if (nav==='saved') renderSaved();
+  else if (nav==='settings') renderSettings();
+}
+
+// ── MODAL ─────────────────────────────────────────────────────────
+function showModal(reason) {
+  const titles = { refresh:'Out of daily refreshes', beat:'Beat limit reached', substack:'Substack limit reached' };
+  document.getElementById('modal-title').textContent = titles[reason] || 'Upgrade to Pro';
+  document.getElementById('modal-backdrop').classList.add('open');
+}
+function closeModal() { document.getElementById('modal-backdrop').classList.remove('open'); }
+function handleModalClick(e) { if (e.target===document.getElementById('modal-backdrop')) closeModal(); }
+
+async function doCheckout(plan) {
+  closeModal();
+  showToast('Opening checkout…');
+  try {
+    const res = await fetch(`${API}/api/stripe?action=checkout`, {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ plan, email: profile.email, userId: profile.id })
+    });
+    const data = await res.json();
+    if (data.url) { try { openLink(data.url); } catch(e) { window.location.href = data.url; } }
+  } catch(e) { showToast('Error opening checkout'); }
+}
+
+// ── TOAST ─────────────────────────────────────────────────────────
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// ── INIT ──────────────────────────────────────────────────────────
+async function init() {
+  // Check for saved session
+  const saved = localStorage.getItem('hr_session');
+  if (saved) {
+    try {
+      session = JSON.parse(saved);
+      await loadProfile();
+      if (profile) { showApp(); return; }
+    } catch(e) { localStorage.removeItem('hr_session'); }
+  }
+  document.getElementById('auth-screen').style.display = 'flex';
+}
+
+init();
+</script>
+</body>
+</html>
