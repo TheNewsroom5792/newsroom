@@ -79,7 +79,7 @@ export default async function handler(req, res) {
   </td></tr>
 
   <tr><td style="background:#f7f4ee;padding:16px 36px;border-top:1px solid #d4cfc4;text-align:center;">
-    <p style="margin:0;font-family:monospace;font-size:9px;letter-spacing:1px;color:#7a7567;">© 2025 Headlines Report · <a href="#" style="color:#7a7567;">Unsubscribe</a></p>
+    <tr><td style="background:#f0ece3;padding:12px 36px;border-top:1px solid #d4cfc4;"><p style="margin:0 0 3px;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:#7a7567;font-family:monospace;">From the community</p><p style="margin:0;font-size:12px;line-height:1.6;color:#3d3b36;">The Underground is where citizens push back on the narratives that shape our world. <a href="https://voxunderground.substack.com" style="color:#c1440e;">Join Vox Populi.</a></p></td></tr><tr><td style="background:#f7f4ee;padding:16px 36px;border-top:1px solid #d4cfc4;text-align:center;"><p style="margin:0;font-family:monospace;font-size:9px;letter-spacing:1px;color:#7a7567;">© 2025 Headlines Report · <a href="#" style="color:#7a7567;">Unsubscribe</a></p>
   </td></tr>
 
 </table>
