@@ -29,7 +29,7 @@ export default async function handler(req, res) {
     const data = await response.json();
 
     if (!response.ok) {
-      // Contact may already exist — treat as success
+      // Contact may already exist , treat as success
       if (data.name === 'validation_error' || response.status === 409) {
         return res.status(200).json({ success: true, message: 'Already on the list' });
       }
@@ -62,9 +62,9 @@ export default async function handler(req, res) {
 
   <tr><td style="padding:36px 36px 20px;">
     <p style="margin:0 0 16px;font-size:22px;font-weight:700;line-height:1.2;color:#0f0e0c;">You're on the list.</p>
-    <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#3d3b36;font-weight:300;">Thanks for signing up for early access to Headlines Report — your morning briefing, rebuilt.</p>
+    <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#3d3b36;font-weight:300;">Thanks for signing up for early access to Headlines Report , your morning briefing, rebuilt.</p>
     <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#3d3b36;font-weight:300;">When we open the doors, you'll be first in. Early access members get their <strong>first month free</strong>.</p>
-    <p style="margin:0;font-size:15px;line-height:1.7;color:#3d3b36;font-weight:300;">In the meantime — stay curious.</p>
+    <p style="margin:0;font-size:15px;line-height:1.7;color:#3d3b36;font-weight:300;">In the meantime , stay curious.</p>
   </td></tr>
 
   <tr><td style="padding:0 36px 36px;">
@@ -72,7 +72,7 @@ export default async function handler(req, res) {
       <tr>
         <td style="padding-right:20px;">
           <p style="margin:0 0 4px;font-family:monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#7a7567;">What you're getting</p>
-          <p style="margin:0;font-size:13px;line-height:1.6;color:#3d3b36;">One feed for all your beats, Substacks, and a curated morning digest — delivered to your inbox by 7am.</p>
+          <p style="margin:0;font-size:13px;line-height:1.6;color:#3d3b36;">One feed for all your beats, Substacks, and a curated morning digest , delivered to your inbox by 7am.</p>
         </td>
       </tr>
     </table>
