@@ -284,6 +284,9 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--i
     <button class="nav-item active" id="nav-feed" onclick="switchNav('feed')">
       <span class="nav-icon">📰</span><span class="nav-label">Feed</span>
     </button>
+    <button class="nav-item" id="nav-channels" onclick="switchNav('channels')">
+      <span class="nav-icon">📡</span><span class="nav-label">Channels</span>
+    </button>
     <button class="nav-item" id="nav-saved" onclick="switchNav('saved')">
       <span class="nav-icon">★</span><span class="nav-label">Saved</span>
     </button>
@@ -444,7 +447,7 @@ function showApp() {
 
   updateTierUI();
   renderBeatBar();
-  fetchFeed();
+  fetchFeed(true);
 }
 
 function updateTierUI() {
@@ -482,11 +485,11 @@ function switchBeat(beat, el) {
 }
 
 // ── FEED ──────────────────────────────────────────────────────────
-async function fetchFeed() {
+async function fetchFeed(isInitialLoad = false) {
   if (isLoading) return;
-  if (profile?.tier !== 'pro' && refreshesUsed >= FREE.refreshes) { showModal('refresh'); return; }
+  if (!isInitialLoad && profile?.tier !== 'pro' && refreshesUsed >= FREE.refreshes) { showModal('refresh'); return; }
   isLoading = true;
-  if (profile?.tier === 'free') refreshesUsed++;
+  if (!isInitialLoad && profile?.tier !== 'pro') refreshesUsed++;
   renderLoading();
 
   const beats = profile?.beats || ['Politics','Economy','Technology'];
@@ -669,7 +672,7 @@ function renderSettings() {
       </div>
     </div>`;
   } else {
-    html += `<div class="upgrade-card"><h3>Morning email briefing</h3><p>Get your curated digest delivered to your inbox every morning — Pro feature.</p><button class="upgrade-card-btn" onclick="showModal()">Upgrade to Pro →</button></div>`;
+    html += `<div class="upgrade-card"><h3>Morning email briefing</h3><p>Get your curated digest delivered to your inbox every morning , Pro feature.</p><button class="upgrade-card-btn" onclick="showModal()">Upgrade to Pro →</button></div>`;
   }
 
   html += `<div style="padding:8px 16px 4px;"><button onclick="doSignout()" style="width:100%;padding:10px;font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;background:none;border:1px solid var(--rule);cursor:pointer;color:var(--muted);border-radius:2px;">Sign out</button></div>`;
@@ -763,13 +766,130 @@ function toggleDigest() {
   showToast(profile.digest_enabled ? 'Digest enabled' : 'Digest disabled');
 }
 
+// ── CHANNELS DATA ─────────────────────────────────────────────────
+const CHANNELS = [
+  {
+    id: 'mainstream', name: 'Mainstream', icon: '📺',
+    desc: 'The major outlets. AP, Reuters, NYT, WaPo, BBC. The standard morning diet.',
+    beats: ['Politics', 'Economy', 'World', 'Technology'],
+    substacks: []
+  },
+  {
+    id: 'international', name: 'International', icon: '🌍',
+    desc: 'Global perspective. Al Jazeera, Foreign Policy, The Economist, Reuters World.',
+    beats: ['World', 'Politics', 'Economy', 'Diplomacy'],
+    substacks: []
+  },
+  {
+    id: 'independent', name: 'Independent', icon: '🔦',
+    desc: 'Outside the mainstream. The Underground, The Intercept, Defector, Platformer.',
+    beats: ['Politics', 'Culture', 'Technology', 'Media'],
+    substacks: [
+      { url: 'https://www.platformer.news/feed', name: 'Platformer' },
+      { url: 'https://sherwood.news/feed', name: 'Sherwood News' }
+    ]
+  },
+  {
+    id: 'business', name: 'Business', icon: '📈',
+    desc: 'Markets, money, and corporate power. Bloomberg, FT, WSJ, Sherwood News.',
+    beats: ['Economy', 'Markets', 'Business', 'Finance'],
+    substacks: []
+  },
+  {
+    id: 'tech', name: 'Tech and Science', icon: '💡',
+    desc: 'From the labs to the boardroom. MIT Tech Review, Wired, Ars Technica, The Verge.',
+    beats: ['Technology', 'Science', 'AI', 'Climate'],
+    substacks: []
+  },
+  {
+    id: 'politics', name: 'Politics and Policy', icon: '🏛',
+    desc: 'Inside the machine. Politico, The Hill, Axios AM, Punchbowl News.',
+    beats: ['Politics', 'Policy', 'Congress', 'Elections'],
+    substacks: []
+  },
+  {
+    id: 'opinion', name: 'Opinion', icon: '✍️',
+    desc: 'Voices worth reading. Columnists, editorial boards, and independent thinkers.',
+    beats: ['Opinion', 'Politics', 'Culture', 'Ideas'],
+    substacks: []
+  },
+  {
+    id: 'alerts', name: 'Breaking Alerts', icon: '🚨',
+    desc: 'High priority only. Breaking news flagged across all major beats.',
+    beats: ['Breaking', 'Politics', 'World', 'Economy'],
+    substacks: []
+  }
+];
+
+// ── CHANNELS RENDER ───────────────────────────────────────────────
+function renderChannels() {
+  let html = '<div class="settings-wrap">';
+  html += `<div style="padding:14px 0 10px;"><div class="feed-title">Channels</div><div style="font-size:12px;color:var(--muted);margin-top:4px;">Subscribe to a curated collection in one tap. You can customize beats after.</div></div>`;
+
+  CHANNELS.forEach(ch => {
+    const isSubscribed = profile?.beats?.some(b => ch.beats.includes(b)) &&
+      ch.beats.every(b => profile?.beats?.includes(b));
+    html += `<div class="settings-section" style="margin-bottom:10px;">
+      <div style="padding:14px 16px;display:flex;align-items:flex-start;gap:12px;">
+        <div style="font-size:28px;flex-shrink:0;margin-top:2px;">${ch.icon}</div>
+        <div style="flex:1;min-width:0;">
+          <div style="font-size:14px;font-weight:500;margin-bottom:3px;">${ch.name}</div>
+          <div style="font-size:12px;color:var(--muted);line-height:1.5;margin-bottom:10px;">${ch.desc}</div>
+          <div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:12px;">
+            ${ch.beats.map(b=>`<span style="font-size:10px;padding:2px 8px;border-radius:20px;border:1px solid var(--rule);color:var(--muted);background:var(--bg);">${b}</span>`).join('')}
+          </div>
+          <button onclick="subscribeChannel('${ch.id}')" style="padding:7px 16px;font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;border:1px solid ${isSubscribed?'var(--rule)':'var(--ink)'};background:${isSubscribed?'none':'var(--ink)'};color:${isSubscribed?'var(--muted)':'var(--paper)'};cursor:pointer;border-radius:2px;transition:all .15s;">
+            ${isSubscribed ? 'Subscribed' : 'Subscribe'}
+          </button>
+        </div>
+      </div>
+    </div>`;
+  });
+
+  html += '</div>';
+  document.getElementById('content-area').innerHTML = html;
+}
+
+function subscribeChannel(id) {
+  const ch = CHANNELS.find(c => c.id === id);
+  if (!ch) return;
+  if (!profile.beats) profile.beats = [];
+
+  // Add beats that aren't already there
+  ch.beats.forEach(b => {
+    if (!profile.beats.map(x=>x.toLowerCase()).includes(b.toLowerCase())) {
+      if (profile.tier === 'pro' || profile.beats.length < FREE.beats) {
+        profile.beats.push(b);
+      }
+    }
+  });
+
+  // Add substacks
+  if (ch.substacks.length) {
+    if (!profile.substacks) profile.substacks = [];
+    ch.substacks.forEach(s => {
+      if (!profile.substacks.find(x => x.url === s.url)) {
+        if (profile.tier === 'pro' || profile.substacks.length < FREE.substacks) {
+          profile.substacks.push(s);
+        }
+      }
+    });
+  }
+
+  savePreferences();
+  renderBeatBar();
+  renderChannels();
+  showToast(`Subscribed to ${ch.name}`);
+}
+
 // ── NAV ───────────────────────────────────────────────────────────
 function switchNav(nav) {
   currentNav = nav;
-  ['feed','saved','settings'].forEach(n => {
+  ['feed','channels','saved','settings'].forEach(n => {
     document.getElementById(`nav-${n}`)?.classList.toggle('active', n===nav);
   });
   if (nav==='feed') renderFeed();
+  else if (nav==='channels') renderChannels();
   else if (nav==='saved') renderSaved();
   else if (nav==='settings') renderSettings();
 }
