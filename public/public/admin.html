@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Headlines Report, Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&family=Playfair+Display:ital,wght@0,700;1,400&display=swap" rel="stylesheet"/>
+<style>
+:root { --ink:#0f0e0c; --paper:#f7f4ee; --rule:#d4cfc4; --muted:#7a7567; --accent:#c1440e; --bg:#f0ece3; --card:#ffffff; }
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--ink);font-size:14px;min-height:100vh;}
+
+/* Login */
+#login-screen{display:flex;align-items:center;justify-content:center;min-height:100vh;background:var(--ink);}
+.login-box{background:var(--paper);width:320px;border-radius:4px;overflow:hidden;}
+.login-header{background:var(--ink);padding:24px;text-align:center;border-bottom:3px double var(--accent);}
+.login-logo{font-family:'Playfair Display',serif;font-size:22px;font-style:italic;font-weight:700;color:white;}
+.login-logo em{font-weight:400;color:var(--accent);}
+.login-sub{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-top:4px;}
+.login-body{padding:24px;}
+.login-input{width:100%;padding:10px 12px;border:1px solid var(--rule);background:white;font-size:13px;font-family:'DM Sans',sans-serif;outline:none;margin-bottom:10px;border-radius:2px;}
+.login-btn{width:100%;padding:10px;background:var(--ink);color:var(--paper);font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;border:none;cursor:pointer;border-radius:2px;}
+.login-err{font-size:11px;color:var(--accent);margin-top:8px;text-align:center;min-height:14px;}
+
+/* App */
+#admin-app{display:none;}
+.topbar{background:var(--ink);padding:0 28px;display:flex;align-items:center;justify-content:space-between;height:52px;border-bottom:2px solid var(--accent);}
+.topbar-logo{font-family:'Playfair Display',serif;font-size:18px;font-style:italic;font-weight:700;color:white;}
+.topbar-logo em{font-weight:400;color:var(--accent);}
+.topbar-tag{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.4);}
+.topbar-right{display:flex;align-items:center;gap:16px;}
+.signout-btn{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,0.4);background:none;border:none;cursor:pointer;transition:color .15s;}
+.signout-btn:hover{color:white;}
+
+.admin-nav{background:var(--card);border-bottom:1px solid var(--rule);display:flex;padding:0 28px;}
+.admin-tab{padding:10px 16px;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);border:none;background:none;cursor:pointer;border-bottom:2px solid transparent;transition:all .15s;}
+.admin-tab:hover{color:var(--ink);}
+.admin-tab.active{color:var(--ink);border-bottom-color:var(--ink);}
+
+.admin-content{max-width:1100px;margin:0 auto;padding:24px 28px;}
+
+/* Stats */
+.stats-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:24px;}
+.stat-card{background:var(--card);border:1px solid var(--rule);padding:18px 20px;border-radius:2px;}
+.stat-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:6px;}
+.stat-val{font-family:'Playfair Display',serif;font-size:36px;font-weight:700;line-height:1;}
+.stat-sub{font-size:11px;color:var(--muted);margin-top:4px;}
+
+/* Table */
+.section-card{background:var(--card);border:1px solid var(--rule);border-radius:2px;margin-bottom:16px;overflow:hidden;}
+.section-header{display:flex;align-items:center;justify-content:space-between;padding:14px 20px;border-bottom:1px solid var(--rule);background:var(--bg);}
+.section-title{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);}
+.table-wrap{overflow-x:auto;}
+table{width:100%;border-collapse:collapse;font-size:13px;}
+th{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);padding:10px 16px;text-align:left;border-bottom:1px solid var(--rule);background:var(--bg);}
+td{padding:10px 16px;border-bottom:1px solid var(--rule);vertical-align:middle;}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:#faf9f6;}
+
+.tier-pill{display:inline-block;font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1px;text-transform:uppercase;padding:2px 8px;border-radius:10px;}
+.tier-pill.pro{background:#fff0eb;color:var(--accent);border:1px solid #ffd4b8;}
+.tier-pill.free{background:var(--bg);color:var(--muted);border:1px solid var(--rule);}
+
+.action-btn{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1px;text-transform:uppercase;padding:4px 10px;border:1px solid var(--rule);background:none;cursor:pointer;color:var(--muted);border-radius:2px;transition:all .15s;}
+.action-btn:hover{background:var(--ink);color:var(--paper);border-color:var(--ink);}
+.action-btn.danger:hover{background:var(--accent);border-color:var(--accent);}
+
+/* Broadcast */
+.broadcast-form{padding:20px;}
+.form-row{margin-bottom:14px;}
+.form-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:5px;}
+.form-input{width:100%;padding:9px 12px;border:1px solid var(--rule);background:white;font-size:13px;font-family:'DM Sans',sans-serif;outline:none;transition:border-color .15s;border-radius:2px;}
+.form-input:focus{border-color:var(--ink);}
+textarea.form-input{min-height:120px;resize:vertical;line-height:1.5;}
+select.form-input{cursor:pointer;}
+.submit-btn{padding:10px 24px;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;background:var(--ink);color:var(--paper);border:none;cursor:pointer;border-radius:2px;transition:opacity .15s;}
+.submit-btn:hover{opacity:.85;}
+.submit-btn:disabled{opacity:.5;cursor:not-allowed;}
+
+/* Test digest */
+.test-form{padding:20px;}
+
+.status-msg{font-size:12px;margin-top:10px;min-height:16px;}
+.status-msg.ok{color:green;}
+.status-msg.err{color:var(--accent);}
+.status-msg.loading{color:var(--muted);}
+
+.spinner{display:inline-block;width:12px;height:12px;border:1.5px solid #ccc;border-top-color:#666;border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:4px;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+.empty{padding:32px;text-align:center;color:var(--muted);font-size:13px;}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login-screen">
+  <div class="login-box">
+    <div class="login-header">
+      <div class="login-logo">Headlines<em>Report</em></div>
+      <div class="login-sub">Admin Dashboard</div>
+    </div>
+    <div class="login-body">
+      <input class="login-input" type="password" id="admin-key" placeholder="Admin secret key" onkeydown="if(event.key==='Enter')doLogin()"/>
+      <button class="login-btn" onclick="doLogin()">Enter dashboard</button>
+      <div class="login-err" id="login-err"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ADMIN APP -->
+<div id="admin-app">
+  <div class="topbar">
+    <div>
+      <div class="topbar-logo">Headlines<em>Report</em></div>
+      <div class="topbar-tag">Admin</div>
+    </div>
+    <div class="topbar-right">
+      <div id="last-updated" style="font-family:'DM Mono',monospace;font-size:9px;color:rgba(255,255,255,0.3);letter-spacing:1px;"></div>
+      <button class="signout-btn" onclick="doSignout()">Sign out</button>
+    </div>
+  </div>
+
+  <div class="admin-nav">
+    <button class="admin-tab active" onclick="switchTab('overview')">Overview</button>
+    <button class="admin-tab" onclick="switchTab('users')">Users</button>
+    <button class="admin-tab" onclick="switchTab('broadcast')">Broadcast</button>
+    <button class="admin-tab" onclick="switchTab('digest')">Test Digest</button>
+  </div>
+
+  <div class="admin-content" id="admin-content">
+    <div class="empty"><div class="spinner"></div> Loading...</div>
+  </div>
+</div>
+
+<script>
+const API = '/api/admin';
+let adminKey = '';
+let statsData = null;
+let usersData = null;
+let currentTab = 'overview';
+
+function doLogin() {
+  const key = document.getElementById('admin-key').value.trim();
+  if (!key) return;
+  adminKey = key;
+  document.getElementById('login-err').textContent = '';
+  loadDashboard();
+}
+
+function doSignout() {
+  adminKey = '';
+  document.getElementById('login-screen').style.display = 'flex';
+  document.getElementById('admin-app').style.display = 'none';
+}
+
+async function apiCall(action, body = null) {
+  const opts = {
+    method: body ? 'POST' : 'GET',
+    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${adminKey}` }
+  };
+  if (body) opts.body = JSON.stringify(body);
+  const res = await fetch(`${API}?action=${action}`, opts);
+  if (res.status === 401) throw new Error('Invalid admin key');
+  return res.json();
+}
+
+async function loadDashboard() {
+  try {
+    const [statsRes, usersRes] = await Promise.all([
+      apiCall('stats'),
+      apiCall('users')
+    ]);
+    if (!statsRes.success) throw new Error(statsRes.error);
+    statsData = statsRes.stats;
+    usersData = usersRes.users;
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('admin-app').style.display = 'block';
+    document.getElementById('last-updated').textContent = 'Updated ' + new Date().toLocaleTimeString();
+    switchTab('overview');
+  } catch(e) {
+    document.getElementById('login-err').textContent = e.message === 'Invalid admin key' ? 'Invalid key' : 'Connection error';
+  }
+}
+
+function switchTab(tab) {
+  currentTab = tab;
+  document.querySelectorAll('.admin-tab').forEach((t,i) => {
+    t.classList.toggle('active', ['overview','users','broadcast','digest'][i] === tab);
+  });
+  if (tab === 'overview') renderOverview();
+  else if (tab === 'users') renderUsers();
+  else if (tab === 'broadcast') renderBroadcast();
+  else if (tab === 'digest') renderDigest();
+}
+
+function renderOverview() {
+  const s = statsData;
+  document.getElementById('admin-content').innerHTML = `
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-label">Total users</div>
+        <div class="stat-val">${s.total}</div>
+        <div class="stat-sub">All time signups</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Pro subscribers</div>
+        <div class="stat-val" style="color:var(--accent)">${s.pro}</div>
+        <div class="stat-sub">${s.free} on free tier</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Est. MRR</div>
+        <div class="stat-val">$${s.mrr}</div>
+        <div class="stat-sub">At $7 per Pro user</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Digest enabled</div>
+        <div class="stat-val">${s.digestEnabled}</div>
+        <div class="stat-sub">Morning email active</div>
+      </div>
+    </div>
+
+    <div class="section-card">
+      <div class="section-header">
+        <div class="section-title">Recent users</div>
+        <button class="action-btn" onclick="switchTab('users')">View all</button>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Email</th><th>Tier</th><th>Beats</th><th>Joined</th></tr></thead>
+          <tbody>
+            ${(usersData||[]).slice(0,8).map(u => `
+              <tr>
+                <td>${u.email}</td>
+                <td><span class="tier-pill ${u.tier}">${u.tier}</span></td>
+                <td style="color:var(--muted);font-size:12px;">${(u.beats||[]).slice(0,3).join(', ')}${(u.beats||[]).length > 3 ? '...' : ''}</td>
+                <td style="color:var(--muted);font-size:12px;">${new Date(u.created_at).toLocaleDateString()}</td>
+              </tr>`).join('')}
+          </tbody>
+        </table>
+      </div>
+    </div>`;
+}
+
+function renderUsers() {
+  document.getElementById('admin-content').innerHTML = `
+    <div class="section-card">
+      <div class="section-header">
+        <div class="section-title">All users (${(usersData||[]).length})</div>
+        <button class="action-btn" onclick="loadDashboard()">↻ Refresh</button>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Email</th><th>Tier</th><th>Digest</th><th>Beats</th><th>Joined</th><th>Actions</th></tr></thead>
+          <tbody>
+            ${(usersData||[]).map(u => `
+              <tr>
+                <td style="font-weight:500;">${u.email}</td>
+                <td><span class="tier-pill ${u.tier}">${u.tier}</span></td>
+                <td style="color:var(--muted);font-size:12px;">${u.digest_enabled ? 'On' : 'Off'}</td>
+                <td style="color:var(--muted);font-size:12px;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${(u.beats||[]).join(', ')}</td>
+                <td style="color:var(--muted);font-size:12px;">${new Date(u.created_at).toLocaleDateString()}</td>
+                <td>
+                  ${u.tier === 'free'
+                    ? `<button class="action-btn" onclick="setTier('${u.id}','pro')">Upgrade</button>`
+                    : `<button class="action-btn danger" onclick="setTier('${u.id}','free')">Downgrade</button>`}
+                </td>
+              </tr>`).join('')}
+          </tbody>
+        </table>
+      </div>
+    </div>`;
+}
+
+async function setTier(userId, tier) {
+  if (!confirm(`Set this user to ${tier}?`)) return;
+  try {
+    await apiCall('set_tier', { userId, tier });
+    const user = usersData.find(u => u.id === userId);
+    if (user) user.tier = tier;
+    statsData.pro = usersData.filter(u => u.tier === 'pro').length;
+    statsData.free = usersData.length - statsData.pro;
+    statsData.mrr = statsData.pro * 7;
+    renderUsers();
+  } catch(e) { alert('Error: ' + e.message); }
+}
+
+function renderBroadcast() {
+  document.getElementById('admin-content').innerHTML = `
+    <div class="section-card">
+      <div class="section-header"><div class="section-title">Send broadcast email</div></div>
+      <div class="broadcast-form">
+        <div class="form-row">
+          <label class="form-label">Send to</label>
+          <select class="form-input" id="bc-segment">
+            <option value="all">All users (${(usersData||[]).length})</option>
+            <option value="pro">Pro users only (${(usersData||[]).filter(u=>u.tier==='pro').length})</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <label class="form-label">Subject line</label>
+          <input class="form-input" type="text" id="bc-subject" placeholder="e.g. Important update from Headlines Report"/>
+        </div>
+        <div class="form-row">
+          <label class="form-label">Message (HTML supported)</label>
+          <textarea class="form-input" id="bc-body" placeholder="Write your message here. Basic HTML like &lt;b&gt;bold&lt;/b&gt; and &lt;a href=&quot;...&quot;&gt;links&lt;/a&gt; is supported."></textarea>
+        </div>
+        <button class="submit-btn" id="bc-btn" onclick="sendBroadcast()">Send broadcast</button>
+        <div class="status-msg" id="bc-status"></div>
+      </div>
+    </div>`;
+}
+
+async function sendBroadcast() {
+  const subject = document.getElementById('bc-subject').value.trim();
+  const body = document.getElementById('bc-body').value.trim();
+  const segment = document.getElementById('bc-segment').value;
+  const btn = document.getElementById('bc-btn');
+  const status = document.getElementById('bc-status');
+  if (!subject || !body) { status.className='status-msg err'; status.textContent='Subject and message are required.'; return; }
+  if (!confirm(`Send to ${segment === 'all' ? 'all users' : 'Pro users only'}?`)) return;
+  btn.disabled = true;
+  status.className = 'status-msg loading';
+  status.innerHTML = '<span class="spinner"></span> Sending...';
+  try {
+    const html = `<div style="font-family:Arial,sans-serif;max-width:560px;margin:0 auto;padding:32px 24px;background:#f7f4ee;"><div style="background:#0f0e0c;padding:18px 24px;text-align:center;margin-bottom:20px;"><p style="margin:0;font-family:Georgia,serif;font-size:20px;font-style:italic;font-weight:900;color:#fff;">Headlines<span style="font-weight:400;color:#c1440e;">Report</span></p></div><div style="background:white;padding:24px;border:1px solid #d4cfc4;">${body}</div><p style="font-size:10px;color:#aaa;text-align:center;margin-top:16px;font-family:monospace;">Headlines Report · <a href="https://headlinesreport.com/app.html" style="color:#aaa;">Open app</a></p></div>`;
+    const res = await apiCall('broadcast', { subject, html, segment });
+    status.className = 'status-msg ok';
+    status.textContent = `Sent to ${res.sent} users.`;
+  } catch(e) { status.className='status-msg err'; status.textContent='Error: ' + e.message; }
+  btn.disabled = false;
+}
+
+function renderDigest() {
+  document.getElementById('admin-content').innerHTML = `
+    <div class="section-card">
+      <div class="section-header"><div class="section-title">Send test digest</div></div>
+      <div class="test-form">
+        <div class="form-row">
+          <label class="form-label">Send to email</label>
+          <input class="form-input" type="email" id="td-email" placeholder="moose1192@proton.me"/>
+        </div>
+        <div class="form-row">
+          <label class="form-label">Beats (comma separated)</label>
+          <input class="form-input" type="text" id="td-beats" value="Politics, Economy, Technology, World"/>
+        </div>
+        <button class="submit-btn" id="td-btn" onclick="sendTestDigest()">Generate and send digest</button>
+        <div class="status-msg" id="td-status"></div>
+      </div>
+    </div>`;
+}
+
+async function sendTestDigest() {
+  const email = document.getElementById('td-email').value.trim();
+  const beatsRaw = document.getElementById('td-beats').value.trim();
+  const beats = beatsRaw.split(',').map(b => b.trim()).filter(Boolean);
+  const btn = document.getElementById('td-btn');
+  const status = document.getElementById('td-status');
+  if (!email || !beats.length) { status.className='status-msg err'; status.textContent='Email and beats required.'; return; }
+  btn.disabled = true;
+  status.className = 'status-msg loading';
+  status.innerHTML = '<span class="spinner"></span> Generating digest and sending...';
+  try {
+    await apiCall('test_digest', { email, beats });
+    status.className = 'status-msg ok';
+    status.textContent = `Digest sent to ${email}`;
+  } catch(e) { status.className='status-msg err'; status.textContent='Error: ' + e.message; }
+  btn.disabled = false;
+}
+</script>
+</body>
+</html>
