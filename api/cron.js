@@ -3,7 +3,7 @@ import { createClient } from '@supabase/supabase-js';
 const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY);
 
 export default async function handler(req, res) {
-  // Vercel cron calls this — secure with a secret
+  // Vercel cron calls this , secure with a secret
   if (req.headers.authorization !== `Bearer ${process.env.CRON_SECRET}`) {
     return res.status(401).json({ error: 'Unauthorized' });
   }
@@ -85,7 +85,7 @@ Respond ONLY with valid JSON:
           body: JSON.stringify({
             from: process.env.FROM_EMAIL || 'morning@headlinesreport.com',
             to: [user.email],
-            subject: `Your morning briefing — ${date}`,
+            subject: `Your morning briefing , ${date}`,
             html
           })
         });
