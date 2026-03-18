@@ -559,6 +559,10 @@ async function fetchFeed(isInitialLoad = false) {
     renderFeed();
   } catch(e) {
     document.getElementById('content-area').innerHTML = `<div class="loading">Could not load stories.<br><button class="refresh-btn" style="margin:10px auto;display:flex" onclick="fetchFeed(true)">Try again</button></div>`;
+    // Load trending + beat suggestions after feed loads
+    loadTrending().catch(()=>{});
+    if(window._currentProfile) renderBeatSuggestions(window._currentProfile.beats||[]);
+
   }
   isLoading = false;
 }
@@ -578,10 +582,7 @@ function renderFeed() {
   const visible = filtered.slice(0, filtered.length); // BETA: all articles free
   const gated = []; // BETA: no gating
 
-  const beatColors = {politics:'beat-pol',economy:'beat-eco',technology:'beat-tech',tech:'beat-tech',world:'beat-world',education:'beat-edu'
-    // Load trending + beat suggestions after feed loads
-    loadTrending().catch(()=>{});
-    if(window._currentProfile) renderBeatSuggestions(window._currentProfile.beats||[]);};
+  const beatColors = {politics:'beat-pol',economy:'beat-eco',technology:'beat-tech',tech:'beat-tech',world:'beat-world',education:'beat-edu'};
   function bc(b){ return beatColors[b?.toLowerCase()] || 'beat-def'; }
 
   // Bias ratings based on AllSides + Ad Fontes Media
