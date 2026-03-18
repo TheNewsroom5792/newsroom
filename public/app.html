@@ -1195,6 +1195,12 @@ init();
     window.open(articleUrl, '_blank', 'noopener');
   }
 
+  
+  // Register service worker
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/sw.js').catch(e => console.log('SW:', e));
+  }
+
   </script>
 </body>
 </html>
