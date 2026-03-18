@@ -14,8 +14,32 @@
       "dest": "/public/fresh-start.html"
     },
     {
+      "src": "/privacy",
+      "dest": "/public/privacy.html"
+    },
+    {
+      "src": "/terms",
+      "dest": "/public/terms.html"
+    },
+    {
       "src": "/manifest.json",
       "dest": "/public/manifest.json"
+    },
+    {
+      "src": "/sw.js",
+      "dest": "/public/sw.js"
+    },
+    {
+      "src": "/icon-192.svg",
+      "dest": "/public/icon-192.svg"
+    },
+    {
+      "src": "/icon-512.svg",
+      "dest": "/public/icon-512.svg"
+    },
+    {
+      "src": "/og-image.svg",
+      "dest": "/public/og-image.svg"
     },
     {
       "src": "/api/(.*)",
@@ -31,13 +55,14 @@
     },
     {
       "src": "/(.*)",
-      "dest": "/public/$1"
+      "dest": "/public/$1",
+      "status": 200
     }
   ],
   "crons": [
     {
       "path": "/api/cron",
-      "schedule": "0 12 * * *"
+      "schedule": "0 7 * * *"
     }
   ]
 }
