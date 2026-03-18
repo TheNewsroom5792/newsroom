@@ -216,7 +216,11 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--i
   .modal { border-radius: 4px; }
   .bottom-nav { max-width: 680px; left: 50%; transform: translateX(-50%); border-left: 1px solid var(--rule); border-right: 1px solid var(--rule); }
 }
-</style>
+
+    .ob-tile{padding:8px 4px;font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1px;text-transform:uppercase;border:1.5px solid var(--rule);background:white;cursor:pointer;border-radius:2px;text-align:center;transition:all .12s;color:var(--muted);}
+    .ob-tile:hover{border-color:var(--ink);color:var(--ink);}
+    .ob-tile.sel{background:var(--ink);color:var(--paper);border-color:var(--ink);}
+  </style>
 </head>
 <body>
 
@@ -259,6 +263,9 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--i
   </div>
 </div>
 
+
+<!-- ONBOARDING -->
+<div id="onboarding-overlay" style="display:none;position:fixed;inset:0;background:rgba(15,14,12,0.92);z-index:9999;align-items:center;justify-content:center;"><div style="background:var(--paper);max-width:640px;width:92%;border-radius:4px;overflow:hidden;box-shadow:0 24px 80px rgba(0,0,0,0.5);"><div style="background:var(--ink);padding:20px 28px;display:flex;align-items:center;justify-content:space-between;"><div style="font-family:'Playfair Display',serif;font-size:20px;font-style:italic;font-weight:700;color:white;">Headlines<em style="font-weight:400;color:var(--accent);">Report</em></div><div id="ob-step-ind" style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.4);">Welcome</div></div><div id="ob-s1" style="padding:36px 32px;"><div style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--accent);margin-bottom:12px;">Welcome</div><h2 style="font-family:'Playfair Display',serif;font-size:28px;font-weight:700;line-height:1.2;margin-bottom:14px;">Let's build your<br/><em style="font-weight:400;">personal feed.</em></h2><p style="font-size:14px;line-height:1.7;color:#3d3b36;margin-bottom:28px;">Headlines Report pulls from 100+ sources. Pick your topics and your feed is ready in 60 seconds.</p><button onclick="obStep(2)" style="padding:12px 28px;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;background:var(--ink);color:var(--paper);border:none;cursor:pointer;border-radius:2px;">Get started</button></div><div id="ob-s2" style="display:none;padding:28px 32px;"><div style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--accent);margin-bottom:10px;">Pick your beats</div><p style="font-size:13px;color:#3d3b36;margin-bottom:16px;">Select everything you want to follow. No limit.</p><div id="ob-grid" style="display:grid;grid-template-columns:repeat(4,1fr);gap:7px;max-height:260px;overflow-y:auto;margin-bottom:18px;"></div><div style="display:flex;align-items:center;justify-content:space-between;"><span id="ob-count" style="font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);">0 selected</span><button onclick="obStep(3)" id="ob-next" disabled style="padding:11px 24px;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;background:var(--ink);color:var(--paper);border:none;cursor:pointer;border-radius:2px;opacity:0.4;">Next</button></div></div><div id="ob-s3" style="display:none;padding:28px 32px;"><div style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--accent);margin-bottom:10px;">Add a Substack</div><p style="font-size:13px;color:#3d3b36;margin-bottom:16px;">Paste a Substack URL to add it to your feed. Optional, you can add more later.</p><input id="ob-sub" type="url" placeholder="https://example.substack.com" style="width:100%;padding:10px 14px;font-size:13px;border:1.5px solid var(--rule);background:white;outline:none;margin-bottom:20px;border-radius:2px;box-sizing:border-box;" /><div style="display:flex;gap:10px;justify-content:flex-end;"><button onclick="obDone(false)" style="padding:11px 20px;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;background:none;color:var(--muted);border:1px solid var(--rule);cursor:pointer;border-radius:2px;">Skip</button><button onclick="obDone(true)" style="padding:11px 24px;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;background:var(--ink);color:var(--paper);border:none;cursor:pointer;border-radius:2px;">Finish setup</button></div></div></div></div>
 <!-- APP SCREEN -->
 <div id="app-screen">
   <!-- Top bar -->
@@ -431,7 +438,7 @@ async function loadProfile() {
     headers: { 'Authorization': `Bearer ${session.access_token}` }
   });
   const data = await res.json();
-  if (data.success) profile = data.profile;
+  if (data.success) profile = data.profile; window._currentProfile = data.profile;
 }
 
 async function savePreferences() {
@@ -707,6 +714,7 @@ function renderSaved() {
 
 // ── SETTINGS ──────────────────────────────────────────────────────
 function renderSettings() {
+    if(window._currentProfile) obCheckOnboard(window._currentProfile);
   const beats = profile?.beats || [];
   const subs = profile?.substacks || [];
   const isFree = profile?.tier !== 'pro';
@@ -1101,6 +1109,54 @@ init();
       btn.textContent = 'Copied!';
       setTimeout(() => btn.textContent = 'Copy link', 2000);
     });
+  }
+
+  
+  const _OB_BEATS=['Politics','Congress','Elections','White House','Senate','Supreme Court','Economy','Markets','Business','Crypto','Personal Finance','Real Estate','Technology','AI','Cybersecurity','Big Tech','Startups','Space','Gaming','Science','Health','Medicine','Climate','Environment','Energy','World','Europe','Middle East','Asia','Africa','Latin America','Culture','Education','Media','Religion','Criminal Justice','Immigration','Sports','NBA','NFL','MLB','NHL','Soccer','Tennis','Golf','MMA','Entertainment','Music','Film','TV','Books','Food','Travel','Opinion','Analysis','Breaking'];
+  let _obPicks=[];
+
+  function obCheckOnboard(profile){
+    if(localStorage.getItem('hr_onboarded')) return;
+    const b=(profile.beats||[]).map(x=>x.toLowerCase());
+    const isDefault=b.length<=3&&['politics','economy','technology'].every(x=>b.includes(x));
+    if(isDefault) obOpen();
+  }
+  function obOpen(){
+    const el=document.getElementById('onboarding-overlay');
+    el.style.display='flex';
+    const grid=document.getElementById('ob-grid');
+    grid.innerHTML='';
+    _OB_BEATS.forEach(beat=>{
+      const t=document.createElement('div');
+      t.className='ob-tile';
+      t.textContent=beat;
+      t.onclick=()=>{
+        const sel=t.classList.toggle('sel');
+        _obPicks=sel?[..._obPicks,beat]:_obPicks.filter(b=>b!==beat);
+        document.getElementById('ob-count').textContent=_obPicks.length+' selected';
+        const nb=document.getElementById('ob-next');
+        nb.disabled=_obPicks.length===0;
+        nb.style.opacity=_obPicks.length===0?'0.4':'1';
+      };
+      grid.appendChild(t);
+    });
+  }
+  function obStep(n){
+    document.getElementById('ob-s1').style.display=n===1?'block':'none';
+    document.getElementById('ob-s2').style.display=n===2?'block':'none';
+    document.getElementById('ob-s3').style.display=n===3?'block':'none';
+    document.getElementById('ob-step-ind').textContent=n===1?'Welcome':n===2?'Step 1 of 2':'Step 2 of 2';
+  }
+  async function obDone(withSub){
+    const beats=_obPicks.length>0?_obPicks:['Politics','Economy','Technology'];
+    const substacks=[];
+    if(withSub){const v=document.getElementById('ob-sub').value.trim();if(v)substacks.push(v);}
+    try{
+      await fetch('/api/auth?action=save',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+localStorage.getItem('hr_token')},body:JSON.stringify({beats,substacks,digest_time:'07:00',digest_enabled:false})});
+    }catch(e){console.error(e);}
+    localStorage.setItem('hr_onboarded','1');
+    document.getElementById('onboarding-overlay').style.display='none';
+    if(typeof loadFeed==='function')loadFeed();else location.reload();
   }
 
   </script>
