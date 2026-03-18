@@ -284,6 +284,13 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--i
     </div>
   </div>
 
+  
+  <!-- BETA BANNER -->
+  <div id="beta-banner" style="background:#1a3a1a;color:#90ee90;text-align:center;padding:8px 16px;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;display:flex;align-items:center;justify-content:center;gap:12px;">
+    <span>Beta: Full access unlocked for all users. Help us improve.</span>
+    <a href="mailto:hello@headlinesreport.com?subject=Headlines Report Beta Feedback" style="color:#90ee90;text-decoration:underline;white-space:nowrap;">Send feedback</a>
+    <button onclick="document.getElementById('beta-banner').remove();localStorage.setItem('hr_beta_dismissed','1');" style="background:none;border:none;color:#90ee90;cursor:pointer;font-size:14px;padding:0;line-height:1;">x</button>
+  </div>
   <!-- Beat tabs -->
   <div class="beat-bar" id="beat-bar"></div>
 
@@ -363,7 +370,7 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--i
     })();
 
 const API = '';  // same-origin
-const FREE = { beats: 3, substacks: 2, refreshes: 1 };
+const FREE = { beats: 10, substacks: 5, refreshes: 99 };
 
 let session = null;
 let profile = null;
@@ -568,8 +575,8 @@ function renderFeed() {
     : articles.filter(a => a.beat?.toLowerCase() === currentBeat.toLowerCase());
 
   const isFree = profile?.tier !== 'pro';
-  const visible = filtered.slice(0, isFree ? 4 : filtered.length);
-  const gated = isFree ? filtered.slice(4) : [];
+  const visible = filtered.slice(0, filtered.length); // BETA: all articles free
+  const gated = []; // BETA: no gating
 
   const beatColors = {politics:'beat-pol',economy:'beat-eco',technology:'beat-tech',tech:'beat-tech',world:'beat-world',education:'beat-edu'
     // Load trending + beat suggestions after feed loads
@@ -1208,6 +1215,7 @@ init();
     navigator.serviceWorker.register('/sw.js').catch(e => console.log('SW:', e));
   }
   checkUpgradedParam();
+  if(localStorage.getItem('hr_beta_dismissed')) { const bb = document.getElementById('beta-banner'); if(bb) bb.style.display='none'; }
 
   
   // ── BEAT SUGGESTIONS ─────────────────────────────────
