@@ -6,6 +6,10 @@
       "dest": "/public/beta.html"
     },
     {
+      "src": "/beta.html",
+      "dest": "/public/beta.html"
+    },
+    {
       "src": "/app",
       "dest": "/public/app.html"
     },
@@ -77,6 +81,10 @@
       "src": "/(.*)",
       "dest": "/public/$1",
       "status": 200
+    },
+    {
+      "src": "/404",
+      "dest": "/public/404.html"
     }
   ],
   "crons": [
