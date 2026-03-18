@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>404, Headlines Report</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+:root{--ink:#0f0e0c;--paper:#f7f4ee;--rule:#d4cfc4;--muted:#7a7567;--accent:#c1440e;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--paper);color:var(--ink);font-family:Georgia,serif;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:48px 24px;}
+.num{font-family:'Playfair Display',serif;font-size:clamp(80px,15vw,160px);font-weight:900;line-height:1;color:var(--rule);letter-spacing:-4px;}
+.hed{font-family:'Playfair Display',serif;font-size:clamp(24px,4vw,40px);font-weight:700;margin:8px 0 16px;}
+.hed em{font-style:italic;font-weight:400;color:var(--accent);}
+.deck{font-size:16px;color:var(--muted);line-height:1.6;max-width:440px;text-align:center;margin-bottom:36px;}
+.rule{width:60px;height:3px;background:var(--ink);margin:0 auto 32px;}
+.links{display:flex;gap:16px;flex-wrap:wrap;justify-content:center;}
+.link{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;padding:10px 20px;border:1.5px solid var(--ink);color:var(--ink);text-decoration:none;transition:all .15s;}
+.link:hover,.link.primary{background:var(--ink);color:var(--paper);}
+</style>
+</head>
+<body>
+<div class="num">404</div>
+<div class="rule"></div>
+<h1 class="hed">Page <em>not found.</em></h1>
+<p class="deck">The story you were looking for has moved, been archived, or never existed. Let's get you back on the front page.</p>
+<div class="links">
+  <a href="/" class="link primary">Front page</a>
+  <a href="/app.html" class="link">Open app</a>
+  <a href="/fresh-start.html" class="link">Fresh Start</a>
+</div>
+</body>
+</html>
