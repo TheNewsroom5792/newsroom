@@ -1,0 +1,6 @@
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <rect width="512" height="512" fill="#0f0e0c"/>
+  <rect x="40.96" y="40.96" width="430.08" height="430.08" fill="none" stroke="#f7f4ee" stroke-width="7.68"/>
+  <text x="256" y="266.24" font-family="Georgia,serif" font-size="163.84" font-weight="900" font-style="italic" text-anchor="middle" dominant-baseline="middle" fill="#f7f4ee">H</text>
+  <text x="256" y="399.36" font-family="Georgia,serif" font-size="46.08" letter-spacing="5.12" text-anchor="middle" fill="#c1440e">REPORT</text>
+</svg>
