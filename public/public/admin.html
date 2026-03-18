@@ -126,6 +126,7 @@ select.form-input{cursor:pointer;}
     <button class="admin-tab" onclick="switchTab('users')">Users</button>
     <button class="admin-tab" onclick="switchTab('broadcast')">Broadcast</button>
     <button class="admin-tab" onclick="switchTab('digest')">Test Digest</button>
+        <button class="admin-tab" onclick="switchTab('waitlist')">Waitlist</button>
   </div>
 
   <div class="admin-content" id="admin-content">
@@ -186,12 +187,13 @@ async function loadDashboard() {
 function switchTab(tab) {
   currentTab = tab;
   document.querySelectorAll('.admin-tab').forEach((t,i) => {
-    t.classList.toggle('active', ['overview','users','broadcast','digest'][i] === tab);
+    t.classList.toggle('active', ['overview','users','broadcast','digest','waitlist'][i] === tab);
   });
   if (tab === 'overview') renderOverview();
   else if (tab === 'users') renderUsers();
   else if (tab === 'broadcast') renderBroadcast();
   else if (tab === 'digest') renderDigest();
+        else if (tab === 'waitlist') renderWaitlist();
 }
 
 function renderOverview() {
@@ -367,6 +369,34 @@ async function sendTestDigest() {
   } catch(e) { status.className='status-msg err'; status.textContent='Error: ' + e.message; }
   btn.disabled = false;
 }
-</script>
+
+    async function renderWaitlist() {
+      document.getElementById('admin-content').innerHTML = `
+        <div class="section-card">
+          <div class="section-header">
+            <div class="section-title">Waitlist signups</div>
+            <button class="action-btn" onclick="renderWaitlist()">&#8635; Refresh</button>
+          </div>
+          <div id="waitlist-body"><div class="empty"><div class="spinner"></div> Loading...</div></div>
+        </div>`;
+      try {
+        const res = await apiCall('waitlist');
+        const contacts = res.contacts || [];
+        document.getElementById('waitlist-body').innerHTML = contacts.length ? `
+          <div class="table-wrap"><table>
+            <thead><tr><th>Email</th><th>Status</th><th>Joined</th></tr></thead>
+            <tbody>${contacts.map(c => `
+              <tr>
+                <td style="font-weight:500;">${c.email}</td>
+                <td><span class="tier-pill ${c.unsubscribed ? 'free' : 'pro'}">${c.unsubscribed ? 'Unsubscribed' : 'Active'}</span></td>
+                <td style="color:var(--muted);font-size:12px;">${new Date(c.created_at).toLocaleDateString()}</td>
+              </tr>`).join('')}
+            </tbody>
+          </table></div>` : '<div class="empty">No waitlist signups yet.</div>';
+      } catch(e) {
+        document.getElementById('waitlist-body').innerHTML = `<div class="empty" style="color:var(--accent);">Error: ${e.message}</div>`;
+      }
+    }
+  </script>
 </body>
 </html>
