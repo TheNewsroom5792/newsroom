@@ -1,3 +1,4 @@
+import { rateLimit } from './_rateLimit.js';
 import { createClient } from '@supabase/supabase-js';
 const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY);
 
@@ -8,6 +9,9 @@ export default async function handler(req, res) {
   if (req.method === 'OPTIONS') return res.status(200).end();
 
   try {
+    const ip = req.headers['x-forwarded-for'] || req.socket?.remoteAddress || 'unknown';
+    const rl = rateLimit('waitlist:' + ip, 5, 3600000); // 5 per hour per IP
+    if (!rl.allowed) return res.status(429).json({ error: 'Too many requests. Try again later.' });
     const { email } = req.body;
     if (!email || !email.includes('@')) {
       return res.status(400).json({ error: 'Valid email required' });
