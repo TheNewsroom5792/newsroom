@@ -23,7 +23,15 @@ export default async function handler(req, res) {
       const pro = users?.filter(u => u.tier === 'pro').length || 0;
       const digestEnabled = users?.filter(u => u.digest_enabled).length || 0;
       const mrr = pro * 7;
-      return res.status(200).json({ success: true, stats: { total, pro, free: total - pro, digestEnabled, mrr } });
+      // Waitlist count
+      const { count: waitlistCount } = await supabase.from('waitlist').select('*', { count: 'exact', head: true });
+      // Top referrers
+      const topReferrers = (users || [])
+        .filter(u => (u.referred_count || 0) > 0)
+        .sort((a, b) => (b.referred_count || 0) - (a.referred_count || 0))
+        .slice(0, 5)
+        .map(u => ({ email: u.email, referred_count: u.referred_count, credits: u.referral_credits }));
+      return res.status(200).json({ success: true, stats: { total, pro, free: total - pro, digestEnabled, mrr, waitlist: waitlistCount || 0, topReferrers } });
     }
 
     // ── USER LIST ──────────────────────────────────────────
