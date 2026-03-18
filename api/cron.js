@@ -65,8 +65,10 @@ export default async function handler(req, res) {
 
         const html = '<div style="font-family:Arial,sans-serif;max-width:580px;margin:0 auto;background:#f7f4ee;">' +
           '<div style="background:#0f0e0c;padding:22px;text-align:center;">' +
-          '<p style="margin:0;font-family:Georgia,serif;font-size:24px;font-style:italic;font-weight:900;color:#fff;">Headlines<span style="font-weight:400;color:#c1440e;">Report</span></p>' +
+          '<p style="margin:0 0 2px;font-family:Georgia,serif;font-size:11px;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,0.4);">The</p>' +
+          '<p style="margin:0;font-family:Georgia,serif;font-size:28px;font-style:italic;font-weight:900;color:#fff;">Morning <span style="font-weight:400;color:#c1440e;">Moose</span></p>' +
           '<p style="margin:6px 0 0;font-size:10px;color:rgba(255,255,255,0.4);font-family:monospace;letter-spacing:1px;">' + date.toUpperCase() + '</p>' +
+          '<p style="margin:4px 0 0;font-size:10px;color:rgba(255,255,255,0.3);font-family:monospace;letter-spacing:1px;">By Moose</p>' +
           '<div style="padding:14px 22px;text-align:center;border-top:1px solid #ece8df;margin-top:8px;">' +
           '<p style="font-size:10px;color:#aaa;font-family:monospace;margin:0;">' +
           '<a href="https://headlinesreport.com/app.html" style="color:#aaa;">Open app</a> &nbsp;&middot;&nbsp; ' +
@@ -88,9 +90,10 @@ export default async function handler(req, res) {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + process.env.RESEND_API_KEY },
           body: JSON.stringify({
-            from: process.env.FROM_EMAIL || 'morning@headlinesreport.com',
+            from: 'Moose at Headlines Report <' + (process.env.FROM_EMAIL || 'moose@headlinesreport.com') + '>',
+            from: process.env.FROM_EMAIL || 'moose@headlinesreport.com',
             to: [user.email],
-            subject: 'Your Headlines Report: ' + date,
+            subject: 'The Morning Moose: ' + date,
             html
           })
         });
