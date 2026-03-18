@@ -67,6 +67,11 @@ export default async function handler(req, res) {
           '<div style="background:#0f0e0c;padding:22px;text-align:center;">' +
           '<p style="margin:0;font-family:Georgia,serif;font-size:24px;font-style:italic;font-weight:900;color:#fff;">Headlines<span style="font-weight:400;color:#c1440e;">Report</span></p>' +
           '<p style="margin:6px 0 0;font-size:10px;color:rgba(255,255,255,0.4);font-family:monospace;letter-spacing:1px;">' + date.toUpperCase() + '</p>' +
+          '<div style="padding:14px 22px;text-align:center;border-top:1px solid #ece8df;margin-top:8px;">' +
+          '<p style="font-size:10px;color:#aaa;font-family:monospace;margin:0;">' +
+          '<a href="https://headlinesreport.com/app.html" style="color:#aaa;">Open app</a> &nbsp;&middot;&nbsp; ' +
+          '<a href="https://headlinesreport.com/unsubscribe?email=' + encodeURIComponent(user.email) + '" style="color:#aaa;">Unsubscribe</a>' +
+          '</p></div>' +
           '</div>' +
           '<div style="background:#f9f7f2;padding:16px 22px;border-bottom:1px solid #ece8df;">' +
           '<p style="margin:0 0 5px;font-size:9px;text-transform:uppercase;letter-spacing:1.5px;color:#999;font-family:monospace;">Morning Digest</p>' +
