@@ -146,6 +146,17 @@ body{font-family:'DM Sans',sans-serif;background:var(--paper);color:var(--ink);}
   .stat-row-live{grid-template-columns:1fr 1fr;}
 }
 </style>
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://headlinesreport.com/fresh-start.html" />
+  <meta property="og:title" content="Fresh Start: Your Free Financial Plan" />
+  <meta property="og:description" content="A free, private, personalized financial plan. Budget tracker, credit rebuilding, 5-year roadmap. No account needed, all data stays on your device." />
+  <meta property="og:image" content="https://headlinesreport.com/og-image.svg" />
+  <meta property="twitter:card" content="summary_large_image" />
+  <meta property="twitter:title" content="Fresh Start: Your Free Financial Plan" />
+  <meta property="twitter:description" content="Free, private, personalized financial planning. Build your budget and 5-year roadmap." />
+  <meta property="twitter:image" content="https://headlinesreport.com/og-image.svg" />
+  <link rel="manifest" href="/manifest.json" />
+  <meta name="theme-color" content="#0f0e0c" />
 </head>
 <body>
 
@@ -1153,7 +1164,18 @@ el('j-save-btn')&&el('j-save-btn').addEventListener('click',function(){
   S.journal=journal;save();renderJournal();el('j-note').value='';el('j-date').value='';
 });
 renderJournal();
-<\/script></body></html>`;
+<\/script>
+  <script>
+    if(new URLSearchParams(window.location.search).get('success')==='true'){
+      window.history.replaceState({},'',window.location.pathname);
+      const b=document.createElement('div');
+      b.style.cssText='position:fixed;top:0;left:0;right:0;z-index:9999;background:#2d6a2d;color:white;text-align:center;padding:14px;font-family:monospace;font-size:12px;letter-spacing:1px;';
+      b.innerHTML='Payment successful. Your Fresh Start plan is ready below. <button onclick="this.parentElement.remove()" style="background:none;border:none;color:white;cursor:pointer;margin-left:8px;font-size:16px;">x</button>';
+      document.body.prepend(b);
+      setTimeout(()=>b.remove(),8000);
+    }
+  </script>
+</body></html>`;
 
   const blob = new Blob([html], { type: 'text/html' });
   const url = URL.createObjectURL(blob);
