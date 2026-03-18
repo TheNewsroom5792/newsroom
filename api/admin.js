@@ -131,7 +131,7 @@ export default async function handler(req, res) {
       await fetch('https://api.resend.com/emails', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${process.env.RESEND_API_KEY}` },
-        body: JSON.stringify({ from: process.env.FROM_EMAIL || 'morning@headlinesreport.com', to: [email], subject: `Test digest, ${date}`, html })
+        body: JSON.stringify({ from: process.env.FROM_EMAIL || 'morning@headlinesreport.com', to: [email], subject: `The Morning Moose (Test): ${date}`, html })
       });
       return res.status(200).json({ success: true });
     }
