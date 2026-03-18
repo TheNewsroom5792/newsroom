@@ -9,15 +9,15 @@
   "orientation": "portrait",
   "icons": [
     {
-      "src": "/icon-192.png",
+      "src": "/icon-192.svg",
       "sizes": "192x192",
-      "type": "image/png",
+      "type": "image/svg+xml",
       "purpose": "any maskable"
     },
     {
-      "src": "/icon-512.png",
+      "src": "/icon-512.svg",
       "sizes": "512x512",
-      "type": "image/png",
+      "type": "image/svg+xml",
       "purpose": "any maskable"
     }
   ],
@@ -29,11 +29,10 @@
     {
       "name": "Open Feed",
       "short_name": "Feed",
-      "description": "Jump to your news feed",
-      "url": "/app.html#feed",
+      "url": "/app.html",
       "icons": [
         {
-          "src": "/icon-192.png",
+          "src": "/icon-192.svg",
           "sizes": "192x192"
         }
       ]
@@ -41,11 +40,10 @@
     {
       "name": "Fresh Start",
       "short_name": "Finance",
-      "description": "Your financial planner",
       "url": "/fresh-start.html",
       "icons": [
         {
-          "src": "/icon-192.png",
+          "src": "/icon-192.svg",
           "sizes": "192x192"
         }
       ]
