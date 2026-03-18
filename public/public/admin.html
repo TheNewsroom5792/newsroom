@@ -253,13 +253,15 @@ function renderUsers() {
       </div>
       <div class="table-wrap">
         <table>
-          <thead><tr><th>Email</th><th>Tier</th><th>Digest</th><th>Beats</th><th>Joined</th><th>Actions</th></tr></thead>
+          <thead><tr><th>Email</th><th>Tier</th><th>Digest</th><th>Referrals</th><th>Credits</th><th>Beats</th><th>Joined</th><th>Actions</th></tr></thead>
           <tbody>
             ${(usersData||[]).map(u => `
               <tr>
                 <td style="font-weight:500;">${u.email}</td>
                 <td><span class="tier-pill ${u.tier}">${u.tier}</span></td>
                 <td style="color:var(--muted);font-size:12px;">${u.digest_enabled ? 'On' : 'Off'}</td>
+                  <td style="font-size:12px;">${u.referred_count > 0 ? '<span class="tier-pill pro">' + u.referred_count + '</span>' : '<span style="color:var(--muted)">0</span>'}</td>
+                  <td style="color:var(--muted);font-size:12px;">${u.referral_credits || 0}</td>
                 <td style="color:var(--muted);font-size:12px;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${(u.beats||[]).join(', ')}</td>
                 <td style="color:var(--muted);font-size:12px;">${new Date(u.created_at).toLocaleDateString()}</td>
                 <td>
