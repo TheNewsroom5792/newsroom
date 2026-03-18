@@ -1,0 +1,29 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <pattern id="noise" x="0" y="0" width="200" height="200" patternUnits="userSpaceOnUse">
+      <filter id="nf"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/><feColorMatrix type="saturate" values="0"/></filter>
+      <rect width="200" height="200" filter="url(#nf)" opacity="0.04"/>
+    </pattern>
+  </defs>
+  <!-- Background -->
+  <rect width="1200" height="630" fill="#f7f4ee"/>
+  <rect width="1200" height="630" fill="url(#noise)"/>
+  <!-- Top rule -->
+  <rect x="0" y="0" width="1200" height="6" fill="#0f0e0c"/>
+  <!-- Bottom bar -->
+  <rect x="0" y="530" width="1200" height="100" fill="#0f0e0c"/>
+  <!-- Double rule -->
+  <rect x="60" y="60" width="1080" height="2" fill="#0f0e0c"/>
+  <rect x="60" y="66" width="1080" height="1" fill="#0f0e0c"/>
+  <!-- Edition line -->
+  <text x="600" y="100" font-family="Georgia,serif" font-size="11" letter-spacing="4" text-anchor="middle" fill="#7a7567" text-transform="uppercase">EST. 2025 · DIGITAL EDITION</text>
+  <!-- Main logo -->
+  <text x="600" y="230" font-family="Georgia,serif" font-size="108" font-weight="900" text-anchor="middle" fill="#0f0e0c" letter-spacing="-4">Headlines</text>
+  <text x="600" y="340" font-family="Georgia,serif" font-size="108" font-weight="400" font-style="italic" text-anchor="middle" fill="#c1440e" letter-spacing="-4">Report</text>
+  <!-- Tagline -->
+  <text x="600" y="410" font-family="Georgia,serif" font-size="22" font-style="italic" text-anchor="middle" fill="#7a7567">One place. All the news. Every morning.</text>
+  <!-- Rule before bottom bar -->
+  <rect x="60" y="500" width="1080" height="1" fill="#d4cfc4"/>
+  <!-- Bottom bar text -->
+  <text x="600" y="585" font-family="Georgia,serif" font-size="16" letter-spacing="3" text-anchor="middle" fill="rgba(255,255,255,0.5)">HEADLINESREPORT.COM</text>
+</svg>
