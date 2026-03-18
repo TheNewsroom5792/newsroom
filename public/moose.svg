@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <style>
+    .moose { fill: #0f0e0c; }
+    .moose-light { fill: #f7f4ee; }
+  </style>
+
+  <!-- Antlers left -->
+  <path class="moose" d="M52 95 L38 55 L32 35 L28 20 L33 22 L36 38 L42 58 L48 75 Z"/>
+  <path class="moose" d="M38 55 L22 48 L18 40 L24 41 L36 50 Z"/>
+  <path class="moose" d="M42 65 L26 62 L22 55 L28 56 L40 62 Z"/>
+  <path class="moose" d="M32 35 L18 28 L16 20 L22 23 L30 32 Z"/>
+
+  <!-- Antlers right -->
+  <path class="moose" d="M148 95 L162 55 L168 35 L172 20 L167 22 L164 38 L158 58 L152 75 Z"/>
+  <path class="moose" d="M162 55 L178 48 L182 40 L176 41 L164 50 Z"/>
+  <path class="moose" d="M158 65 L174 62 L178 55 L172 56 L160 62 Z"/>
+  <path class="moose" d="M168 35 L182 28 L184 20 L178 23 L170 32 Z"/>
+
+  <!-- Head/neck -->
+  <ellipse class="moose" cx="100" cy="115" rx="48" ry="52"/>
+
+  <!-- Face detail - lighter snout area -->
+  <ellipse class="moose-light" cx="100" cy="138" rx="22" ry="16"/>
+
+  <!-- Snout -->
+  <ellipse class="moose" cx="100" cy="145" rx="18" ry="11"/>
+
+  <!-- Nostrils -->
+  <ellipse class="moose-light" cx="94" cy="147" rx="4" ry="3"/>
+  <ellipse class="moose-light" cx="106" cy="147" rx="4" ry="3"/>
+
+  <!-- Eyes -->
+  <ellipse class="moose" cx="80" cy="108" rx="7" ry="7"/>
+  <ellipse class="moose" cx="120" cy="108" rx="7" ry="7"/>
+  <ellipse class="moose-light" cx="82" cy="106" rx="2.5" ry="2.5"/>
+  <ellipse class="moose-light" cx="122" cy="106" rx="2.5" ry="2.5"/>
+
+  <!-- Ears -->
+  <ellipse class="moose" cx="60" cy="97" rx="12" ry="18" transform="rotate(-20 60 97)"/>
+  <ellipse class="moose" cx="140" cy="97" rx="12" ry="18" transform="rotate(20 140 97)"/>
+  <ellipse class="moose-light" cx="60" cy="97" rx="7" ry="12" transform="rotate(-20 60 97)"/>
+  <ellipse class="moose-light" cx="140" cy="97" rx="7" ry="12" transform="rotate(20 140 97)"/>
+
+  <!-- Neck -->
+  <path class="moose" d="M75 158 L68 185 L132 185 L125 158 Z"/>
+
+  <!-- Chest tuft -->
+  <path class="moose" d="M88 180 Q100 195 112 180 Q106 188 100 190 Q94 188 88 180Z"/>
+</svg>
