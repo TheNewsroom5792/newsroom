@@ -58,6 +58,10 @@
       "dest": "/public/icon-192.svg"
     },
     {
+      "src": "/moose.svg",
+      "dest": "/public/moose.svg"
+    },
+    {
       "src": "/icon-512.svg",
       "dest": "/public/icon-512.svg"
     },
