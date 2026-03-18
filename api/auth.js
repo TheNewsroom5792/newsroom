@@ -1,3 +1,4 @@
+import { rateLimit } from './_rateLimit.js';
 import { createClient } from '@supabase/supabase-js';
 const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY);
 
@@ -9,6 +10,9 @@ export default async function handler(req, res) {
   const { action } = req.query;
   try {
     if (action === 'signup') {
+      const ip = req.headers['x-forwarded-for'] || req.socket?.remoteAddress || 'unknown';
+      const rl = rateLimit('signup:' + ip, 3, 3600000); // 3 signups per hour per IP
+      if (!rl.allowed) return res.status(429).json({ error: 'Too many signup attempts. Try again later.' });
       const { email, password, ref } = req.body;
       const { data, error } = await supabase.auth.admin.createUser({ email, password, email_confirm: true });
       if (error) return res.status(400).json({ error: error.message });
@@ -41,6 +45,9 @@ export default async function handler(req, res) {
       return res.status(200).json({ success: true, user: data.user });
     }
     if (action === 'signin') {
+      const ip2 = req.headers['x-forwarded-for'] || req.socket?.remoteAddress || 'unknown';
+      const rl2 = rateLimit('signin:' + ip2, 10, 900000); // 10 attempts per 15 min per IP
+      if (!rl2.allowed) return res.status(429).json({ error: 'Too many login attempts. Try again in 15 minutes.' });
       const { email, password } = req.body;
       const { data, error } = await supabase.auth.signInWithPassword({ email, password });
       if (error) return res.status(401).json({ error: error.message });
