@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Headlines Report Beta</title>
+<meta property="og:title" content="Headlines Report Beta: Full Access, Free" />
+<meta property="og:description" content="Your morning news briefing, built around your beats. Full beta access free." />
+<meta property="og:image" content="https://headlinesreport.com/og-image.svg" />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Source+Serif+4:wght@300;400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+:root{--ink:#0f0e0c;--paper:#f7f4ee;--rule:#d4cfc4;--muted:#7a7567;--accent:#c1440e;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--ink);color:var(--paper);font-family:'Source Serif 4',Georgia,serif;font-weight:300;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:48px 24px;text-align:center;}
+.beta-badge{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--accent);border:1px solid var(--accent);padding:4px 12px;display:inline-block;margin-bottom:24px;}
+.logo{font-family:'Playfair Display',serif;font-size:clamp(48px,8vw,80px);font-weight:900;line-height:1;letter-spacing:-2px;color:var(--paper);margin-bottom:8px;}
+.logo em{font-style:italic;font-weight:400;color:var(--accent);}
+.tagline{font-size:18px;font-style:italic;color:rgba(247,244,238,0.5);margin-bottom:32px;}
+.pitch{font-size:16px;line-height:1.8;color:rgba(247,244,238,0.65);max-width:500px;margin:0 auto 40px;}
+.pitch strong{color:var(--paper);}
+.features{display:grid;grid-template-columns:1fr 1fr;gap:12px;max-width:480px;margin:0 auto 48px;}
+.feat{padding:16px 20px;border:1px solid rgba(247,244,238,0.1);text-align:left;}
+.feat-label{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--accent);margin-bottom:6px;}
+.feat-text{font-size:13px;line-height:1.5;color:rgba(247,244,238,0.6);}
+.form-row{display:flex;gap:0;max-width:440px;width:100%;margin:0 auto;}
+.ei{flex:1;padding:14px 18px;font-size:14px;font-family:'Source Serif 4',serif;background:rgba(255,255,255,0.07);border:1.5px solid rgba(255,255,255,0.15);border-right:none;color:white;outline:none;}
+.ei::placeholder{color:rgba(255,255,255,0.3);font-style:italic;}
+.sb{padding:14px 24px;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;background:var(--accent);color:white;border:1.5px solid var(--accent);cursor:pointer;}
+.sb:hover{background:#a83509;}
+.note{font-family:'DM Mono',monospace;font-size:10px;color:rgba(255,255,255,0.25);margin-top:12px;}
+.success{display:none;font-family:'DM Mono',monospace;font-size:12px;color:#90ee90;padding:14px;}
+.signin{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:1px;color:rgba(255,255,255,0.3);text-decoration:none;margin-top:28px;display:block;}
+.signin:hover{color:rgba(255,255,255,0.6);}
+@media(max-width:520px){.features{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<div class="beta-badge">Beta Access</div>
+<div class="logo">Headlines<em>Report</em></div>
+<div class="tagline">Your morning briefing, rebuilt.</div>
+<p class="pitch">100+ sources. 50+ topic beats. Substack integration. Curated digest delivered to your inbox.<br/><br/><strong>During beta: everything is free.</strong></p>
+<div class="features">
+  <div class="feat"><div class="feat-label">Your beats</div><div class="feat-text">Politics, NBA, Climate, AI, whatever you follow. Your feed, your rules.</div></div>
+  <div class="feat"><div class="feat-label">Substacks built in</div><div class="feat-text">Paste any Substack URL. Posts appear alongside your news automatically.</div></div>
+  <div class="feat"><div class="feat-label">Morning digest</div><div class="feat-text">A curated overview of your beats, every morning in your inbox.</div></div>
+  <div class="feat"><div class="feat-label">No noise</div><div class="feat-text">No algorithm. No ads. No engagement bait. Just the news you track.</div></div>
+</div>
+<form onsubmit="handleBeta(event)">
+  <div class="form-row">
+    <input class="ei" type="email" id="beta-email" placeholder="Enter your email address" required/>
+    <button class="sb" type="submit" id="beta-btn">Get beta access</button>
+  </div>
+  <div class="success" id="beta-success">You are in. Check your email for next steps.</div>
+  <p class="note">No credit card. No commitment.</p>
+</form>
+<a href="/app.html" class="signin">Already have an account? Sign in</a>
+<script>
+async function handleBeta(e) {
+  e.preventDefault();
+  const btn = document.getElementById('beta-btn');
+  btn.textContent = 'Joining...'; btn.disabled = true;
+  try { await fetch('/api/waitlist', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:document.getElementById('beta-email').value})}); } catch(_){}
+  document.querySelector('.form-row').style.display='none';
+  document.getElementById('beta-success').style.display='block';
+}
+</script>
+</body>
+</html>
