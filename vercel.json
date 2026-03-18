@@ -58,6 +58,10 @@
       "dest": "/api/unsubscribe"
     },
     {
+      "src": "/contact",
+      "dest": "/public/contact.html"
+    },
+    {
       "src": "/(.*)",
       "dest": "/public/$1",
       "status": 200
