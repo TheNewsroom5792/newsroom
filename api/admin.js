@@ -48,25 +48,54 @@ export default async function handler(req, res) {
     }
 
     // ── SEND BROADCAST ─────────────────────────────────────
+    // ── SEND BROADCAST ───────────────────────────────────
     if (action === 'broadcast') {
       const { subject, html, segment } = req.body;
-      let query = supabase.from('profiles').select('email');
-      if (segment === 'pro') query = query.eq('tier', 'pro');
-      const { data: users } = await query;
-      if (!users?.length) return res.status(200).json({ success: true, sent: 0 });
+
+      let recipientEmails = [];
+
+      // Get profile users
+      if (segment === 'all' || segment === 'all_including_waitlist' || segment === 'pro') {
+        let query = supabase.from('profiles').select('email');
+        if (segment === 'pro') query = query.eq('tier', 'pro');
+        const { data: profileUsers } = await query;
+        if (profileUsers) recipientEmails.push(...profileUsers.map(u => u.email));
+      }
+
+      // Get waitlist users (not already in profiles)
+      if (segment === 'waitlist' || segment === 'all_including_waitlist') {
+        const { data: waitlistUsers } = await supabase.from('waitlist').select('email');
+        if (waitlistUsers) {
+          const existing = new Set(recipientEmails);
+          const newEmails = waitlistUsers.map(u => u.email).filter(e => !existing.has(e));
+          recipientEmails.push(...newEmails);
+        }
+      }
+
+      if (!recipientEmails.length) return res.status(200).json({ success: true, sent: 0 });
+
+      // Deduplicate
+      recipientEmails = [...new Set(recipientEmails)];
 
       let sent = 0;
-      for (const user of users) {
-        try {
-          await fetch('https://api.resend.com/emails', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${process.env.RESEND_API_KEY}` },
-            body: JSON.stringify({ from: process.env.FROM_EMAIL || 'morning@headlinesreport.com', to: [user.email], subject, html })
-          });
-          sent++;
-        } catch(e) { console.error(e); }
+      // Send in batches of 50 to avoid rate limits
+      const batchSize = 50;
+      for (let i = 0; i < recipientEmails.length; i += batchSize) {
+        const batch = recipientEmails.slice(i, i + batchSize);
+        await Promise.allSettled(batch.map(async (email) => {
+          try {
+            await fetch('https://api.resend.com/emails', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${process.env.RESEND_API_KEY}` },
+              body: JSON.stringify({ from: process.env.FROM_EMAIL || 'morning@headlinesreport.com', to: [email], subject, html })
+            });
+            sent++;
+          } catch(e) { console.error('Broadcast send error:', e); }
+        }));
+        // Small delay between batches
+        if (i + batchSize < recipientEmails.length) await new Promise(r => setTimeout(r, 500));
       }
-      return res.status(200).json({ success: true, sent });
+      return res.status(200).json({ success: true, sent, total: recipientEmails.length });
     }
 
     // ── TRIGGER TEST DIGEST ────────────────────────────────
