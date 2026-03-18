@@ -1,0 +1,33 @@
+name: Morning Digest
+
+on:
+  schedule:
+    # 7am UTC daily (3am ET / midnight PT)
+    - cron: '0 7 * * *'
+  workflow_dispatch:
+    inputs:
+      reason:
+        description: 'Manual trigger reason'
+        required: false
+        default: 'Manual test'
+
+jobs:
+  send-digest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Trigger morning digest
+        run: |
+          echo "Triggering digest at $(date)"
+          HTTP_STATUS=$(curl -s -o /tmp/response.txt -w "%{http_code}" \
+            -X GET "https://headlinesreport.com/api/cron" \
+            -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
+            -H "Content-Type: application/json" \
+            --max-time 120 \
+            --retry 2)
+          echo "Response: $(cat /tmp/response.txt)"
+          echo "HTTP Status: $HTTP_STATUS"
+          if [ "$HTTP_STATUS" != "200" ]; then
+            echo "Digest failed with status $HTTP_STATUS"
+            exit 1
+          fi
