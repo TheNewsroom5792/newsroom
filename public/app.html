@@ -221,6 +221,11 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--i
     .ob-tile:hover{border-color:var(--ink);color:var(--ink);}
     .ob-tile.sel{background:var(--ink);color:var(--paper);border-color:var(--ink);}
   </style>
+  <link rel="manifest" href="/manifest.json" />
+  <meta name="theme-color" content="#0f0e0c" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Headlines" />
 </head>
 <body>
 
@@ -789,6 +794,20 @@ function renderSettings() {
       <div id="ref-card" style="display:none;">
         <div style="display:flex;gap:8px;margin-bottom:10px;">
           <input id="ref-link-input" class="pref-input" readonly style="flex:1;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:0.5px;" />
+              <div class="pref-section" style="margin-bottom:16px;">
+                <div class="pref-label">Delivery Time</div>
+                <select id="digest-time-sel" style="padding:8px 12px;font-family:DM Mono,monospace;font-size:11px;border:1px solid var(--rule);background:white;border-radius:2px;cursor:pointer;">
+                  <option value="05:00">5:00 AM UTC (1am ET)</option>
+                  <option value="06:00">6:00 AM UTC (2am ET)</option>
+                  <option value="07:00">7:00 AM UTC (3am ET)</option>
+                  <option value="08:00">8:00 AM UTC (4am ET)</option>
+                  <option value="09:00">9:00 AM UTC (5am ET)</option>
+                  <option value="10:00">10:00 AM UTC (6am ET)</option>
+                  <option value="11:00">11:00 AM UTC (7am ET)</option>
+                  <option value="12:00">12:00 PM UTC (8am ET)</option>
+                  <option value="13:00">1:00 PM UTC (9am ET)</option>
+                </select>
+              </div>
           <button class="save-btn" onclick="copyRefLink(this)" style="white-space:nowrap;padding:0 16px;">Copy link</button>
         </div>
         <p style="font-size:12px;color:var(--muted);">People referred: <strong id="ref-count">0</strong>&nbsp;&nbsp;Credits earned: <strong id="ref-credits">0</strong> month(s) free</p>
@@ -1157,6 +1176,23 @@ init();
     localStorage.setItem('hr_onboarded','1');
     document.getElementById('onboarding-overlay').style.display='none';
     if(typeof loadFeed==='function')loadFeed();else location.reload();
+  }
+
+  
+  // ── ARTICLE CLICK TRACKING ────────────────────────────
+  function trackClick(headline, source, articleUrl, beat) {
+    try {
+      fetch('/api/track?action=click', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + (localStorage.getItem('hr_token') || '') },
+        body: JSON.stringify({ headline, source, url: articleUrl, beat })
+      }).catch(() => {});
+    } catch(e) {}
+  }
+
+  function openArticle(headline, source, articleUrl, beat) {
+    trackClick(headline, source, articleUrl, beat);
+    window.open(articleUrl, '_blank', 'noopener');
   }
 
   </script>
