@@ -275,7 +275,7 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--i
 <div id="app-screen">
   <!-- Top bar -->
   <div class="topbar">
-    <div class="topbar-logo">Headlines<em>Report</em></div>
+    <div class="topbar-logo" style="display:flex;align-items:center;gap:10px;"><img src="/moose.svg" alt="Moose" style="width:28px;height:28px;filter:invert(1);opacity:0.9;"/>Headlines<em>Report</em></div>
     <div class="topbar-right">
       <div class="tier-badge free" id="tier-badge">Free</div>
       <button class="icon-btn" onclick="showModal()" title="Upgrade">⚡</button>
@@ -345,7 +345,7 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--i
           <li><span class="fc">✓</span>Unlimited beats</li>
           <li><span class="fc">✓</span>Unlimited Substacks</li>
           <li><span class="fc">✓</span>Curated digest</li>
-          <li><span class="fc">✓</span>Morning email</li>
+          <li><span class="fc">✓</span>Morning Moose</li>
           <li><span class="fc">✓</span>Saved library</li>
         </ul>
         <button class="plan-btn" onclick="doCheckout('monthly')">Get Pro →</button>
@@ -794,7 +794,7 @@ function renderSettings() {
       </div>
     </div>`;
   } else {
-    html += `<div class="upgrade-card"><h3>Morning email briefing</h3><p>Get your curated digest delivered to your inbox every morning , Pro feature.</p><button class="upgrade-card-btn" onclick="showModal()">Upgrade to Pro →</button></div>`;
+    html += `<div class="upgrade-card"><h3>The Morning Moose</h3><p>Get your curated digest delivered to your inbox every morning , Pro feature.</p><button class="upgrade-card-btn" onclick="showModal()">Upgrade to Pro →</button></div>`;
   }
 
   html += `<div style="padding:8px 16px 4px;"><button onclick="doSignout()" style="width:100%;padding:10px;font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;background:none;border:1px solid var(--rule);cursor:pointer;color:var(--muted);border-radius:2px;">Sign out</button></div>
