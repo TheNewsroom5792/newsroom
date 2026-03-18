@@ -341,6 +341,15 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--i
 <div class="toast" id="toast"></div>
 
 <script>
+    // Capture referral code from URL and persist it
+    (function() {
+      try {
+        const p = new URLSearchParams(window.location.search);
+        const r = p.get('ref');
+        if (r) localStorage.setItem('hr_ref', r);
+      } catch(e) {}
+    })();
+
 const API = '';  // same-origin
 const FREE = { beats: 3, substacks: 2, refreshes: 1 };
 
@@ -371,7 +380,7 @@ async function doSignin() {
   try {
     const res = await fetch(`${API}/api/auth?action=signin`, {
       method: 'POST', headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({email, password})
+      body: JSON.stringify({email, password, ref: localStorage.getItem('hr_ref') || null})
     });
     const data = await res.json();
     if (!data.success) throw new Error(data.error || 'Sign in failed');
@@ -764,10 +773,23 @@ function renderSettings() {
     html += `<div class="upgrade-card"><h3>Morning email briefing</h3><p>Get your curated digest delivered to your inbox every morning , Pro feature.</p><button class="upgrade-card-btn" onclick="showModal()">Upgrade to Pro →</button></div>`;
   }
 
-  html += `<div style="padding:8px 16px 4px;"><button onclick="doSignout()" style="width:100%;padding:10px;font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;background:none;border:1px solid var(--rule);cursor:pointer;color:var(--muted);border-radius:2px;">Sign out</button></div>`;
+  html += `<div style="padding:8px 16px 4px;"><button onclick="doSignout()" style="width:100%;padding:10px;font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;background:none;border:1px solid var(--rule);cursor:pointer;color:var(--muted);border-radius:2px;">Sign out</button></div>
+    <div class="pref-section">
+      <div class="pref-label">Referral Program</div>
+      <p style="font-size:13px;color:var(--muted);margin-bottom:12px;">Share your link. When someone signs up, you both get a free month of Pro.</p>
+      <div id="ref-loading" style="font-size:12px;color:var(--muted);">Loading your referral link...</div>
+      <div id="ref-card" style="display:none;">
+        <div style="display:flex;gap:8px;margin-bottom:10px;">
+          <input id="ref-link-input" class="pref-input" readonly style="flex:1;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:0.5px;" />
+          <button class="save-btn" onclick="copyRefLink(this)" style="white-space:nowrap;padding:0 16px;">Copy link</button>
+        </div>
+        <p style="font-size:12px;color:var(--muted);">People referred: <strong id="ref-count">0</strong>&nbsp;&nbsp;Credits earned: <strong id="ref-credits">0</strong> month(s) free</p>
+      </div>
+    </div>`;
   html += '</div>';
 
   document.getElementById('content-area').innerHTML = html;
+  loadReferralCard();
 }
 
 // ── BEATS & SUBSTACKS ─────────────────────────────────────────────
@@ -1054,6 +1076,33 @@ async function init() {
 }
 
 init();
-</script>
+
+  async function loadReferralCard() {
+    try {
+      const token = localStorage.getItem('hr_token');
+      if (!token) return;
+      const res = await fetch('/api/referral?action=generate', {
+        headers: { 'Authorization': 'Bearer ' + token }
+      });
+      const data = await res.json();
+      if (data.code) {
+        document.getElementById('ref-link-input').value = data.link;
+        document.getElementById('ref-count').textContent = data.referred_count || 0;
+        document.getElementById('ref-credits').textContent = data.credits || 0;
+        document.getElementById('ref-loading').style.display = 'none';
+        document.getElementById('ref-card').style.display = 'block';
+      }
+    } catch(e) { console.error('Referral load:', e); }
+  }
+
+  function copyRefLink(btn) {
+    const val = document.getElementById('ref-link-input').value;
+    navigator.clipboard.writeText(val).then(() => {
+      btn.textContent = 'Copied!';
+      setTimeout(() => btn.textContent = 'Copy link', 2000);
+    });
+  }
+
+  </script>
 </body>
 </html>
