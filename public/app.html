@@ -571,7 +571,10 @@ function renderFeed() {
   const visible = filtered.slice(0, isFree ? 4 : filtered.length);
   const gated = isFree ? filtered.slice(4) : [];
 
-  const beatColors = {politics:'beat-pol',economy:'beat-eco',technology:'beat-tech',tech:'beat-tech',world:'beat-world',education:'beat-edu'};
+  const beatColors = {politics:'beat-pol',economy:'beat-eco',technology:'beat-tech',tech:'beat-tech',world:'beat-world',education:'beat-edu'
+    // Load trending + beat suggestions after feed loads
+    loadTrending().catch(()=>{});
+    if(window._currentProfile) renderBeatSuggestions(window._currentProfile.beats||[]);};
   function bc(b){ return beatColors[b?.toLowerCase()] || 'beat-def'; }
 
   // Bias ratings based on AllSides + Ad Fontes Media
@@ -1127,6 +1130,10 @@ init();
     navigator.clipboard.writeText(val).then(() => {
       btn.textContent = 'Copied!';
       setTimeout(() => btn.textContent = 'Copy link', 2000);
+    // Also try native share if available
+    if (navigator.share && /Mobi/.test(navigator.userAgent)) {
+      navigator.share({ title: 'Headlines Report', text: 'Check out Headlines Report, a personalized morning news briefing.', url: val }).catch(()=>{});
+    }
     });
   }
 
