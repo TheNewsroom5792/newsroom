@@ -1,0 +1,27 @@
+name: Health Check
+
+on:
+  schedule:
+    # Every 6 hours
+    - cron: '0 */6 * * *'
+  workflow_dispatch:
+
+jobs:
+  health-check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - name: Check site health
+        run: |
+          echo "Checking headlinesreport.com at $(date)"
+          HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" --max-time 30 "https://headlinesreport.com")
+          echo "Landing page: $HTTP_STATUS"
+          if [ "$HTTP_STATUS" != "200" ]; then
+            echo "Site may be down: $HTTP_STATUS"
+            exit 1
+          fi
+          APP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" --max-time 30 "https://headlinesreport.com/app.html")
+          echo "App page: $APP_STATUS"
+          API_STATUS=$(curl -s -o /dev/null -w "%{http_code}" --max-time 30 "https://headlinesreport.com/api/feed?channel=mainstream")
+          echo "Feed API: $API_STATUS"
+          echo "All checks passed"
