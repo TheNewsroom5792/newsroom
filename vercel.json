@@ -54,6 +54,10 @@
       "dest": "/public/index.html"
     },
     {
+      "src": "/unsubscribe",
+      "dest": "/api/unsubscribe"
+    },
+    {
       "src": "/(.*)",
       "dest": "/public/$1",
       "status": 200
