@@ -90,6 +90,22 @@ export default async function handler(req, res) {
       return res.status(200).json({ success: true });
     }
 
+    // ── WAITLIST (Resend Audience) ────────────────────────
+    if (action === 'waitlist') {
+      const audienceId = process.env.RESEND_AUDIENCE_ID;
+      const resendRes = await fetch(`https://api.resend.com/audiences/${audienceId}/contacts`, {
+        headers: { 'Authorization': `Bearer ${process.env.RESEND_API_KEY}` }
+      });
+      const data = await resendRes.json();
+      const contacts = (data.data || []).map(c => ({
+        email: c.email,
+        unsubscribed: c.unsubscribed,
+        created_at: c.created_at
+      }));
+      contacts.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+      return res.status(200).json({ success: true, contacts, total: contacts.length });
+    }
+
     return res.status(400).json({ error: 'Unknown action' });
   } catch(err) {
     return res.status(500).json({ error: err.message });
