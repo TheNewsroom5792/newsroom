@@ -1201,6 +1201,73 @@ init();
     navigator.serviceWorker.register('/sw.js').catch(e => console.log('SW:', e));
   }
 
+  
+  // ── BEAT SUGGESTIONS ─────────────────────────────────
+  const BEAT_RELATED = {
+    'Politics': ['Congress','Elections','White House','Diplomacy'],
+    'Economy': ['Markets','Business','Personal Finance','Crypto'],
+    'Technology': ['AI','Big Tech','Cybersecurity','Startups'],
+    'AI': ['Technology','Big Tech','Startups','Science'],
+    'Climate': ['Environment','Energy','Science','World'],
+    'Health': ['Medicine','Science','Food'],
+    'Sports': ['NBA','NFL','MLB','Soccer'],
+    'NBA': ['Sports','NFL','MLB'],
+    'NFL': ['Sports','NBA','MLB'],
+    'World': ['Europe','Middle East','Asia','Diplomacy'],
+    'Business': ['Markets','Economy','Startups'],
+    'Entertainment': ['Music','Film','TV','Culture'],
+    'Science': ['Space','Health','Climate','Technology'],
+    'Culture': ['Books','Film','Music','Education'],
+    'Opinion': ['Analysis','Politics','Culture'],
+  };
+
+  function getBeatSuggestions(currentBeats) {
+    const current = new Set(currentBeats.map(b => b.toLowerCase()));
+    const scores = {};
+    currentBeats.forEach(beat => {
+      const related = BEAT_RELATED[beat] || [];
+      related.forEach(r => {
+        if (!current.has(r.toLowerCase())) {
+          scores[r] = (scores[r] || 0) + 1;
+        }
+      });
+    });
+    return Object.entries(scores)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 4)
+      .map(([beat]) => beat);
+  }
+
+  function renderBeatSuggestions(beats) {
+    const suggestions = getBeatSuggestions(beats);
+    if (!suggestions.length) return;
+    const existing = document.getElementById('beat-suggestions');
+    if (existing) existing.remove();
+    const el = document.createElement('div');
+    el.id = 'beat-suggestions';
+    el.style.cssText = 'padding:12px 20px;background:#f0ece3;border-bottom:1px solid var(--rule);font-family:DM Mono,monospace;font-size:10px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;';
+    el.innerHTML = '<span style="color:var(--muted);letter-spacing:1px;text-transform:uppercase;font-size:9px;white-space:nowrap;">Try also:</span>' +
+      suggestions.map(s =>
+        '<button onclick="addSuggestedBeat(\''+s+'\')" style="padding:4px 10px;border:1px solid var(--rule);background:white;font-family:DM Mono,monospace;font-size:9px;letter-spacing:1px;cursor:pointer;border-radius:2px;color:var(--muted);transition:all .12s;" onmouseover="this.style.borderColor=\'var(--ink)\';this.style.color=\'var(--ink)\'" onmouseout="this.style.borderColor=\'var(--rule)\';this.style.color=\'var(--muted)\'">+ '+s+'</button>'
+      ).join('');
+    const beatBar = document.getElementById('beat-bar');
+    if (beatBar) beatBar.after(el);
+  }
+
+  async function addSuggestedBeat(beat) {
+    const token = localStorage.getItem('hr_token');
+    if (!token || !window._currentProfile) return;
+    const beats = [...(window._currentProfile.beats || []), beat];
+    window._currentProfile.beats = beats;
+    await fetch('/api/auth?action=save', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+      body: JSON.stringify({ beats, substacks: window._currentProfile.substacks || [], digest_time: window._currentProfile.digest_time || '07:00', digest_enabled: window._currentProfile.digest_enabled || false })
+    });
+    renderBeatSuggestions(beats);
+    if (typeof loadFeed === 'function') loadFeed();
+  }
+
   </script>
 </body>
 </html>
