@@ -1,6 +1,16 @@
 import { createClient } from '@supabase/supabase-js';
 
 const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY);
+
+// Fetch all active contacts from Resend audience (source of truth for waitlist)
+async function getResendContacts() {
+  const res = await fetch('https://api.resend.com/audiences/' + process.env.RESEND_AUDIENCE_ID + '/contacts', {
+    headers: { 'Authorization': 'Bearer ' + process.env.RESEND_API_KEY }
+  });
+  const data = await res.json();
+  return (data.data || []).filter(c => !c.unsubscribed).map(c => c.email);
+}
+
 const ADMIN_SECRET = process.env.ADMIN_SECRET;
 
 export default async function handler(req, res) {
@@ -23,8 +33,9 @@ export default async function handler(req, res) {
       const pro = users?.filter(u => u.tier === 'pro').length || 0;
       const digestEnabled = users?.filter(u => u.digest_enabled).length || 0;
       const mrr = pro * 7;
-      // Waitlist count
-      const { count: waitlistCount } = await supabase.from('waitlist').select('*', { count: 'exact', head: true });
+      // Waitlist count from Resend (source of truth)
+      const resendContacts = await getResendContacts();
+      const waitlistCount = resendContacts.length;
       // Top referrers
       const topReferrers = (users || [])
         .filter(u => (u.referred_count || 0) > 0)
@@ -62,14 +73,12 @@ export default async function handler(req, res) {
         if (profileUsers) recipientEmails.push(...profileUsers.map(u => u.email));
       }
 
-      // Get waitlist users (not already in profiles)
+      // Get waitlist from Resend audience (source of truth - always complete)
       if (segment === 'waitlist' || segment === 'all_including_waitlist') {
-        const { data: waitlistUsers } = await supabase.from('waitlist').select('email');
-        if (waitlistUsers) {
-          const existing = new Set(recipientEmails);
-          const newEmails = waitlistUsers.map(u => u.email).filter(e => !existing.has(e));
-          recipientEmails.push(...newEmails);
-        }
+        const resendEmails = await getResendContacts();
+        const existing = new Set(recipientEmails);
+        const newEmails = resendEmails.filter(e => !existing.has(e));
+        recipientEmails.push(...newEmails);
       }
 
       if (!recipientEmails.length) return res.status(200).json({ success: true, sent: 0 });
@@ -127,11 +136,10 @@ export default async function handler(req, res) {
       return res.status(200).json({ success: true });
     }
 
-    // ── WAITLIST (Resend Audience) ────────────────────────
+    // ── WAITLIST (Resend Audience - source of truth) ─────
     if (action === 'waitlist') {
-      const audienceId = process.env.RESEND_AUDIENCE_ID;
-      const resendRes = await fetch(`https://api.resend.com/audiences/${audienceId}/contacts`, {
-        headers: { 'Authorization': `Bearer ${process.env.RESEND_API_KEY}` }
+      const resendRes = await fetch('https://api.resend.com/audiences/' + process.env.RESEND_AUDIENCE_ID + '/contacts', {
+        headers: { 'Authorization': 'Bearer ' + process.env.RESEND_API_KEY }
       });
       const data = await resendRes.json();
       const contacts = (data.data || []).map(c => ({
@@ -140,7 +148,23 @@ export default async function handler(req, res) {
         created_at: c.created_at
       }));
       contacts.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
-      return res.status(200).json({ success: true, contacts, total: contacts.length });
+
+      // Backfill any missing contacts into Supabase waitlist table
+      const activeContacts = contacts.filter(c => !c.unsubscribed);
+      if (activeContacts.length > 0) {
+        const upsertData = activeContacts.map(c => ({
+          email: c.email,
+          joined_at: c.created_at || new Date().toISOString()
+        }));
+        await supabase.from('waitlist').upsert(upsertData, { onConflict: 'email', ignoreDuplicates: true });
+      }
+
+      return res.status(200).json({
+        success: true,
+        contacts,
+        total: contacts.length,
+        active: activeContacts.length
+      });
     }
 
     return res.status(400).json({ error: 'Unknown action' });
