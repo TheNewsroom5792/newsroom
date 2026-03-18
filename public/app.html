@@ -443,7 +443,7 @@ async function loadProfile() {
     headers: { 'Authorization': `Bearer ${session.access_token}` }
   });
   const data = await res.json();
-  if (data.success) profile = data.profile; window._currentProfile = data.profile;
+  if (data.success) profile = data.profile; window._currentProfile = data.profile; checkReferralCredit(data.profile);
 }
 
 async function savePreferences() {
@@ -1200,6 +1200,7 @@ init();
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('/sw.js').catch(e => console.log('SW:', e));
   }
+  checkUpgradedParam();
 
   
   // ── BEAT SUGGESTIONS ─────────────────────────────────
@@ -1266,6 +1267,63 @@ init();
     });
     renderBeatSuggestions(beats);
     if (typeof loadFeed === 'function') loadFeed();
+  }
+
+  
+  // ── TRENDING WIDGET ───────────────────────────────────
+  async function loadTrending() {
+    try {
+      const res = await fetch('/api/track?action=trending');
+      const data = await res.json();
+      if (!data.trending || !data.trending.length) return;
+      const existing = document.getElementById('trending-widget');
+      if (existing) existing.remove();
+      const widget = document.createElement('div');
+      widget.id = 'trending-widget';
+      widget.style.cssText = 'background:var(--ink);color:var(--paper);padding:14px 20px;border-bottom:2px solid var(--accent);';
+      widget.innerHTML = '<div style="font-family:DM Mono,monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-bottom:10px;">Trending now</div>' +
+        '<div style="display:flex;gap:20px;overflow-x:auto;padding-bottom:2px;">' +
+        data.trending.slice(0,5).map((a,i) =>
+          '<div style="flex-shrink:0;max-width:220px;cursor:pointer;" onclick="openArticle(' +
+            JSON.stringify(a.headline) + ',' + JSON.stringify(a.source||'') + ',' + JSON.stringify(a.url||'#') + ',' + JSON.stringify(a.beat||'') + ')">' +
+            '<div style="font-family:DM Mono,monospace;font-size:8px;letter-spacing:1px;color:var(--accent);margin-bottom:4px;">' + (i+1) + '</div>' +
+            '<div style="font-family:Georgia,serif;font-size:13px;line-height:1.4;color:rgba(255,255,255,0.9);">' + (a.headline||'').substring(0,80) + '</div>' +
+            '<div style="font-family:DM Mono,monospace;font-size:9px;color:rgba(255,255,255,0.3);margin-top:4px;">' + (a.source||'') + '</div>' +
+          '</div>'
+        ).join('<div style="width:1px;background:rgba(255,255,255,0.08);flex-shrink:0;"></div>') +
+        '</div>';
+      const contentArea = document.getElementById('content-area');
+      if (contentArea) contentArea.before(widget);
+    } catch(e) { console.error('Trending:', e); }
+  }
+
+  // ── UPGRADE SUCCESS BANNER ────────────────────────────
+  function checkUpgradedParam() {
+    const upgraded = new URLSearchParams(window.location.search).get('upgraded');
+    if (!upgraded) return;
+    // Clean URL
+    window.history.replaceState({}, '', window.location.pathname);
+    // Show banner
+    const banner = document.createElement('div');
+    banner.style.cssText = 'position:fixed;top:0;left:0;right:0;z-index:8888;background:var(--accent);color:white;text-align:center;padding:12px;font-family:DM Mono,monospace;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;';
+    banner.innerHTML = 'Welcome to Pro. Your full feed is unlocked. <button onclick="this.parentElement.remove()" style="background:none;border:none;color:white;cursor:pointer;margin-left:12px;font-size:14px;">x</button>';
+    document.body.prepend(banner);
+    setTimeout(() => banner.remove(), 6000);
+  }
+
+  // ── REFERRAL CREDIT APPLIED NOTICE ───────────────────
+  function checkReferralCredit(profile) {
+    if (!profile) return;
+    const credits = profile.referral_credits || 0;
+    const notified = localStorage.getItem('hr_credit_notified');
+    if (credits > 0 && !notified) {
+      localStorage.setItem('hr_credit_notified', '1');
+      const banner = document.createElement('div');
+      banner.style.cssText = 'position:fixed;top:52px;left:0;right:0;z-index:8887;background:#2d6a2d;color:white;text-align:center;padding:10px;font-family:DM Mono,monospace;font-size:10px;letter-spacing:1px;';
+      banner.innerHTML = credits + ' free month' + (credits > 1 ? 's' : '') + ' credited to your account from referrals. Applied at next billing cycle. <button onclick="this.parentElement.remove()" style="background:none;border:none;color:white;cursor:pointer;margin-left:8px;">x</button>';
+      document.body.prepend(banner);
+      setTimeout(() => banner.remove(), 8000);
+    }
   }
 
   </script>
