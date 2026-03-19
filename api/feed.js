@@ -283,7 +283,7 @@ export default async function handler(req, res) {
           sources.forEach(f => {
             try {
               const host = new URL(f.url).hostname;
-              if (!seen.has(host)) { seen.add(host); feeds.push(Object.assign({}, f, {beat: beat})); }
+              if (!seen.has(host)) { seen.add(host); feeds.push(f); }
             } catch(e) {}
           });
         }
@@ -297,10 +297,7 @@ export default async function handler(req, res) {
       feeds = CHANNEL_FEEDS.mainstream.slice(0, 6);
     }
 
-    const results =   const _srcBeat = {};
-  feeds.forEach(function(f){ if(f.name && f.beat) _srcBeat[f.name] = f.beat; });
-
-  await Promise.allSettled(
+    const results = await Promise.allSettled(
       feeds.map(f => fetchRSS(f.url, f.name))
     );
 
@@ -312,7 +309,7 @@ export default async function handler(req, res) {
           const key = a.headline.slice(0, 50).toLowerCase().replace(/[^a-z0-9]/g, '');
           if (!seen.has(key) && a.headline.length > 10) {
             seen.add(key);
-            a.beat = _srcBeat[a.source] || 'general'; articles.push(a);
+            articles.push(a);
           }
         });
       }
