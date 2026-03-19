@@ -18,7 +18,7 @@
     },
     {
       "src": "/admin",
-      "dest": "/public/admin.html",
+      "dest": "/admin.html",
       "status": 200
     },
     {
