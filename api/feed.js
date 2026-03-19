@@ -1,4 +1,5 @@
-// feed.js  -  Headlines Report RSS aggregator
+  articles.forEach(a => { if (!a.beat) a.beat = SOURCE_BEAT_MAP[a.source] || SOURCE_BEAT_MAP[(()=>{try{return new URL('https://'+a.source).hostname.replace('www.','')}catch(e){return ''}})()]; });
+  // feed.js  -  Headlines Report RSS aggregator
 // 100+ sources across 50+ beat categories
 
 const CHANNEL_FEEDS = {
@@ -186,7 +187,7 @@ const BEAT_FEEDS = {
   breaking:            [{ url: 'https://feeds.apnews.com/rss/apf-topnews', name: 'AP News' }, { url: 'https://feeds.reuters.com/reuters/topNews', name: 'Reuters' }],
 };
 
-async function fetchRSS(feedUrl, sourceName, beatKey) {
+async function fetchRSS(feedUrl, sourceName) {
   try {
     const res = await fetch(feedUrl, {
       headers: {
@@ -227,7 +228,6 @@ function parseRSS(xml, sourceName) {
         time: formatTime(pubDate),
         url: link || '',
         type: 'news',
-        beat: beatKey,
       });
     }
     return items;
@@ -259,6 +259,18 @@ function formatTime(pubDate) {
     return 'Just now';
   } catch(e) { return ''; }
 }
+
+
+// Source-to-beat lookup map
+const SOURCE_BEAT_MAP = {};
+try {
+  Object.entries(BEAT_SOURCES).forEach(([beat, sources]) => {
+    sources.forEach(s => {
+      try { SOURCE_BEAT_MAP[new URL(s.url).hostname.replace('www.','')] = SOURCE_BEAT_MAP[new URL(s.url).hostname.replace('www.','')] || beat; } catch(e){}
+      SOURCE_BEAT_MAP[s.name] = SOURCE_BEAT_MAP[s.name] || beat;
+    });
+  });
+} catch(e) {}
 
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
