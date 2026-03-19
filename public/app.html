@@ -838,7 +838,7 @@ function addBeat() {
   if (!profile.beats) profile.beats = [];
   if (profile.beats.map(b=>b.toLowerCase()).includes(val.toLowerCase())) { input.value=''; return; }
   if (profile.tier !== 'pro' && profile.beats.length >= FREE.beats) { showModal('beat'); return; }
-  profile.beats.push(val.charAt(0).toUpperCase()+val.slice(1));
+  profile.beats.push(val.toLowerCase());
   input.value = '';
   savePreferences();
   renderSettings();
