@@ -1,4 +1,4 @@
-  // feed.js  -  Headlines Report RSS aggregator
+// feed.js  -  Headlines Report RSS aggregator
 // 100+ sources across 50+ beat categories
 
 const CHANNEL_FEEDS = {
@@ -186,7 +186,7 @@ const BEAT_FEEDS = {
   breaking:            [{ url: 'https://feeds.apnews.com/rss/apf-topnews', name: 'AP News' }, { url: 'https://feeds.reuters.com/reuters/topNews', name: 'Reuters' }],
 };
 
-async function fetchRSS(feedUrl, sourceName, beatName) {
+async function fetchRSS(feedUrl, sourceName) {
   try {
     const res = await fetch(feedUrl, {
       headers: {
@@ -227,7 +227,6 @@ function parseRSS(xml, sourceName) {
         time: formatTime(pubDate),
         url: link || '',
         type: 'news',
-        beat: beatName,
       });
     }
     return items;
@@ -298,8 +297,13 @@ export default async function handler(req, res) {
       feeds = CHANNEL_FEEDS.mainstream.slice(0, 6);
     }
 
-    const results = await Promise.allSettled(
-      feeds.map(f => fetchRSS(f.url, f.name, f.beat))
+    const results = 
+  // Build source->beat map from feeds array
+  const _srcBeat = {};
+  feeds.forEach(f => { if (f.name && f.beat) _srcBeat[f.name] = f.beat; });
+
+  await Promise.allSettled(
+      feeds.map(f => fetchRSS(f.url, f.name))
     );
 
     const seen = new Set();
@@ -310,7 +314,7 @@ export default async function handler(req, res) {
           const key = a.headline.slice(0, 50).toLowerCase().replace(/[^a-z0-9]/g, '');
           if (!seen.has(key) && a.headline.length > 10) {
             seen.add(key);
-            articles.push(a);
+            a.beat = _srcBeat[a.source] || 'general'; articles.push(a);
           }
         });
       }
