@@ -283,7 +283,7 @@ export default async function handler(req, res) {
           sources.forEach(f => {
             try {
               const host = new URL(f.url).hostname;
-              if (!seen.has(host)) { seen.add(host); feeds.push({...f, beat: beat}); }
+              if (!seen.has(host)) { seen.add(host); feeds.push(Object.assign({}, f, {beat: beat})); }
             } catch(e) {}
           });
         }
@@ -297,10 +297,8 @@ export default async function handler(req, res) {
       feeds = CHANNEL_FEEDS.mainstream.slice(0, 6);
     }
 
-    const results = 
-  // Build source->beat map from feeds array
-  const _srcBeat = {};
-  feeds.forEach(f => { if (f.name && f.beat) _srcBeat[f.name] = f.beat; });
+    const results =   const _srcBeat = {};
+  feeds.forEach(function(f){ if(f.name && f.beat) _srcBeat[f.name] = f.beat; });
 
   await Promise.allSettled(
       feeds.map(f => fetchRSS(f.url, f.name))
