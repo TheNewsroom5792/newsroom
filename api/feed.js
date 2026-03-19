@@ -283,7 +283,7 @@ export default async function handler(req, res) {
           sources.forEach(f => {
             try {
               const host = new URL(f.url).hostname;
-              if (!seen.has(host)) { seen.add(host); feeds.push(f); }
+              if (!seen.has(host)) { seen.add(host); feeds.push(Object.assign({}, f, {beat: beat})); }
             } catch(e) {}
           });
         }
@@ -309,7 +309,7 @@ export default async function handler(req, res) {
           const key = a.headline.slice(0, 50).toLowerCase().replace(/[^a-z0-9]/g, '');
           if (!seen.has(key) && a.headline.length > 10) {
             seen.add(key);
-            articles.push(a);
+            a.beat = _srcBeat[a.source] || 'general'; articles.push(a);
           }
         });
       }
