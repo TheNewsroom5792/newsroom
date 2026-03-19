@@ -227,6 +227,7 @@ function parseRSS(xml, sourceName) {
         time: formatTime(pubDate),
         url: link || '',
         type: 'news',
+        beat: beat,
       });
     }
     return items;
