@@ -450,7 +450,11 @@ async function loadProfile() {
     headers: { 'Authorization': `Bearer ${session.access_token}` }
   });
   const data = await res.json();
-  if (data.success) profile = data.profile; window._currentProfile = data.profile; checkReferralCredit(data.profile);
+  if (data.success) profile = data.profile; if (data.profile && data.profile.beats) {
+      data.profile.beats = data.profile.beats.map(function(b){ return b.toLowerCase(); });
+      if (!data.profile.beats.includes('sports')) data.profile.beats.push('sports');
+    }
+    window._currentProfile = data.profile; checkReferralCredit(data.profile);
 }
 
 async function savePreferences() {
