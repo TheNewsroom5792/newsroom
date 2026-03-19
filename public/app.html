@@ -108,7 +108,7 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--i
 .article-beat { font-family: 'DM Mono', monospace; font-size: 8px; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 4px; }
 .beat-pol { color: #c1440e; } .beat-eco { color: #8B6914; } .beat-tech { color: #1a5a8a; }
 .beat-world { color: #0a5c42; } .beat-edu { color: #4a2e9e; } .beat-sub { color: var(--substack); }
-.beat-def { color: var(--muted); }
+.beat-def { color: var(--muted); } .beat-spt { color: #1a7a3c; }
 .article-hed { font-family: 'Playfair Display', serif; font-size: 15px; line-height: 1.3; margin-bottom: 5px; color: var(--ink); }
 .article-sub.substack-hed { font-style: italic; }
 .article-sum { font-size: 12px; line-height: 1.55; color: var(--muted); margin-bottom: 6px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
@@ -521,7 +521,7 @@ async function fetchFeed(isInitialLoad = false) {
   if (!isInitialLoad && profile?.tier !== 'pro') refreshesUsed++;
   renderLoading();
 
-  const beats = profile?.beats || ['Politics','Economy','Technology'];
+  const beats = profile?.beats || ['Politics','Economy','Technology','Sports'];
 
   try {
     // Fetch real RSS articles
@@ -582,7 +582,7 @@ function renderFeed() {
   const visible = filtered.slice(0, filtered.length); // BETA: all articles free
   const gated = []; // BETA: no gating
 
-  const beatColors = {politics:'beat-pol',economy:'beat-eco',technology:'beat-tech',tech:'beat-tech',world:'beat-world',education:'beat-edu'};
+  const beatColors = {politics:'beat-pol',economy:'beat-eco',technology:'beat-tech',tech:'beat-tech',world:'beat-world',education:'beat-edu',sports:'beat-spt',nfl:'beat-spt',nba:'beat-spt',mlb:'beat-spt',nhl:'beat-spt',soccer:'beat-spt'};
   function bc(b){ return beatColors[b?.toLowerCase()] || 'beat-def'; }
 
   // Bias ratings based on AllSides + Ad Fontes Media
@@ -923,6 +923,7 @@ function assignBeat(headline, beats) {
     'economy': ['economy','inflation','fed','interest rate','gdp','recession','market','stock','trade','economic','finance','bank','dollar','budget'],
     'technology': ['tech','ai','artificial intelligence','software','apple','google','microsoft','meta','amazon','startup','cyber','data','chip','robot'],
     'world': ['ukraine','russia','china','middle east','israel','gaza','europe','nato','un','global','international','foreign','war','conflict'],
+    'sports': ['nfl','nba','mlb','nhl','espn','sports','game','score','playoff','championship','tournament','league','athlete','match','season','draft'],
     'health': ['health','covid','cancer','vaccine','drug','fda','hospital','medical','disease','mental health','pandemic'],
     'climate': ['climate','carbon','emission','environment','energy','solar','wind','fossil','temperature','weather'],
     'science': ['science','space','nasa','research','study','discovery','physics','biology'],
