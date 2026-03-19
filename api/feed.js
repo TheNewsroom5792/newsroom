@@ -296,7 +296,7 @@ export default async function handler(req, res) {
     } else {
       feeds = CHANNEL_FEEDS.mainstream.slice(0, 6);
     }
-
+const _srcBeat = {}; feeds.forEach(function(x){ if(x.name && x.beat) _srcBeat[x.name]=x.beat; });
     const results = await Promise.allSettled(
       feeds.map(f => fetchRSS(f.url, f.name))
     );
