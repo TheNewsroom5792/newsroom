@@ -186,7 +186,7 @@ const BEAT_FEEDS = {
   breaking:            [{ url: 'https://feeds.apnews.com/rss/apf-topnews', name: 'AP News' }, { url: 'https://feeds.reuters.com/reuters/topNews', name: 'Reuters' }],
 };
 
-async function fetchRSS(feedUrl, sourceName) {
+async function fetchRSS(feedUrl, sourceName, beatKey) {
   try {
     const res = await fetch(feedUrl, {
       headers: {
@@ -227,7 +227,7 @@ function parseRSS(xml, sourceName) {
         time: formatTime(pubDate),
         url: link || '',
         type: 'news',
-        beat: beat,
+        beat: beatKey,
       });
     }
     return items;
@@ -299,7 +299,7 @@ export default async function handler(req, res) {
     }
 
     const results = await Promise.allSettled(
-      feeds.map(f => fetchRSS(f.url, f.name))
+      feeds.map(f => fetchRSS(f.url, f.name, beat))
     );
 
     const seen = new Set();
