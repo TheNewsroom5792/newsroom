@@ -3,42 +3,42 @@
   "routes": [
     {
       "src": "/beta",
-      "dest": "/public/beta.html",
+      "dest": "/beta.html",
       "status": 200
     },
     {
       "src": "/beta.html",
-      "dest": "/public/beta.html",
+      "dest": "/beta.html",
       "status": 200
     },
     {
       "src": "/app",
-      "dest": "/public/app.html",
+      "dest": "/app.html",
       "status": 200
     },
     {
       "src": "/admin",
-      "dest": "/public/public/admin.html",
+      "dest": "/public/admin.html",
       "status": 200
     },
     {
       "src": "/fresh-start",
-      "dest": "/public/fresh-start.html",
+      "dest": "/fresh-start.html",
       "status": 200
     },
     {
       "src": "/privacy",
-      "dest": "/public/privacy.html",
+      "dest": "/privacy.html",
       "status": 200
     },
     {
       "src": "/terms",
-      "dest": "/public/terms.html",
+      "dest": "/terms.html",
       "status": 200
     },
     {
       "src": "/contact",
-      "dest": "/public/contact.html",
+      "dest": "/contact.html",
       "status": 200
     },
     {
@@ -47,55 +47,48 @@
     },
     {
       "src": "/manifest.json",
-      "dest": "/public/manifest.json"
+      "dest": "/manifest.json"
     },
     {
       "src": "/sw.js",
-      "dest": "/public/sw.js"
-    },
-    {
-      "src": "/icon-192.svg",
-      "dest": "/public/icon-192.svg"
+      "dest": "/sw.js"
     },
     {
       "src": "/moose.svg",
-      "dest": "/public/moose.svg"
+      "dest": "/moose.svg"
+    },
+    {
+      "src": "/icon-192.svg",
+      "dest": "/icon-192.svg"
     },
     {
       "src": "/icon-512.svg",
-      "dest": "/public/icon-512.svg"
+      "dest": "/icon-512.svg"
     },
     {
       "src": "/og-image.svg",
-      "dest": "/public/og-image.svg"
+      "dest": "/og-image.svg"
     },
     {
       "src": "/robots.txt",
-      "dest": "/public/robots.txt"
+      "dest": "/robots.txt"
     },
     {
       "src": "/sitemap.xml",
-      "dest": "/public/sitemap.xml"
+      "dest": "/sitemap.xml"
     },
     {
       "src": "/api/(.*)",
       "dest": "/api/$1"
     },
     {
-      "src": "/app.html",
-      "dest": "/public/app.html"
-    },
-    {
       "src": "^/$",
-      "dest": "/public/index.html"
-    },
-    {
-      "src": "/(.*)\\.html",
-      "dest": "/public/$1.html"
+      "dest": "/index.html",
+      "status": 200
     },
     {
       "src": "/(.*)",
-      "dest": "/public/$1"
+      "dest": "/$1"
     }
   ],
   "crons": [
