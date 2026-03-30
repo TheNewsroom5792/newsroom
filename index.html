@@ -1,0 +1,1103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Headlines Report: Your Morning Briefing</title>
+<meta name="description" content="One place. All the News. Every Morning."/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --ink: #0f0e0c;
+  --paper: #f7f4ee;
+  --rule: #d4cfc4;
+  --muted: #7a7567;
+  --accent: #c1440e;
+  --accent-light: #f5ede8;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: 'Source Serif 4', Georgia, serif;
+  font-weight: 300;
+  overflow-x: hidden;
+}
+
+/* ── NOISE TEXTURE OVERLAY ── */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 1000;
+  opacity: 0.5;
+}
+
+/* ── MASTHEAD ── */
+.masthead {
+  border-bottom: 3px double var(--ink);
+  padding: 0;
+  animation: fadeDown 0.8s ease both;
+}
+
+.masthead-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 48px 12px;
+  border-bottom: 1px solid var(--rule);
+}
+
+.dateline {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.nav-links {
+  display: flex;
+  gap: 28px;
+  list-style: none;
+}
+
+.nav-links a {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--muted);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.nav-links a:hover { color: var(--ink); }
+
+.masthead-main {
+  padding: 32px 48px 24px;
+  text-align: center;
+  position: relative;
+}
+
+.masthead-rule {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+.masthead-rule::before,
+.masthead-rule::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--ink);
+}
+.masthead-rule span {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.logo {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: clamp(52px, 8vw, 96px);
+  font-weight: 900;
+  letter-spacing: -2px;
+  line-height: 0.95;
+  color: var(--ink);
+}
+
+.logo em {
+  font-style: italic;
+  font-weight: 400;
+  color: var(--accent);
+}
+
+.tagline {
+  font-family: 'Source Serif 4', serif;
+  font-size: 15px;
+  font-style: italic;
+  color: var(--muted);
+  margin-top: 12px;
+  letter-spacing: 0.3px;
+}
+
+.edition-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  padding: 10px 48px;
+  border-top: 1px solid var(--rule);
+  background: var(--ink);
+}
+
+.edition-item {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.5);
+}
+.edition-item.accent { color: rgba(193,68,14,0.9); }
+.edition-sep { color: rgba(255,255,255,0.2); font-size: 12px; }
+
+/* ── HERO ── */
+.hero {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 0;
+  border-bottom: 2px solid var(--ink);
+  animation: fadeUp 0.9s 0.2s ease both;
+}
+
+.hero-main {
+  padding: 56px 48px 56px;
+  border-right: 1px solid var(--rule);
+}
+
+.hero-kicker {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.hero-kicker::before {
+  content: '';
+  width: 20px;
+  height: 1px;
+  background: var(--accent);
+}
+
+.hero-hed {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: clamp(32px, 4vw, 52px);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.5px;
+  margin-bottom: 20px;
+}
+
+.hero-hed em {
+  font-style: italic;
+  font-weight: 400;
+}
+
+.hero-deck {
+  font-size: 17px;
+  line-height: 1.7;
+  color: #3d3b36;
+  max-width: 560px;
+  margin-bottom: 36px;
+  font-weight: 300;
+}
+
+.signup-form {
+  display: flex;
+  gap: 0;
+  max-width: 460px;
+}
+
+.signup-input {
+  flex: 1;
+  padding: 13px 16px;
+  font-size: 14px;
+  font-family: 'Source Serif 4', serif;
+  border: 1.5px solid var(--ink);
+  border-right: none;
+  background: white;
+  color: var(--ink);
+  outline: none;
+  transition: border-color 0.2s;
+}
+.signup-input::placeholder { color: var(--muted); font-style: italic; }
+.signup-input:focus { border-color: var(--accent); }
+
+.signup-btn {
+  padding: 13px 24px;
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  background: var(--ink);
+  color: var(--paper);
+  border: 1.5px solid var(--ink);
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+.signup-btn:hover { background: var(--accent); border-color: var(--accent); }
+
+.signup-note {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.5px;
+  color: var(--muted);
+  margin-top: 10px;
+}
+
+.hero-sidebar {
+  padding: 40px 32px;
+  background: var(--ink);
+  color: var(--paper);
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.sidebar-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.4);
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.mock-story {
+  padding: 14px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+.mock-story:last-child { border-bottom: none; }
+
+.mock-beat {
+  font-family: 'DM Mono', monospace;
+  font-size: 8px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 5px;
+}
+.beat-pol { color: #e07070; }
+.beat-eco { color: #e0b870; }
+.beat-tech { color: #70a8e0; }
+.beat-sub { color: #FF8C4B; }
+
+.mock-hed {
+  font-family: 'Playfair Display', serif;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.35;
+  color: rgba(255,255,255,0.9);
+  margin-bottom: 4px;
+}
+.mock-meta {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  color: rgba(255,255,255,0.3);
+}
+
+/* ── FEATURES ── */
+.features {
+  padding: 72px 48px;
+  border-bottom: 2px solid var(--ink);
+  animation: fadeUp 1s 0.4s ease both;
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 48px;
+}
+.section-header::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--rule);
+}
+.section-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0;
+}
+
+.feature {
+  padding: 32px 32px 32px 0;
+  border-right: 1px solid var(--rule);
+  padding-right: 32px;
+}
+.feature:first-child { padding-left: 0; }
+.feature:last-child { border-right: none; padding-right: 0; }
+.feature + .feature { padding-left: 32px; }
+
+.feature-num {
+  font-family: 'Playfair Display', serif;
+  font-size: 48px;
+  font-weight: 900;
+  color: var(--rule);
+  line-height: 1;
+  margin-bottom: 12px;
+}
+
+.feature-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 10px;
+  line-height: 1.2;
+}
+
+.feature-desc {
+  font-size: 13px;
+  line-height: 1.7;
+  color: var(--muted);
+  font-weight: 300;
+}
+
+/* ── HOW IT WORKS ── */
+.how {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border-bottom: 2px solid var(--ink);
+  animation: fadeUp 1s 0.5s ease both;
+}
+
+.how-left {
+  padding: 64px 48px;
+  border-right: 1px solid var(--rule);
+}
+
+.how-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 36px;
+  font-weight: 700;
+  line-height: 1.15;
+  margin-bottom: 32px;
+}
+.how-title em { font-style: italic; font-weight: 400; }
+
+.how-steps { display: flex; flex-direction: column; gap: 0; }
+
+.how-step {
+  display: flex;
+  gap: 20px;
+  padding: 20px 0;
+  border-bottom: 1px solid var(--rule);
+}
+.how-step:last-child { border-bottom: none; }
+
+.step-num {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: var(--accent);
+  font-weight: 500;
+  padding-top: 3px;
+  min-width: 24px;
+}
+
+.step-body h4 {
+  font-family: 'Playfair Display', serif;
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.step-body p {
+  font-size: 13px;
+  line-height: 1.65;
+  color: var(--muted);
+  font-weight: 300;
+}
+
+.how-right {
+  padding: 64px 48px;
+  background: #f0ece3;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.email-mockup {
+  background: white;
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  overflow: hidden;
+  box-shadow: 4px 4px 0 var(--rule);
+}
+
+.em-header {
+  background: var(--ink);
+  padding: 16px 20px;
+  text-align: center;
+}
+.em-header-logo {
+  font-family: 'Playfair Display', serif;
+  font-size: 18px;
+  font-style: italic;
+  color: white;
+}
+.em-header-date {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  color: rgba(255,255,255,0.4);
+  letter-spacing: 1px;
+  margin-top: 3px;
+}
+
+.em-digest {
+  background: #f9f7f2;
+  padding: 12px 16px;
+  border-bottom: 1px solid #ece8df;
+}
+.em-digest-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 8px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #999;
+  margin-bottom: 5px;
+}
+.em-digest-text {
+  font-size: 11px;
+  line-height: 1.6;
+  color: #555;
+}
+
+.em-body { padding: 0 16px 12px; }
+
+.em-beat-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 8px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 10px 0 5px;
+}
+
+.em-story { padding: 6px 0; border-bottom: 1px solid #f0ece3; }
+.em-story:last-child { border-bottom: none; }
+.em-story-hed {
+  font-family: 'Playfair Display', serif;
+  font-size: 12px;
+  line-height: 1.3;
+  color: #1a1a1a;
+  margin-bottom: 2px;
+}
+.em-story-src {
+  font-family: 'DM Mono', monospace;
+  font-size: 8px;
+  color: #aaa;
+}
+
+/* ── PRICING ── */
+.pricing {
+  padding: 72px 48px;
+  border-bottom: 2px solid var(--ink);
+  animation: fadeUp 1s 0.6s ease both;
+}
+
+.pricing-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  max-width: 720px;
+}
+
+.plan {
+  border: 1.5px solid var(--rule);
+  padding: 32px;
+  position: relative;
+  transition: border-color 0.2s;
+}
+.plan:hover { border-color: var(--ink); }
+
+.plan.featured {
+  border-color: var(--ink);
+  border-width: 2px;
+}
+
+.plan-flag {
+  position: absolute;
+  top: -1px;
+  right: 24px;
+  background: var(--accent);
+  color: white;
+  font-family: 'DM Mono', monospace;
+  font-size: 8px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  padding: 4px 10px;
+}
+
+.plan-name {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+
+.plan-price {
+  font-family: 'Playfair Display', serif;
+  font-size: 48px;
+  font-weight: 900;
+  line-height: 1;
+  margin-bottom: 4px;
+}
+.plan-price sup {
+  font-size: 20px;
+  font-weight: 400;
+  vertical-align: super;
+}
+.plan-price span {
+  font-size: 14px;
+  font-weight: 300;
+  font-family: 'Source Serif 4', serif;
+  color: var(--muted);
+}
+
+.plan-tagline {
+  font-size: 12px;
+  color: var(--muted);
+  margin-bottom: 24px;
+  font-style: italic;
+}
+
+.plan-features {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 28px;
+}
+
+.plan-features li {
+  font-size: 13px;
+  color: #3d3b36;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  line-height: 1.4;
+}
+
+.feat-check { color: var(--accent); font-size: 12px; margin-top: 1px; flex-shrink: 0; }
+.feat-x { color: var(--rule); font-size: 12px; margin-top: 1px; flex-shrink: 0; }
+
+.plan-cta {
+  width: 100%;
+  padding: 12px;
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  border: 1.5px solid var(--ink);
+  background: none;
+  color: var(--ink);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.plan-cta:hover, .plan.featured .plan-cta {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+/* ── BOTTOM CTA ── */
+.bottom-cta {
+  background: var(--ink);
+  padding: 80px 48px;
+  text-align: center;
+  animation: fadeUp 1s 0.7s ease both;
+}
+
+.bottom-cta h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(28px, 4vw, 48px);
+  font-weight: 700;
+  color: var(--paper);
+  margin-bottom: 8px;
+  line-height: 1.2;
+}
+.bottom-cta h2 em { font-style: italic; font-weight: 400; color: rgba(247,244,238,0.6); }
+
+.bottom-cta p {
+  font-size: 15px;
+  color: rgba(247,244,238,0.5);
+  margin-bottom: 36px;
+  font-style: italic;
+}
+
+.bottom-form {
+  display: flex;
+  gap: 0;
+  max-width: 440px;
+  margin: 0 auto;
+}
+
+.bottom-input {
+  flex: 1;
+  padding: 13px 16px;
+  font-size: 14px;
+  font-family: 'Source Serif 4', serif;
+  border: 1.5px solid rgba(255,255,255,0.2);
+  border-right: none;
+  background: rgba(255,255,255,0.05);
+  color: white;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.bottom-input::placeholder { color: rgba(255,255,255,0.3); font-style: italic; }
+.bottom-input:focus { border-color: rgba(255,255,255,0.5); }
+
+.bottom-btn {
+  padding: 13px 24px;
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  background: var(--accent);
+  color: white;
+  border: 1.5px solid var(--accent);
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+.bottom-btn:hover { background: #a83509; border-color: #a83509; }
+
+/* ── FOOTER ── */
+footer {
+  border-top: 3px double var(--ink);
+  padding: 24px 48px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.footer-logo {
+  font-family: 'Playfair Display', serif;
+  font-size: 18px;
+  font-style: italic;
+  font-weight: 700;
+}
+
+.footer-copy {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 1px;
+  color: var(--muted);
+}
+
+.footer-links {
+  display: flex;
+  gap: 20px;
+  list-style: none;
+}
+.footer-links a {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--muted);
+  text-decoration: none;
+}
+.footer-links a:hover { color: var(--ink); }
+
+/* ── ANIMATIONS ── */
+@keyframes fadeDown {
+  from { opacity: 0; transform: translateY(-12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── SUCCESS STATE ── */
+.signup-success {
+  display: none;
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 1px;
+  color: var(--accent);
+  padding: 13px 0;
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 900px) {
+  .hero { grid-template-columns: 1fr; }
+  .hero-sidebar { display: none; }
+  .features-grid { grid-template-columns: 1fr 1fr; }
+  .feature { border-right: none; border-bottom: 1px solid var(--rule); padding: 24px 0; }
+  .how { grid-template-columns: 1fr; }
+  .how-right { display: none; }
+  .masthead-top { padding: 12px 24px; }
+  .masthead-main { padding: 24px 24px 16px; }
+  .hero-main, .features, .pricing, .bottom-cta, footer { padding-left: 24px; padding-right: 24px; }
+  .how-left { padding: 40px 24px; }
+  .pricing-grid { grid-template-columns: 1fr; max-width: 400px; }
+  .nav-links { display: none; }
+}
+</style>
+
+  <!-- Open Graph / Social share -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://headlinesreport.com/" />
+  <meta property="og:title" content="Headlines Report, Your Morning Briefing" />
+  <meta property="og:description" content="One place. All the news. Every morning. Beat-based news feed, Substack integration, and a curated digest delivered to your inbox." />
+  <meta property="og:image" content="https://headlinesreport.com/og-image.svg" />
+  <meta property="twitter:card" content="summary_large_image" />
+  <meta property="twitter:url" content="https://headlinesreport.com/" />
+  <meta property="twitter:title" content="Headlines Report, Your Morning Briefing" />
+  <meta property="twitter:description" content="One place. All the news. Every morning." />
+  <meta property="twitter:image" content="https://headlinesreport.com/og-image.png" />
+  <!-- PWA -->
+  <link rel="manifest" href="/manifest.json" />
+  <meta name="theme-color" content="#0f0e0c" />
+  <link rel="apple-touch-icon" href="/icon-192.png" />
+</head>
+<body>
+
+<!-- MASTHEAD -->
+<header class="masthead">
+  <div class="masthead-top">
+    <span class="dateline" id="dateline"></span>
+    <nav style="display:flex;align-items:center;gap:24px;">
+      <ul class="nav-links">
+        <li><a href="#features">Features</a></li>
+        <li><a href="#how">How it works</a></li>
+        <li><a href="#pricing">Pricing</a></li>
+        <li><a href="#signup">Get started</a></li>
+                <li><a href="/fresh-start.html" target="_blank" rel="noopener">Fresh Start: Financial Plan</a></li>
+      </ul>
+      <a href="/app.html" style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;padding:6px 14px;border:1px solid var(--ink);color:var(--ink);text-decoration:none;border-radius:2px;transition:all .15s;white-space:nowrap;" onmouseover="this.style.background='var(--ink)';this.style.color='var(--paper)'" onmouseout="this.style.background='none';this.style.color='var(--ink)'">Sign in</a>
+    </nav>
+  </div>
+  <div class="masthead-main">
+    <div class="masthead-rule">
+      <span>Est. 2025 · Digital Edition</span>
+    </div>
+    <div class="logo">Headlines<em>Report</em></div>
+    <div class="tagline">One place. All the News. Every Morning.</div>
+  </div>
+
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-main">
+    <div class="hero-kicker">The morning briefing, rebuilt</div>
+    <h1 class="hero-hed">Stop bouncing between<br/><em>twelve tabs.</em></h1>
+    <p class="hero-deck">Headlines Report pulls your news beats, your Substacks, and a curated digest into a single morning briefing , delivered to your inbox every morning as <em>The Morning Moose</em>.</p>
+
+    <div id="signup">
+      <form class="signup-form" onsubmit="handleSignup(event)">
+        <input class="signup-input" type="email" id="hero-email" placeholder="Enter your email address" required/>
+        <button class="signup-btn" type="submit">Get early access</button>
+      </form>
+      <div class="signup-success" id="signup-success">✓ You're on the list. We'll be in touch.</div>
+      <p class="signup-note">Beta access: full features free · No credit card required · <a href="/app.html" style="color:var(--muted);text-decoration:underline;">Already have an account? Sign in</a></p>
+    </div>
+  </div>
+
+  <div class="hero-sidebar">
+    <div style="text-align:center;padding:8px 0 16px;border-bottom:1px solid rgba(255,255,255,0.08);margin-bottom:16px;"><img src="/moose.svg" alt="Morning Moose" style="width:72px;height:72px;opacity:0.9;filter:brightness(0) invert(1);" /><div style="font-family:'Playfair Display',serif;font-size:13px;font-style:italic;color:white;margin-top:6px;">The Morning Moose</div><div style="font-family:'DM Mono',monospace;font-size:8px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.35);margin-top:3px;">Daily briefing by Moose</div></div><div class="sidebar-label">Live feed preview</div>
+    <div id="live-preview-feed">
+      <div class="mock-story" style="opacity:0.4;"><div class="mock-beat beat-pol">Loading</div><div class="mock-hed">Fetching today's headlines...</div><div class="mock-meta">Just now</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="features" id="features">
+  <div class="section-header">
+    <span class="section-label">Why Headlines Report</span>
+  </div>
+  <div class="features-grid">
+    <div class="feature">
+      <div class="feature-num">01</div>
+      <div class="feature-title">Your beats,<br/>your way</div>
+      <div class="feature-desc">Add any topic , Politics, Climate, EdTech, local news. Your feed is built entirely around what you actually track, nothing else.</div>
+    </div>
+    <div class="feature">
+      <div class="feature-num">02</div>
+      <div class="feature-title">Substacks<br/>built in</div>
+      <div class="feature-desc">Paste any Substack URL and their posts appear in your feed alongside the news. One place for everything you read.</div>
+    </div>
+    <div class="feature">
+      <div class="feature-num">03</div>
+      <div class="feature-title">Curated digest,<br/>not noise</div>
+      <div class="feature-desc">A tight 2-3 sentence synthesis of what matters across your beats. Written fresh each morning, not recycled wire copy.</div>
+    </div>
+    <div class="feature">
+      <div class="feature-num">04</div>
+      <div class="feature-title">The Morning<br/><em>Moose</em></div>
+      <div class="feature-desc">Pro subscribers get The Morning Moose: a clean daily briefing built from your beats, in your inbox before the day starts.</div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how" id="how">
+  <div class="how-left">
+    <h2 class="how-title">From signup to<br/><em>first briefing</em><br/>in under two minutes.</h2>
+    <div class="how-steps">
+      <div class="how-step">
+        <div class="step-num">01</div>
+        <div class="step-body">
+          <h4>Add your beats</h4>
+          <p>Type any topic , Politics, NBA, EdTech, Supreme Court. Add as many as you want. Your feed is yours.</p>
+        </div>
+      </div>
+      <div class="how-step">
+        <div class="step-num">02</div>
+        <div class="step-body">
+          <h4>Connect your Substacks</h4>
+          <p>Paste the URL of any Substack. Posts pull in automatically alongside your news, no extra tabs.</p>
+        </div>
+      </div>
+      <div class="how-step">
+        <div class="step-num">03</div>
+        <div class="step-body">
+          <h4>Get your briefing</h4>
+          <p>Read in the app or get it delivered to your inbox every morning. Our digest synthesizes the day's news so you don't have to.</p>
+        </div>
+      </div>
+      <div class="how-step">
+        <div class="step-num">04</div>
+        <div class="step-body">
+          <h4>Upgrade when ready</h4>
+          <p>Free tier gets you started. Pro unlocks unlimited beats, Substacks, and the morning email for $7/month.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="how-right">
+    <div class="email-mockup">
+      <div class="em-header">
+        <div class="em-header-logo" style="font-size:15px;">The Morning Moose</div>
+        <div class="em-header-date" id="em-date">Loading today's date...</div>
+      </div>
+      <div class="em-digest">
+        <div class="em-digest-label">Curated Digest</div>
+        <div class="em-digest-text" id="em-digest">Today's top stories across politics, economy, and technology.</div>
+      </div>
+      <div class="em-body" id="em-stories">
+        <div class="em-beat-label" style="color:#c1440e">Politics</div>
+        <div class="em-story"><div class="em-story-hed" style="opacity:0.4;">Loading headlines...</div><div class="em-story-src"></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="pricing" id="pricing">
+  <div class="section-header">
+    <span class="section-label">Pricing</span>
+  </div>
+  <div class="pricing-grid">
+    <div class="plan">
+      <div class="plan-name">Free</div>
+      <div class="plan-price"><sup>$</sup>0<span>/month</span></div>
+      <div class="plan-tagline">Full access during beta</div>
+      <ul class="plan-features">
+        <li><span class="feat-check">✓</span>Up to 10 news beats</li>
+        <li><span class="feat-check">✓</span>Up to 5 Substacks</li>
+        <li><span class="feat-check">✓</span>Daily curated digest</li>
+        <li><span class="feat-check">✓</span>Unlimited feed refreshes</li>
+        <li><span class="feat-check">✓</span>Morning email briefing <span style="font-size:10px;color:var(--muted);">(Pro)</span></li>
+        <li><span class="feat-check">✓</span>10 beats, 5 Substacks</li>
+        <li><span class="feat-check">✓</span>Saved article library</li>
+      </ul>
+      <button class="plan-cta" onclick="document.getElementById('hero-email').focus()">Get started free</button>
+    </div>
+    <div class="plan featured">
+      <div class="plan-flag">Most popular</div>
+      <div class="plan-name">Pro</div>
+      <div class="plan-price"><sup>$</sup>7<span>/month</span></div>
+      <div class="plan-tagline">Or $60/year , save $24</div>
+      <ul class="plan-features">
+        <li><span class="feat-check">✓</span>Unlimited beats</li>
+        <li><span class="feat-check">✓</span>Unlimited Substacks</li>
+        <li><span class="feat-check">✓</span>Curated digest + summaries</li>
+        <li><span class="feat-check">✓</span>Unlimited feed refreshes</li>
+        <li><span class="feat-check">✓</span>Morning email briefing</li>
+        <li><span class="feat-check">✓</span>Saved article library</li>
+        <li><span class="feat-check">✓</span>Priority support</li>
+      </ul>
+      <button class="plan-cta" onclick="document.getElementById('hero-email').focus()">Start with Pro</button>
+    </div>
+  </div>
+</section>
+
+<!-- BOTTOM CTA -->
+<section class="bottom-cta">
+  <h2>Your morning,<br/><em>finally organized.</em></h2>
+  <p>Join the beta. Full access free while we build. No credit card needed.</p>
+  <form class="bottom-form" onsubmit="handleBottomSignup(event)">
+    <input class="bottom-input" type="email" id="bottom-email" placeholder="your@email.com" required/>
+    <button class="bottom-btn" type="submit">Join waitlist</button>
+  </form>
+  <div id="bottom-success" style="display:none;margin-top:16px;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:1px;color:rgba(247,244,238,0.6);">✓ You're on the list.</div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">Headlines Report</div>
+  <span class="footer-copy">© 2025 Headlines Report. All rights reserved.</span>
+  <ul class="footer-links">
+    <li><a href="/privacy.html">Privacy</a></li>
+    <li><a href="/terms.html">Terms</a></li>
+    <li><a href="/contact.html">Contact</a></li>
+  </ul>
+</footer>
+
+<script>
+// Dateline
+const d = new Date();
+document.getElementById('dateline').textContent = d.toLocaleDateString('en-US', {
+  weekday: 'long', month: 'long', day: 'numeric', year: 'numeric'
+});
+
+// Signup handlers
+async function submitToWaitlist(email) {
+  const res = await fetch('/api/waitlist', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email })
+  });
+  return res.json();
+}
+
+async function handleSignup(e) {
+  e.preventDefault();
+  const email = document.getElementById('hero-email').value;
+  const btn = e.target.querySelector('button');
+  if (!email) return;
+  btn.textContent = 'Joining...';
+  btn.disabled = true;
+  try {
+    await submitToWaitlist(email);
+  } catch(_) {}
+  document.querySelector('.signup-form').style.display = 'none';
+  document.getElementById('signup-success').style.display = 'block';
+}
+
+async function handleBottomSignup(e) {
+  e.preventDefault();
+  const email = document.getElementById('bottom-email').value;
+  const btn = e.target.querySelector('button');
+  if (!email) return;
+  btn.textContent = 'Joining...';
+  btn.disabled = true;
+  try {
+    await submitToWaitlist(email);
+  } catch(_) {}
+  document.querySelector('.bottom-form').style.display = 'none';
+  document.getElementById('bottom-success').style.display = 'block';
+}
+
+// Smooth scroll for nav
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    e.preventDefault();
+    const target = document.querySelector(a.getAttribute('href'));
+    if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+});
+</script>
+
+<script>
+// Live feed preview on landing page
+(function() {
+  const BEAT_COLORS = {
+    politics: '#c1440e', economy: '#4a8fc1', technology: '#2a7a4b',
+    business: '#4a8fc1', science: '#2a7a4b', health: '#8b4fc1',
+    world: '#c1440e', climate: '#2a7a4b', general: '#888'
+  };
+
+  const BEAT_LABELS = {
+    politics: 'Politics', economy: 'Economy', technology: 'Technology',
+    business: 'Business', science: 'Science', health: 'Health',
+    world: 'World', climate: 'Climate', general: 'News'
+  };
+
+  // Update today's date in email mockup
+  const dateEl = document.getElementById('em-date');
+  if (dateEl) {
+    const today = new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
+    dateEl.textContent = today + ' · By Moose';
+  }
+
+  function beatColor(beat) {
+    return BEAT_COLORS[beat] || '#888';
+  }
+
+  function beatLabel(beat) {
+    return BEAT_LABELS[beat] || (beat ? beat.charAt(0).toUpperCase() + beat.slice(1) : 'News');
+  }
+
+  // Fetch live articles and populate both preview sections
+  fetch('/api/feed?beats=politics,economy,technology,world,science')
+    .then(r => r.json())
+    .then(data => {
+      const articles = (data.articles || []).slice(0, 8);
+      if (!articles.length) return;
+
+      // --- Sidebar: hero live feed preview ---
+      const sidebarEl = document.getElementById('live-preview-feed');
+      if (sidebarEl) {
+        sidebarEl.innerHTML = articles.slice(0, 5).map(a => {
+          const color = beatColor(a.beat);
+          const label = beatLabel(a.beat);
+          return `<div class="mock-story">
+            <div class="mock-beat" style="background:${color}20;color:${color};font-family:monospace;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:2px 6px;border-radius:3px;display:inline-block;margin-bottom:4px;">${label}</div>
+            <div class="mock-hed">${a.headline}</div>
+            <div class="mock-meta">${a.source}${a.time ? ' · ' + a.time : ''}</div>
+          </div>`;
+        }).join('');
+      }
+
+      // --- Email mockup: beat-grouped stories ---
+      const storiesEl = document.getElementById('em-stories');
+      if (storiesEl) {
+        // Group by beat, take top 2 beats with 1-2 stories each
+        const byBeat = {};
+        articles.forEach(a => {
+          if (!byBeat[a.beat]) byBeat[a.beat] = [];
+          if (byBeat[a.beat].length < 2) byBeat[a.beat].push(a);
+        });
+        const topBeats = Object.keys(byBeat).slice(0, 2);
+        storiesEl.innerHTML = topBeats.map(beat => {
+          const color = beatColor(beat);
+          const label = beatLabel(beat);
+          const stories = byBeat[beat].map(s =>
+            `<div class="em-story">
+              <div class="em-story-hed">${s.headline}</div>
+              <div class="em-story-src">${s.source}${s.time ? ' · ' + s.time : ''}</div>
+            </div>`
+          ).join('');
+          return `<div class="em-beat-label" style="color:${color}">${label}</div>${stories}`;
+        }).join('');
+      }
+    })
+    .catch(() => {
+      // Silently fail — static placeholders remain visible
+    });
+})();
+</script>
+</body>
+</html>
