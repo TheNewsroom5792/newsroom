@@ -1,9 +1,6 @@
 name: Morning Digest
 
 on:
-  schedule:
-    # 7am UTC daily (3am ET / midnight PT)
-    - cron: '0 7 * * *'
   workflow_dispatch:
     inputs:
       reason:
